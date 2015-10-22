@@ -87,6 +87,17 @@ fieldset {
 	border: none;
 }
 
+/* Dividers */
+.fancy-separator {
+	height: 25px;
+	width: 543px;
+	background-image: url(../images/divider-medium.png);
+	background-position: bottom;
+	background-repeat: no-repeat;
+	margin: 0 auto;
+	padding: 0 1em;
+}
+
 /* Various 'icon' blocks */
 
 .icon-paraheader {
@@ -245,55 +256,74 @@ input[type=submit] {
 	background-image: url(../images/buttons/big-lightgreen.png);
 }
 
+/* Secondary menu (tabs) */
+#block-menu-menu-media-menu {
+	width: 765px;
+	margin: 0 auto;
+}
+
 /* Tabs */
 
-ul.tabs-primary {
+ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	background-image: url(../images/divider.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
 	margin: 0;
-	padding: 0 1em;
+	padding-left: 3em;
 	height: 40px;
 	opacity: 1;
+	line-height: 40px;
 }
 
-.tabs-primary li, .tabs-primary li.is-active {
+.tabs-primary li, .tabs-primary li.is-active, #block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail {
+	float: left;
+	border-top-left-radius: 4px !important;
+	border-top-right-radius: 4px !important;
 	background-color: #300;
 	background-image: none !important;
 	line-height: 24px;
+	height: 24px;
 	display: inline-block;
 	border: none;
 	padding: 0;
-	margin: 0 8 0 0;
+	margin: 0 3px 0 0;
+	opacity: 0.5;
 }
 
-.tabs-primary li a {
+.tabs-primary li a, #block-menu-menu-media-menu .menu li a, #block-menu-menu-media-menu .menu li a:active, #block-menu-menu-media-menu .menu li a:hover, #block-menu-menu-media-menu .menu li a:visited {
 	background-color: #200;
 	background-image: none !important;
 	border: none;
 	text-shadow: none;
-	font-weight: normal;
+	font-weight: bold;	
+	font-size: 14px;
+	height: 24px;
+    	padding: 0 1em;
+    	text-align: center;
 }
 
-.tabs-primary li.is-active {
+.tabs-primary li.is-active, #block-menu-menu-media-menu .menu li.is-active-trail {
+	background-color: #500;
+	opacity: 1;
 }
 
-.tabs-primary li.is-active a {	
+.tabs-primary li.is-active a, #block-menu-menu-media-menu .menu li.is-active-trail a {	
 	background-color: inherit;
 	color: #ccc;
 }
 
-.tabs-primary li a {
+.tabs-primary li a, #block-menu-menu-media-menu .menu li a {
 	transition: none;	
 }
 
-.tabs-primary a:hover {
-	background-color: black;
+.tabs-primary a:hover, #block-menu-menu-media-menu .menu a:hover  {
+	background-color: #500;
 }
 
-.tabs-primary li.is-active a, .tabs-primary a:hover {
+.tabs-primary li.is-active a, .tabs-primary li a:hover, #block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover {
 	color: white;
-	text-shadow: 0px 0px 1px white; 
+	text-shadow: none; 
+	opacity: 1;
 }
 
 /* Login */
@@ -475,6 +505,11 @@ ul.tabs-primary {
 }
 
 /* Documents */
+
+.node-type-document #page-title {
+	text-align: center;
+}
+
 .node-type-document #content, .page-filter-tips #content {
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
@@ -1016,7 +1051,10 @@ ul.tabs-primary {
 
 #views_slideshow_controls_text_previous_media-page a, #views_slideshow_controls_text_previous_media-page a:link, #views_slideshow_controls_text_previous_media-page a:visited, #views_slideshow_controls_text_previous_media-page a:hover,
 #views_slideshow_controls_text_next_media-page a, #views_slideshow_controls_text_next_media-page a:link, #views_slideshow_controls_text_next_media-page a:visited, #views_slideshow_controls_text_next_media-page a:hover,
-#views_slideshow_controls_text_pause_media-page a, #views_slideshow_controls_text_pause_media-page a:link, #views_slideshow_controls_text_pause_media-page a:visited, #views_slideshow_controls_text_pause_media-page a:hover {
+#views_slideshow_controls_text_pause_media-page a, #views_slideshow_controls_text_pause_media-page a:link, #views_slideshow_controls_text_pause_media-page a:visited, #views_slideshow_controls_text_pause_media-page a:hover,
+#views_slideshow_controls_text_previous_media_video-page a, #views_slideshow_controls_text_previous_media_video-page a:link, #views_slideshow_controls_text_previous_media_video-page a:visited, #views_slideshow_controls_text_previous_media_video-page a:hover,
+#views_slideshow_controls_text_next_media_video-page a, #views_slideshow_controls_text_next_media_video-page a:link, #views_slideshow_controls_text_next_media_video-page a:visited, #views_slideshow_controls_text_next_media_video-page a:hover,
+#views_slideshow_controls_text_pause_media_video-page a, #views_slideshow_controls_text_pause_media_video-page a:link, #views_slideshow_controls_text_pause_media_video-page a:visited, #views_slideshow_controls_text_pause_media_video-page a:hover { 
 	text-align: center;
 	padding: 0;
 	font-size: 10pt;
@@ -1037,13 +1075,16 @@ ul.tabs-primary {
 	background-image: url(../images/buttons/green.png);
 }
 
-.page-media .views-slideshow-controls-text {
+.page-media .views-slideshow-controls-text, .page-media-video .views-slideshow-controls-text {
 	margin-top: 1em;
 }
 
 #views_slideshow_controls_text_next_media-page a:hover,
 #views_slideshow_controls_text_previous_media-page a:hover,
-#views_slideshow_controls_text_pause_media-page a:hover {
+#views_slideshow_controls_text_pause_media-page a:hover,
+#views_slideshow_controls_text_next_media_video-page a:hover,
+#views_slideshow_controls_text_previous_media_video-page a:hover,
+#views_slideshow_controls_text_pause_media_video-page a:hover {
 	color: white;
 	background-image: url(../images/buttons/lightgreen.png);
 }
@@ -1052,7 +1093,7 @@ ul.tabs-primary {
 	text-align: center;
 }
 
-.page-media .views-slideshow-cycle-main-frame-row-item .node-title {
+.page-media .views-slideshow-cycle-main-frame-row-item .node-title, .page-media-video .views-slideshow-cycle-main-frame-row-item .node-title {
 	text-align: center;
 	text-shadow: 0px 0px 1px yellow;
 	line-height: 1em;
@@ -1060,35 +1101,87 @@ ul.tabs-primary {
 	
 }
 
-.page-media .views_slideshow_slide {
+.page-media .views_slideshow_slide, .page-media-video .views_slideshow_slide {
 	width: 769px !important;	
 }
 
-.node-media .field-item img {
+.page-media-video .field-name-field-video .field-item {
+	text-align: center;
+}
+
+.page-media-video .field-item iframe {
 	margin: 0 auto;
+}
+
+.node-media .field-item img {
 	max-width: 100%;
 	height: auto;
 }
 
-.page-media .views-slideshow-slide-counter {
+.page-media .views-slideshow-slide-counter, .page-media-video .views-slideshow-slide-counter {
 	font-size: 8pt;
 }
 
-.page-media  .field-type-image .field-label {
+.page-media  .field-type-image .field-label, .page-media-video  .field-type-image .field-label {
 	display: none;
 }
 
-.page-media #page-title {
+.page-media #page-title, .page-media-video #page-title {
 	display: none;
 }
 
-.page-media .views-slideshow-controls-top {
+.page-media .views-slideshow-controls-top, .page-media-video .views-slideshow-controls-top {
 	text-align: center;
 	text-shadow: 0px 0px 2px #000;	
 }
 
+.page-media-video .field-name-body {
+	text-align: center;
+	font-style: italic;
+	font-size: 1.1em;
+	text-shadow: 0px 0px 1px black; 
+}
 
+/* Audio */
+.page-media-audio li.views-row {
+	text-align: left;
+	list-style-type: none;
+}
 
+.page-media-audio h2.node-title {
+	color: white;
+	text-shadow: 0px 0px 3px yellow;
+}
+
+.page-media-audio .field-name-field-attribution {
+	font-style: italic;
+	font-size: 0.9em;
+}
+
+/* Team */
+.node-19 .user-picture {
+	float: left;
+	padding: 1em;
+}
+
+/* Timeline */
+
+.node-53 table td {
+	padding: 0.5em;
+}
+
+.node-53 table td:nth-child(1) {
+	font-weight: bold;
+	font-size: 1.2em;
+	text-shadow: 0px 0px 1px yellow;
+	text-align: center;
+	width: 160px;
+}
+
+.node-53 table td:nth-child(2) {
+	font-style: italic;
+	font-size: 1.2em;
+}
 
 /* These are to override the forum styling */
 /* TODO remove forum styling and make our own */
@@ -1105,6 +1198,29 @@ ul.tabs-primary {
 .forum-table-topics tr, .forum-table-wrap tr, .forum-table-topics tr.odd, .forum-table-wrap tr.odd, .forum-table-topics tr.even, .forum-table-wrap tr.even {
 	background: inherit !important;
 	border: none !important;
+}
+
+/*
+ * Reset some styles for overlays for non-admin users
+ */
+body #overlay {
+	color: black;
+    	font-family: Verdana,Tahoma,"DejaVu Sans",sans-serif; 
+	font-size: 12px;
+}
+
+body #overlay a {
+	color: blue;
+}
+
+body #overlay #edit-body-und-0-format {
+	float: inherit;
+}
+
+body #overlay input, body #overlay select {
+	color: inherit;
+	border: 1px solid black;
+	background: inherit;
 }
 
 /* 
