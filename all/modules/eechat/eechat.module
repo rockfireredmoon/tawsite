@@ -1,0 +1,190 @@
+<?php
+/**
+ * @file
+ * Module file for eechat.
+ */
+
+/**
+ * @defgroup eechat Earth Eternal: Block
+ * @ingroup earth_eternal
+ * @{
+ * Blocks for Earth Eternal chat integration.
+ *
+ */
+
+function eechat_menu() {
+	$items ['earth_eternal/eechat'] = array (
+			'page callback' => 'eechat_page',
+			'access callback' => TRUE,
+			'title' => 'Earth Eternal Chat' 
+	);
+	return $items;
+}
+
+function eechat_page() {
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => t ( 'Provides blocks for Earth Eternal live char integration.', array (
+					'@url' => url ( 'admin/structure/block' ) 
+			) ) 
+	);
+	return $page;
+}
+
+function eechat_block_info() {
+	$blocks ['eechat'] = array (
+			'info' => t ( 'Earth Eternal Chat' ),
+			'cache' => DRUPAL_CACHE_PER_ROLE
+	);
+	
+
+	$blocks ['eewho'] = array (
+			'info' => t ( 'Earth Eternal Who' ),
+			'cache' => DRUPAL_CACHE_PER_ROLE
+	);
+	
+	return $blocks;
+}
+
+function eechat_block_configure($delta = '') {
+	$form = array ();
+	if ($delta == 'eechat' || $delta == 'eewho') {
+		$form ['eechat_url'] = array (
+				'#type' => 'textfield',
+				'#title' => t ( 'Server API URL' ),
+				'#size' => 60,
+				'#description' => t ( 'The HTTP API URL of the Planet Forever server. For example http://server.theanubianwar.com/api' ),
+				'#default_value' => variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) 
+		);
+	}
+	return $form;
+}
+
+function eechat_block_save($delta = '', $edit = array()) {
+	if ($delta == 'eechat' || $delta == 'eewho') {
+		variable_set ( 'eechat_url', $edit ['eechat_url'] );
+	}
+}
+
+function eechat_block_view($delta = '') {
+	// The $delta parameter tells us which block is being requested.
+	switch ($delta) {
+		case 'eechat' :
+			$block ['subject'] = t ( 'Earth Eternal Chat' );
+			$block ['content'] = eechat_contents ( $delta );
+			drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eechat.js');
+			break;
+		case 'eewho' :
+			$block ['subject'] = t ( 'Earth Eternal Who' );
+			$block ['content'] = eechat_contents ( $delta );
+			drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');
+			break;
+	}
+	return $block;
+}
+
+function eechat_contents($which_block) {
+	switch ($which_block) {
+		
+		case 'eewho' :
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+			curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . "/who");
+			$data = curl_exec($curl);
+			$request_headers = (object) curl_getinfo($curl);
+			curl_close($curl);
+			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+				$result = array (
+						'#markup' => t('Earth Eternal is OFFLINE')
+				);
+			}
+			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$who = json_decode($data);
+				$markup = "<div id=\"block-eechat-eewho-who\">\n<ul>\n";
+				foreach($who as $name => $info) {
+					$markup = $markup . "<li>" . htmlentities($name) . "</li>\n";
+				}
+				$markup = $markup . "</ul>\n</div>\n";
+				$result = array (
+						'#markup' => $markup
+				);
+			}
+			else {
+				$result = array (
+						'#markup' => t('Earth Eternal online player list unavailable. Status %status',
+								array(
+										'%status' => $request_headers->http_code
+								))
+				);
+			}
+			return $result;
+			
+		case 'eechat' :
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+			curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . "/chat");
+			$data = curl_exec($curl);
+			$request_headers = (object) curl_getinfo($curl);
+			curl_close($curl);
+			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+				$result = array (
+						'#markup' => t('Earth Eternal live chat is OFFLINE')
+				);
+			}
+			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$chat = json_decode($data);
+				$markup = "<div id=\"block-eechat-eechat-chat\">\n<ul>\n";
+				foreach($chat as $message) {
+					$m = 0 === strpos($message->message, '[Region]') ? substr($message->message,8) : $message->message;
+					$clazz = 0 === strpos($message->message, '[Region]') ? "region" : "system";
+					$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities($message->time) . "</span> - <span class=\"chat-message\">" . htmlentities($m) . "</span></li>\n";
+				}
+				$markup = $markup . "</ul>\n</div>\n";
+				$markup = $markup . "<script type=\"text/javascript\">\n";
+				$markup = $markup . "var objDiv = document.getElementById(\"block-eechat-eechat-chat\");";
+				$markup = $markup . "objDiv.scrollTop = document.chatScrollPos ? document.chatScrollPos : objDiv.scrollHeight;\n";
+				$markup = $markup . "objDiv.addEventListener(\"scroll\", function() { if (objDiv.scrollHeight - objDiv.scrollTop === objDiv.clientHeight) { document.chatScrollPos = false; } else { document.chatScrollPos = objDiv.scrollTop; } })\n";
+				$markup = $markup . "</script>\n";
+				$result = array (
+						'#markup' => $markup
+				);
+			}
+			else {
+				$result = array (
+						'#markup' => t('Earth Eternal live chat not available. Status %status',
+								array(
+										'%status' => $request_headers->http_code
+								))
+				);				
+			}
+			return $result;
+			
+		//case 'example_configurable_text' :
+			// Modules would typically perform some database queries to fetch the
+			// content for their blocks. Here, we'll just use the variable set in the
+			// block configuration or, if none has set, a default value.
+			// Block content can be returned in two formats: renderable arrays
+			// (as here) are preferred though a simple string will work as well.
+			// Block content created through the UI defaults to a string.
+			//$result = array (
+				//	'#markup' => variable_get ( 'eechat_string', t ( 'A default value. This block was created at %time', array (
+					//		'%time' => date ( 'c' ) 
+					//) ) ) 
+			//);
+			//return $result;
+		
+	}
+}
+/**
+* @} End of "defgroup eechat".
+*/

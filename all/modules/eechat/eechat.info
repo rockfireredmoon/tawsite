@@ -1,0 +1,4 @@
+name = EE Chat
+description = Integrates Earth Eternal chat.
+core = 7.x
+
