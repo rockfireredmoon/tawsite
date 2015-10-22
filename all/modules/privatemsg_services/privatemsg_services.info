@@ -1,0 +1,8 @@
+name = Privatemsg Services
+description = Integrates Private Message functionality with Services.
+package = Services - services
+
+dependencies[] = services
+dependencies[] = privatemsg
+
+core = 7.x

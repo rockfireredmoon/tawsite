@@ -12,9 +12,9 @@ class Hybrid_Providers_Tawd extends Hybrid_Provider_Model_OAuth2
     {
         parent::initialize();
 
-        $this->api->api_base_url = 'http://192.168.91.4:8080/';
-        $this->api->authorize_url = 'http://192.168.91.4:8080/oauth/authorize';
-        $this->api->token_url = 'http://192.168.91.4:8080/oauth/token';
+        $this->api->api_base_url = 'http://192.168.91.4:9052/';
+        $this->api->authorize_url = 'http://192.168.91.4:9052/oauth/authorize';
+        $this->api->token_url = 'http://192.168.91.4:9052/oauth/token';
     }
     
     /**
@@ -30,6 +30,8 @@ class Hybrid_Providers_Tawd extends Hybrid_Provider_Model_OAuth2
 		$this->user->profile->identifier  = $data->data->id; 
 		$this->user->profile->displayName = $data->data->username; 
 		$this->user->profile->username    = $data->data->username;
+		
+		//$this->user->profile->emailVerified = "veteran@planetforevergame.com";
 		
 // 		try {
 // 			$this->user->roles = array(
