@@ -222,21 +222,18 @@ input[type=submit] {
 }
 
 #block-system-main-menu {
-	width: 100%;
-	text-align: center;
 	line-height: 1em;
-	padding: 16px 0;
+	padding: 8px 0;
+	clear: both;
 }
 
 #block-system-main-menu ul.menu {
-	display: inline-block;
+	display: block;
 	padding: 0;
-	margin: 0;
+	margin: auto auto;
 }
 
 #block-system-main-menu .menu li a, #block-system-main-menu .menu li a:active, #block-system-main-menu .menu li a:focus {
-	margin-top: auto;
-	margin-bottom: auto;
 	background-image: url(../images/buttons/big-green.png);
 	width: 152px;
 	height: 48px;
@@ -601,7 +598,10 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	margin: 3px auto 0 auto;
 	padding: 0;
 	height: 16px;
-	top: 0;
+  	left: 50%;	
+  	margin-left: -6em;
+  	position: absolute;
+	top: 4;
 }
 
 #block-server-monitor-server-monitor-status table {
@@ -688,6 +688,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 
 #block-menu-menu-unauthenticated-menu, #block-system-user-menu {
 	float: right;
+	height: 22px;
 	margin: 4px 0 0 0;
 	padding: 1px 0 0 0;
 	text-align: right;
@@ -1312,4 +1313,10 @@ body #overlay input, body #overlay select {
 input:-webkit-autofill {
 	-webkit-text-fill-color: white !important;
     -webkit-box-shadow: 0 0 0px 1000px #300 inset;
+}
+
+#block-system-main-menu ul {
+	-webkit-margin-before: 0 !important;	
+	-webkit-margin-after: 0 !important;	
+	-webkit-padding-start: 0 !important;
 }
