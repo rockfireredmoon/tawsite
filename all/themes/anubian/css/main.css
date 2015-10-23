@@ -1206,8 +1206,15 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	margin: 0 auto;
 }
 
+.node-media .field-type-image .field-item {
+	text-align: center;
+}
+
 .node-media .field-item img {
+	margin-left: auto;
+	margin-right: auto;
 	max-width: 100%;
+	max-height: 340px;
 	height: auto;
 }
 
