@@ -370,21 +370,24 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 #createaccount, #createaccount:active, #createaccount:focus, #playnow, #playnow:active, #playnow:focus {
 	margin-top: auto;
 	margin-bottom: auto;
-	background-image: url(../images/buttons/big-darkred.png);
+	/*background-image: url(../images/buttons/verybig-red.png)*/;
+	background-image: url(../images/buttons/verybig-darkgreen.png);
 	width: 218px;
 	height: 48px;
 	text-align: center;
+	font-weight: normal;
 	line-height: 40px;
 	display: inline-block;
 	color: white;
-	text-shadow: 0px 0px 3px red;
+	text-shadow: 0px 0px 1px black;
 	text-decoration: none;
 	font-size: 20px;
 }
 
 #createaccount:hover, #playnow:hover {
 	text-shadow: 0px 0px 3px yellow;
-	background-image: url(../images/buttons/big-red.png);
+	/*background-image: url(../images/buttons/verybig-red.png)*/;
+	background-image: url(../images/buttons/verybig-green.png)
 }
 
 #login-existing {
