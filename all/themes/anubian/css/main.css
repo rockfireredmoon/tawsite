@@ -364,6 +364,10 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	display: none;
 } 
 
+.front #content {
+	margin-top: 3em;
+}
+
 #createaccount, #createaccount:active, #createaccount:focus, #playnow, #playnow:active, #playnow:focus {
 	margin-top: auto;
 	margin-bottom: auto;
