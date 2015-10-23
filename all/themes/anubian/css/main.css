@@ -731,6 +731,10 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 
 
 /* Forums */
+.page-forum .forum-table-superheader {
+	display: none;	
+}
+
 .section-forum .view-empty {
 	border: none;
 }
@@ -1003,6 +1007,11 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 #pm-block-user-list table tbody:first-child {
 	background-color: #300;
 } 
+
+/* Support */
+.section-support #page-title {
+	display: none;	
+}
 
 /* Highlights */
 /*.messages, .messages--status, .messages--warning, .messages--error*/
