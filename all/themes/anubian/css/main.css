@@ -225,11 +225,13 @@ input[type=submit] {
 	width: 100%;
 	text-align: center;
 	line-height: 1em;
-	height: 64px;
+	padding: 16px 0;
 }
 
-#block-system-main-menu .menu ul {
+#block-system-main-menu ul.menu {
 	display: inline-block;
+	padding: 0;
+	margin: 0;
 }
 
 #block-system-main-menu .menu li a, #block-system-main-menu .menu li a:active, #block-system-main-menu .menu li a:focus {
@@ -251,7 +253,8 @@ input[type=submit] {
 	text-decoration: underline;
 }
 
-#block-system-main-menu .menu .active a {
+
+#block-system-main-menu .menu .active-trail a {
 	text-shadow: 0px 0px 3px yellow;
 	background-image: url(../images/buttons/big-lightgreen.png);
 }
@@ -393,10 +396,9 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 /* Footer */
 
 #footer {	
+	border-top: 1px solid #300;
 	padding: 4px;
-	background-color: black;
-	opacity: 0.6;
-	height: 72px;
+	background-color:rgba(0,0,0,0.6);
 	line-height: 1em;
 }
 
@@ -413,8 +415,22 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	line-height: 1em;
 }
 
+#footer table tbody a {
+	text-decoration: underline;
+}
+
 #footer table thead tr {
 	background-color: inherit;
+	font-size: 9pt;
+	line-height: 16px;
+}
+
+#footer table tbody tr {
+	line-height: 12px;
+}
+
+#footer table thead td {
+	min-width: 80px;	
 }
 
 /* Branding */
@@ -431,17 +447,19 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 }
 
 #footer-center {	
-	width:300px;
+	margin-left: 1em;
 	float: left;
 }
 
 #footer-left {
-	width:300px;
+	/*width:300px;*/
 	float: left;
 }
 
 #footer-right {
-	width:300px;
+	max-width:280px;
+	/*width:300px;*/
+	/*min-width: 120px;*/
 	float: right;
 	line-height: 1em;
 	font-size: 10pt;
@@ -466,6 +484,10 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	color: white;
 	text-shadow: 0px 0px 3px yellow;
 	font-size: 1.2em;
+}
+
+.hybridauth-icon-hybridauth-48 {
+	opacity: 1 !important;
 }
 
 #hybridauth-user-identity table, .password-suggestions {
@@ -552,11 +574,19 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	font-size: 10pt;
 	margin: 0;
 	padding: 4px;
+	background-color:rgba(0,0,0,0.6);
+	border-bottom: 1px solid #300;
+}
+
+#header a {
+	font-weight: normal;
 }
 
 #header .region-header {	
 	width: 100%;
 	text-align: center;
+	margin:  0;
+	padding: 0;
 }
 
 #header #block-block-2 h2 {
@@ -565,8 +595,8 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 
 #block-server-monitor-server-monitor-status {
 	display: inline-block;
-	margin: 0 auto;
-	padding: 4px 0 0 0;
+	margin: 3px auto 0 auto;
+	padding: 0;
 	height: 16px;
 	top: 0;
 }
@@ -583,21 +613,64 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 /* Search */
 
 #block-search-form {
+	border-right: 1px solid #300;
+	border-left: 1px solid #300;
+	border-top: 1px solid #300;
+	border-bottom: 1px solid #300;
+	border-top-left-radius: 4px !important;
+	border-top-right-radius: 4px !important;
+	border-bottom-left-radius: 4px !important;
+	border-bottom-right-radius: 4px !important;
 	float: left;
+	padding: 0;
+	margin: 0;
+	font-size: inherit;
+	color: white;
+	font-size: 11pt;
+	background-color: #500;
+}
+
+#block-search-form form {
+	padding: 0;
+	margin: 1px;
+}
+
+#block-search-form #container-inline {
 }
 
 #block-search-form  .form-item {
-	margin :0;
+	padding: 4px;
+	margin: 0;
+}
+
+#block-search-form input[type="text"] {
+	background-color: #500;
+	height: 17px;
+	width: 13em;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+#block-search-form input[type="text"]:focus {
+	border: 1px solid white;
 }
 
 #block-search-form input[type="submit"] {
-	background-color: inherit;
-	background-image: none;
+	background-color: #500;
+	background-image: url(../images/search-button.png);
 	color: white;
-	border: none;
 	display: inline;
-	font-size: 10pt;
+	width: 18px;
+	height: 17px;
+	line-height: 18px;
+	padding: 0;
+	margin: 1px;
+	text-decoration: underline;
 	text-shadow: 0px 0px 2px #000;
+	text-indent: -9999px;
+    white-space: nowrap;
+    overflow: hidden;
 } 
 
 #block-search-form {
@@ -612,13 +685,13 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 
 #block-menu-menu-unauthenticated-menu, #block-system-user-menu {
 	float: right;
-	margin: 0;
-	padding: 4px 0 0 0;
+	margin: 4px 0 0 0;
+	padding: 1px 0 0 0;
 	text-align: right;
 }
 
 #block-system-user-menu a {
-	padding-left: 0.5em;
+	padding-left: 0em;
 }
 
 #block-system-user-menu .is-active-trail a {
@@ -633,6 +706,9 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 
 #block-menu-menu-unauthenticated-menu li, #block-system-user-menu li {
 	display: inline;
+	border-right: 1px solid grey;
+	padding: 0;
+	padding: 0 0.5em;
 }
 
 #block-menu-menu-unauthenticated-menu h2, #block-system-user-menu h2 {
