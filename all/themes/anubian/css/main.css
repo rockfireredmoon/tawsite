@@ -1077,8 +1077,12 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	text-shadow: 0px 0px 1px yellow;
 }
 
-#block-eechat-eeaccountinfo-accountinfo .account-details, #block-eechat-eeaccountinfo-accountinfo .character-details {
+#block-eechat-eeaccountinfo-accountinfo .account-details, #block-eechat-eeaccountinfo-accountinfo .character-details, #block-eechat-eeaccountinfo-accountinfo .no-account, #block-eechat-eeaccountinfo-accountinfo .no-characters {
 	padding: 4px;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .no-account, #block-eechat-eeaccountinfo-accountinfo .no-characters {
+ 	text-align: center;
 }
 
 #block-eechat-eeaccountinfo-accountinfo .character-details ul {

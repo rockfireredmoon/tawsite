@@ -177,84 +177,95 @@ function eechat_contents($which_block) {
 
 			$urlp = "/user/" . urlencode($account->name);
 			list($data, $request_headers) = _doJson($urlp);
+			$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
 			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
-				$result = array (
-						'#markup' => t('Earth Eternal is OFFLINE')
-				);
+				$markup = $markup . t('Earth Eternal is OFFLINE');
 			}
 			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
 				$eeuser = json_decode($data);
-				$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
-				$markup = $markup . "<div class=\"account-details\">\n";				
-				$markup = $markup . "<h2>Account</h2>\n";
 				
-				$markup = $markup . "<div class=\"last-login\">\n";			
-				$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
-				$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
-				$markup = $markup . "</div>\n";
-
-				$markup = $markup . "<div class=\"total-kills\">\n";
-				$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
-				$markup = $markup . "<span class=\"total-kills-value player-stat-value\">" . $eeuser->playerStats->kills . "</span>\n";
-				$markup = $markup . "</div>\n";
-
-				$markup = $markup . "<div class=\"total-deaths\">\n";
-				$markup = $markup . "<span class=\"total-deaths-label player-stat-label\">Total Deaths</span>\n";
-				$markup = $markup . "<span class=\"total-deaths-value player-stat-value\">" . $eeuser->playerStats->deaths . "</span>\n";
-				$markup = $markup . "</div>\n";
-
-				$markup = $markup . "<div class=\"total-pvp-kills\">\n";
-				$markup = $markup . "<span class=\"total-pvp-kills-label player-stat-label\">Total PVP Kills</span>\n";
-				$markup = $markup . "<span class=\"total-pvp-kills-value player-stat-value\">" . $eeuser->playerStats->pvpKills . "</span>\n";
-				$markup = $markup . "</div>\n";
-
-				$markup = $markup . "<div class=\"total-pvp-deaths\">\n";
-				$markup = $markup . "<span class=\"total-pvp-deaths-label player-stat-label\">Total PVP Deaths</span>\n";
-				$markup = $markup . "<span class=\"total-pvp-deaths-value player-stat-value\">" . $eeuser->playerStats->pvpDeaths . "</span>\n";
-				$markup = $markup . "</div>\n";
-				
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "<hr class=\"divider\"/>\n";
-				$markup = $markup . "<div class=\"character-details\">\n";				
-				$markup = $markup . "<h2>Characters</h2>\n";				
-				$markup = $markup . "<ul>\n";
-				foreach($eeuser->characters as $character) {				
-					$markup = $markup . "<li>\n";				
-					$markup = $markup . "<span class=\"character-name\">" . $character->name . "</span>\n";				
-					$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
-					$profession = "Unknown";	
-					switch ($character->profession) {
-						case 1:
-							$profession = "Knight";
-							break;
-						case 2:
-							$profession = "Rogue";
-							break;
-						case 3:
-							$profession = "Mage";
-							break;
-						case 4:
-							$profession = "Druid";
-							break;
-					}
-					$markup = $markup . "<span class=\"character-level\">" . $profession . "</span>\n";
-					$markup = $markup . "</li>"; 
-				}				
-				$markup = $markup . "</ul>\n";
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "</div>\n";
-				$result = array (
-						'#markup' => $markup
-				);
+				if($eeuser->characters != null) {
+					$markup = $markup . "<div class=\"account-details\">\n";				
+					$markup = $markup . "<h2>Account</h2>\n";
+					
+					$markup = $markup . "<div class=\"last-login\">\n";			
+					$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
+					$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
+					$markup = $markup . "</div>\n";
+	
+					$markup = $markup . "<div class=\"total-kills\">\n";
+					$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
+					$markup = $markup . "<span class=\"total-kills-value player-stat-value\">" . $eeuser->playerStats->kills . "</span>\n";
+					$markup = $markup . "</div>\n";
+	
+					$markup = $markup . "<div class=\"total-deaths\">\n";
+					$markup = $markup . "<span class=\"total-deaths-label player-stat-label\">Total Deaths</span>\n";
+					$markup = $markup . "<span class=\"total-deaths-value player-stat-value\">" . $eeuser->playerStats->deaths . "</span>\n";
+					$markup = $markup . "</div>\n";
+	
+					$markup = $markup . "<div class=\"total-pvp-kills\">\n";
+					$markup = $markup . "<span class=\"total-pvp-kills-label player-stat-label\">Total PVP Kills</span>\n";
+					$markup = $markup . "<span class=\"total-pvp-kills-value player-stat-value\">" . $eeuser->playerStats->pvpKills . "</span>\n";
+					$markup = $markup . "</div>\n";
+	
+					$markup = $markup . "<div class=\"total-pvp-deaths\">\n";
+					$markup = $markup . "<span class=\"total-pvp-deaths-label player-stat-label\">Total PVP Deaths</span>\n";
+					$markup = $markup . "<span class=\"total-pvp-deaths-value player-stat-value\">" . $eeuser->playerStats->pvpDeaths . "</span>\n";
+					$markup = $markup . "</div>\n";
+					
+					$markup = $markup . "</div>\n";
+					$markup = $markup . "<hr class=\"divider\"/>\n";
+					$markup = $markup . "<div class=\"character-details\">\n";				
+					$markup = $markup . "<h2>Characters</h2>\n";				
+					$markup = $markup . "<ul>\n";
+					foreach($eeuser->characters as $character) {				
+						$markup = $markup . "<li>\n";				
+						$markup = $markup . "<span class=\"character-name\">" . $character->name . "</span>\n";				
+						$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
+						$profession = "Unknown";	
+						switch ($character->profession) {
+							case 1:
+								$profession = "Knight";
+								break;
+							case 2:
+								$profession = "Rogue";
+								break;
+							case 3:
+								$profession = "Mage";
+								break;
+							case 4:
+								$profession = "Druid";
+								break;
+						}
+						$markup = $markup . "<span class=\"character-level\">" . $profession . "</span>\n";
+						$markup = $markup . "</li>"; 
+					}				
+					$markup = $markup . "</ul>\n";
+					$markup = $markup . "</div>\n";
+				}
+				else {
+					$markup = $markup . "<div class=\"no-characters\">\n";	
+					$markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
+					$markup = $markup . "</div>\n";
+				}
 			}
 			else {
-				$result = array (
-						'#markup' => t('Earth Eternal user not available. ' . $urlp . '. Status %status',
-								array(
-										'%status' => $request_headers->http_code
-								))
-				);
+				if($request_headers->http_code == 404) {
+					$markup = $markup . "<div class=\"no-account\">";
+					$markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";	
+					$markup = $markup . "</div>\n";	
+				}
+				else {
+					$markup = t('Earth Eternal user not available. ' . $account->name . '. Status %status',
+									array(
+											'%status' => $request_headers->http_code
+									));
+				}
 			}
+			$markup = $markup . "</div>\n";
+			$result = array (
+					'#markup' => $markup
+			);
 			return $result;
 		
 	}
