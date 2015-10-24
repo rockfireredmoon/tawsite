@@ -2,10 +2,6 @@
 Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
-html.js {
-	background-image: none;
-	background-color: rgb(0,0,0,0.8) !important;
-}
 
 .cke_reset {
 	margin: 0;
