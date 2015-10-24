@@ -36,10 +36,14 @@ function eechat_block_info() {
 			'info' => t ( 'Earth Eternal Chat' ),
 			'cache' => DRUPAL_CACHE_PER_ROLE
 	);
-	
 
 	$blocks ['eewho'] = array (
 			'info' => t ( 'Earth Eternal Who' ),
+			'cache' => DRUPAL_CACHE_PER_ROLE
+	);
+
+	$blocks ['eeaccountinfo'] = array (
+			'info' => t ( 'Earth Eternal Account Info' ),
 			'cache' => DRUPAL_CACHE_PER_ROLE
 	);
 	
@@ -48,7 +52,7 @@ function eechat_block_info() {
 
 function eechat_block_configure($delta = '') {
 	$form = array ();
-	if ($delta == 'eechat' || $delta == 'eewho') {
+	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo' ) {
 		$form ['eechat_url'] = array (
 				'#type' => 'textfield',
 				'#title' => t ( 'Server API URL' ),
@@ -61,7 +65,7 @@ function eechat_block_configure($delta = '') {
 }
 
 function eechat_block_save($delta = '', $edit = array()) {
-	if ($delta == 'eechat' || $delta == 'eewho') {
+	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
 		variable_set ( 'eechat_url', $edit ['eechat_url'] );
 	}
 }
@@ -79,6 +83,11 @@ function eechat_block_view($delta = '') {
 			$block ['content'] = eechat_contents ( $delta );
 			drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');
 			break;
+		case 'eeaccountinfo' :
+			$block ['subject'] = t ( 'Earth Eternal Account' );
+			$block ['content'] = eechat_contents ( $delta );
+			/*drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');*/
+			break;
 	}
 	return $block;
 }
@@ -87,17 +96,7 @@ function eechat_contents($which_block) {
 	switch ($which_block) {
 		
 		case 'eewho' :
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($curl, CURLOPT_HEADER, false);
-			curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
-			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
-			curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . "/who");
-			$data = curl_exec($curl);
-			$request_headers = (object) curl_getinfo($curl);
-			curl_close($curl);
+			list($data, $request_headers) = _doJson("/who"); 
 			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
 				$result = array (
 						'#markup' => t('Earth Eternal is OFFLINE')
@@ -125,17 +124,7 @@ function eechat_contents($which_block) {
 			return $result;
 			
 		case 'eechat' :
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($curl, CURLOPT_HEADER, false);
-			curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
-			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
-			curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . "/chat");
-			$data = curl_exec($curl);
-			$request_headers = (object) curl_getinfo($curl);
-			curl_close($curl);
+			list($data, $request_headers) = _doJson("/chat");
 			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
 				$result = array (
 						'#markup' => t('Earth Eternal live chat is OFFLINE')
@@ -169,22 +158,126 @@ function eechat_contents($which_block) {
 			}
 			return $result;
 			
-		//case 'example_configurable_text' :
-			// Modules would typically perform some database queries to fetch the
-			// content for their blocks. Here, we'll just use the variable set in the
-			// block configuration or, if none has set, a default value.
-			// Block content can be returned in two formats: renderable arrays
-			// (as here) are preferred though a simple string will work as well.
-			// Block content created through the UI defaults to a string.
-			//$result = array (
-				//	'#markup' => variable_get ( 'eechat_string', t ( 'A default value. This block was created at %time', array (
-					//		'%time' => date ( 'c' ) 
-					//) ) ) 
-			//);
-			//return $result;
+		case 'eeaccountinfo' :
+			global $user;
+			$account = $user;
+			$req_uri = request_uri();
+			$parts = explode("/", $req_uri);
+			for ($i = 0 ; $i < count($parts) ; $i++) {
+				$el = $parts[$i];
+				if($el == "user") {
+					if($i + 1 < count($parts)) {
+						$el = $parts[$i + 1];
+						if((string)(int)$el == $el) {
+							$account = user_load ( $el );
+						}
+					}
+				}
+			}
+
+			$urlp = "/user/" . urlencode($account->name);
+			list($data, $request_headers) = _doJson($urlp);
+			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+				$result = array (
+						'#markup' => t('Earth Eternal is OFFLINE')
+				);
+			}
+			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$eeuser = json_decode($data);
+				$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
+				$markup = $markup . "<div class=\"account-details\">\n";				
+				$markup = $markup . "<h2>Account</h2>\n";
+				
+				$markup = $markup . "<div class=\"last-login\">\n";			
+				$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
+				$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
+				$markup = $markup . "</div>\n";
+
+				$markup = $markup . "<div class=\"total-kills\">\n";
+				$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
+				$markup = $markup . "<span class=\"total-kills-value player-stat-value\">" . $eeuser->playerStats->kills . "</span>\n";
+				$markup = $markup . "</div>\n";
+
+				$markup = $markup . "<div class=\"total-deaths\">\n";
+				$markup = $markup . "<span class=\"total-deaths-label player-stat-label\">Total Deaths</span>\n";
+				$markup = $markup . "<span class=\"total-deaths-value player-stat-value\">" . $eeuser->playerStats->deaths . "</span>\n";
+				$markup = $markup . "</div>\n";
+
+				$markup = $markup . "<div class=\"total-pvp-kills\">\n";
+				$markup = $markup . "<span class=\"total-pvp-kills-label player-stat-label\">Total PVP Kills</span>\n";
+				$markup = $markup . "<span class=\"total-pvp-kills-value player-stat-value\">" . $eeuser->playerStats->pvpKills . "</span>\n";
+				$markup = $markup . "</div>\n";
+
+				$markup = $markup . "<div class=\"total-pvp-deaths\">\n";
+				$markup = $markup . "<span class=\"total-pvp-deaths-label player-stat-label\">Total PVP Deaths</span>\n";
+				$markup = $markup . "<span class=\"total-pvp-deaths-value player-stat-value\">" . $eeuser->playerStats->pvpDeaths . "</span>\n";
+				$markup = $markup . "</div>\n";
+				
+				$markup = $markup . "</div>\n";
+				$markup = $markup . "<hr class=\"divider\"/>\n";
+				$markup = $markup . "<div class=\"character-details\">\n";				
+				$markup = $markup . "<h2>Characters</h2>\n";				
+				$markup = $markup . "<ul>\n";
+				foreach($eeuser->characters as $character) {				
+					$markup = $markup . "<li>\n";				
+					$markup = $markup . "<span class=\"character-name\">" . $character->name . "</span>\n";				
+					$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
+					$profession = "Unknown";	
+					switch ($character->profession) {
+						case 1:
+							$profession = "Knight";
+							break;
+						case 2:
+							$profession = "Rogue";
+							break;
+						case 3:
+							$profession = "Mage";
+							break;
+						case 4:
+							$profession = "Druid";
+							break;
+					}
+					$markup = $markup . "<span class=\"character-level\">" . $profession . "</span>\n";
+					$markup = $markup . "</li>"; 
+				}				
+				$markup = $markup . "</ul>\n";
+				$markup = $markup . "</div>\n";
+				$markup = $markup . "</div>\n";
+				$result = array (
+						'#markup' => $markup
+				);
+			}
+			else {
+				$result = array (
+						'#markup' => t('Earth Eternal user not available. ' . $urlp . '. Status %status',
+								array(
+										'%status' => $request_headers->http_code
+								))
+				);
+			}
+			return $result;
 		
 	}
 }
+
+function _doJson($path) {
+
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_HEADER, false);
+	curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+	
+	curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . $path);
+	$data = curl_exec($curl);
+	$request_headers = (object) curl_getinfo($curl);
+	curl_close($curl);
+
+	return array($data, $request_headers);
+}
+
 /**
 * @} End of "defgroup eechat".
 */

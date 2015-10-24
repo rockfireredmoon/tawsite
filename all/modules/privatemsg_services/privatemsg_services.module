@@ -48,6 +48,7 @@ function privatemsg_services_services_resources() {
 													'name' => 'thread_id',
 													'type' => 'int',
 													'description' => t ( 'ID of the thread to be retrieved.' ),
+													'optional' => TRUE,
 													'source' => array (
 															'path' => 0 
 													) 
@@ -172,7 +173,7 @@ function _privatemsg_services_send(array $message) {
 	$subject = $message ['subject'];
 	$body = $message ['body'];
 	$recipients = $message ['recipients'];
-	$thread_id = $message ['thread_id'];
+	$thread_id = array_key_exists('thread_id', $message) ? $message ['thread_id'] : FALSE;
 	
 	// Make sure the message author is logged in.
 	global $user;

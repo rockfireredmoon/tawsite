@@ -1045,6 +1045,73 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	color: #ccc;
 }
 
+/* Account Info */
+#block-eechat-eeaccountinfo h2 {
+	display: none;
+}
+
+#block-eechat-eeaccountinfo-accountinfo {
+	min-with: 220px;
+	width: 100%;
+	/*
+	max-height: 580px;
+	*/
+	margin: 8px;
+	font-size: 9pt;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .account-details h2 {
+	display: none;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .player-stat-label {
+	width: 94px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .account-details, #block-eechat-eeaccountinfo-accountinfo .character-details {
+	padding: 4px;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .character-details ul {
+	padding: 0;
+	margin: 0;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .character-details li {
+	list-style-type: none;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .character-details .character-name {
+	font-size: 14pt;
+	text-shadow: 0px 0px 1px yellow;
+	display: block;
+}
+
+#block-eechat-eeaccountinfo-accountinfo .character-details .character-level {
+	font-style: italic;
+}
+
+#block-eechat-eeaccountinfo-accountinfo hr {
+	display: block;
+	border: none;
+	height: 25px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background-image: url(../images/divider-small.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 /* Live Chat */
 #block-eechat-eechat {
 	width: 100%;
