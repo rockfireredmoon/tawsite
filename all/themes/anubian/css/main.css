@@ -437,6 +437,26 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 }
 
 /* Home page */
+.front article {
+	text-shadow: 0px 0px 1px black;
+}
+
+.front .front-text {
+	font-size: 12pt;
+	line-height: 1.05em;
+	text-align: center; 
+	width: 420px; 
+	margin: 1em auto;
+}
+
+.front .front-text strong {
+	color: #0a0;
+}
+
+.front article strong {
+	font-weight: bold;
+}
+
 .front #page-title {
 	display: none;
 } 
