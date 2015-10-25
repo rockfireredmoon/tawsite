@@ -108,7 +108,20 @@ function eechat_leaderboard($board = 'character', $sort = 'kills', $start = 0) {
 				$markup = $markup . "<tr class=\"leader-row\">\n";
 				$markup = $markup . "<td class=\"leader-rank\">" . $leader->rank . "</td>\n";
 				$markup = $markup . "<td><a href=\"/character/" . urlencode ($leader->name) . "\">" . $leader->name . "</a></td>\n";
-				$markup = $markup . "<td>" . $leader->stats->kills . "</td>\n";
+				switch($sort) {
+					case 'kills':
+						$markup = $markup . "<td>" . $leader->stats->kills . "</td>\n";
+						break;
+					case 'deaths':
+						$markup = $markup . "<td>" . $leader->stats->deaths . "</td>\n";
+						break;
+					case 'pvpKills':
+						$markup = $markup . "<td>" . $leader->stats->pvpKills . "</td>\n";
+						break;
+					case 'pvpDeaths':
+						$markup = $markup . "<td>" . $leader->stats->pvpDeaths . "</td>\n";
+						break;
+				}
 				$markup = $markup . "</tr>\n";
 			}
 			$markup = $markup . "</table>\n";
