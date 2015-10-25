@@ -264,7 +264,7 @@ input[type=submit] {
 
 /* Tabs */
 
-ul.tabs-primary, #block-menu-menu-media-menu .menu {
+ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-leaderboards .menu {
 	background-image: url(../images/divider.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
@@ -275,7 +275,9 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	line-height: 40px;
 }
 
-.tabs-primary li, .tabs-primary li.is-active, #block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail {
+.tabs-primary li, .tabs-primary li.is-active, 
+#block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail,
+#block-menu-menu-character-leaderboards .menu li, #block-menu-menu-character-leaderboards .menu li.is-active-trail {
 	float: left;
 	border-top-left-radius: 4px !important;
 	border-top-right-radius: 4px !important;
@@ -290,7 +292,9 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	opacity: 0.5;
 }
 
-.tabs-primary li a, #block-menu-menu-media-menu .menu li a, #block-menu-menu-media-menu .menu li a:active, #block-menu-menu-media-menu .menu li a:hover, #block-menu-menu-media-menu .menu li a:visited {
+.tabs-primary li a, 
+#block-menu-menu-media-menu .menu li a, #block-menu-menu-media-menu .menu li a:active, #block-menu-menu-media-menu .menu li a:hover, #block-menu-menu-media-menu .menu li a:visited,
+#block-menu-menu-character-leaderboards .menu li a, #block-menu-menu-character-leaderboards .menu li a:active, #block-menu-menu-character-leaderboards .menu li a:hover, #block-menu-menu-character-leaderboards .menu li a:visited {
 	background-color: #200;
 	background-image: none !important;
 	border: none;
@@ -302,28 +306,101 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
     	text-align: center;
 }
 
-.tabs-primary li.is-active, #block-menu-menu-media-menu .menu li.is-active-trail {
+.tabs-primary li.is-active, 
+#block-menu-menu-media-menu .menu li.is-active-trail,
+#block-menu-menu-character-leaderboards .menu li.is-active-trail {
 	background-color: #500;
 	opacity: 1;
 }
 
-.tabs-primary li.is-active a, #block-menu-menu-media-menu .menu li.is-active-trail a {	
+.tabs-primary li.is-active a, 
+#block-menu-menu-media-menu .menu li.is-active-trail a,
+#block-menu-menu-character-leaderboards .menu li.is-active-trail a {	
 	background-color: inherit;
 	color: #ccc;
 }
 
-.tabs-primary li a, #block-menu-menu-media-menu .menu li a {
+.tabs-primary li a,
+#block-menu-menu-media-menu .menu li a,
+#block-menu-menu-character-leaderboards .menu li a {
 	transition: none;	
 }
 
-.tabs-primary a:hover, #block-menu-menu-media-menu .menu a:hover  {
+.tabs-primary a:hover,
+#block-menu-menu-media-menu .menu a:hover,
+#block-menu-menu-character-leaderboards .menu a:hover  {
 	background-color: #500;
 }
 
-.tabs-primary li.is-active a, .tabs-primary li a:hover, #block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover {
+.tabs-primary li.is-active a, .tabs-primary li a:hover,
+#block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover,
+#block-menu-menu-character-leaderboards .menu li.is-active-trail a, #block-menu-menu-character-leaderboards .menu li a:hover {
 	color: white;
 	text-shadow: none; 
 	opacity: 1;
+}
+
+/* Leaderboard */
+
+.section-leaderboard #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding:  8px;
+}
+
+.section-leaderboard #page-title {
+	text-shadow: 0px 0px  3px yellow;
+	text-align: center;
+}
+
+.section-leaderboard table.leader-table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.section-leaderboard table.leader-table tr {
+	font-size: 14pt;
+}
+
+.section-leaderboard table.leader-table td.leader-rank {
+	font-size: 16pt;
+	text-shadow: 0px 0px  1px yellow;
+}
+
+.section-leaderboard table.leader-table tr:hover {
+	background-color: black;
+	color: white;
+	text-shadow: 0px 0px  1px yellow;
+}
+
+
+.leader-actions {
+	text-align: center;
+	margin-top: 1em;	
+}
+
+a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-actions:hover {
+	text-align: center;
+	padding: 0;
+	box-shadow: none;
+	margin: 0;
+	line-height: 32px;
+	display: inline-block;
+	font-weight: normal;
+	font-size: inherit;
+	width: 160px;
+	height: 32px;
+	background-color: inherit;
+	border: none;
+	text-shadow: 0px 0px 2px #000;
+	color: white;
+	background-position: center;
+	background-image: url(../images/buttons/long-green.png);
+}
+
+#block-menu-menu-character-leaderboards h2 {
+	display: none;
 }
 
 /* Login */
@@ -1352,6 +1429,68 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 .node-53 table td:nth-child(2) {
 	font-style: italic;
 	font-size: 1.2em;
+}
+
+/* Character */
+
+.section-character #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+}
+
+
+.section-character #page-title {
+	display: none;
+} 
+
+.section-character #content h2 {
+	text-shadow: 0px 0px 3px yellow;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-character #content h3.level {
+	font-style: italic;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-character #content h4.status {
+	font-style: italic;
+	color: #0a0;
+}
+
+.section-character #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-character #content .character-profile-label {
+	width: 150px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-character #content .character-profile-value {
+	display: inline-block;
+}
+
+.section-character #content .player-stats {
+	font-size: 10pt;
+	padding: 1em;
+}
+
+.section-character #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-character #content .player-stat-label {
+	width: 94px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
 }
 
 /* These are to override the forum styling */

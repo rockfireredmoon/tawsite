@@ -9,50 +9,162 @@
  * @ingroup earth_eternal
  * @{
  * Blocks for Earth Eternal chat integration.
- *
  */
-
 function eechat_menu() {
-	$items ['earth_eternal/eechat'] = array (
-			'page callback' => 'eechat_page',
+	$items ['leaderboard'] = array (
+			'page callback' => 'eechat_leaderboard',
 			'access callback' => TRUE,
-			'title' => 'Earth Eternal Chat' 
+			'title' => 'Leaderboard' 
 	);
+	
+	$items ['character'] = array (
+			'page callback' => 'eechat_character',
+			'access callback' => TRUE,
+			'title' => 'Character Profile' 
+	);
+	
 	return $items;
 }
+function eechat_character($id = '0') {
+	$urlp = "/character/" . urlencode ( $id );
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-character\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$characterdata = json_decode ( $data );
+		
+		$markup = $markup . "<h2 class=\"character-name\">" . $characterdata->cdef->css->display_name . "</h2>\n";
+		$markup = $markup . "<h3 class=\"level\">Level " . $characterdata->cdef->css->level . "</h3>\n";
+		$markup = $markup . "<h4 class=\"status\">" . $characterdata->status . "</h4>\n";
+		
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		
+		// Date Created
+		$markup = $markup . "<div class=\"created\">\n";
+		$markup = $markup . "<span class=\"created-label character-profile-label\">Date Created</span>\n";
+		$markup = $markup . "<span class=\"created-value character-profile-value\">" . date ( "Y-m-d, h:i A", $characterdata->createdTime ) . "</span>\n";
+		$markup = $markup . "</div>\n";
+		
+		// Date Last Logged In
+		$markup = $markup . "<div class=\"last-login\">\n";
+		$markup = $markup . "<span class=\"last-login-label character-profile-label\">Last Seen</span>\n";
+		$markup = $markup . "<span class=\"last-login-value character-profile-value\">" . $characterdata->lastLogon . "</span>\n";
+		$markup = $markup . "</div>\n";
+		
+		// Race 
+		$markup = $markup . "<div class=\"race\">\n";
+		$markup = $markup . "<span class=\"race-label character-profile-label\">Race</span>\n";
+		$markup = $markup . "<span class=\"race-value character-profile-value\">" . _get_race_name($characterdata->appearance->r) . "</span>\n";
+		$markup = $markup . "</div>\n";
+		
+		// Class
+		$markup = $markup . "<div class=\"charclass\">\n";
+		$markup = $markup . "<span class=\"charclass-label character-profile-label\">Class</span>\n";
+		
+		$markup = $markup . "<span class=\"charclass-value character-profile-value\">" . _get_class_name ( $characterdata->cdef->css->profession ) . "</span>\n";
+		$markup = $markup . "</div>\n";
 
-function eechat_page() {
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		
+		// Stats
+		$markup = $markup . "<div class=\"player-stats\">\n";
+		$markup = $markup . _get_stats_html ( $characterdata->playerStats );
+		$markup = $markup . "</div>\n";
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-character\">";
+			$markup = $markup . "This character does not exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal character not available. ' . $id . '. Status %status', array (
+					'%status' => $request_headers->http_code 
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+	
 	$page = array (
 			'#type' => 'markup',
-			'#markup' => t ( 'Provides blocks for Earth Eternal live char integration.', array (
-					'@url' => url ( 'admin/structure/block' ) 
-			) ) 
+			'#markup' => $markup 
 	);
 	return $page;
 }
 
+function eechat_leaderboard($board = 'character', $sort = 'kills', $start = 0) {
+	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
+	$urlp = "/leaderboard?board=" . $board . "&start=" . $start . "&sort=" . $sort;
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-leaderboard\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$leaderdata = json_decode ( $data );
+		
+		if ($leaderdata->data != null) {
+			
+			$markup = $markup . "<table class=\"leader-table\">\n";
+			foreach ( $leaderdata->data as $leader ) {
+				$markup = $markup . "<tr class=\"leader-row\">\n";
+				$markup = $markup . "<td class=\"leader-rank\">" . $leader->rank . "</td>\n";
+				$markup = $markup . "<td><a href=\"/character/" . urlencode ($leader->name) . "\">" . $leader->name . "</a></td>\n";
+				$markup = $markup . "<td>" . $leader->stats->kills . "</td>\n";
+				$markup = $markup . "</tr>\n";
+			}
+			$markup = $markup . "</table>\n";
+			$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+			$markup = $markup . "<div class=\"leader-actions\">\n";
+			$size = sizeof($leaderdata->data);
+			if($start + 10 < $size)
+				$markup = $markup . "<a href=\"/leaderboard/" . $board . "/" . $sort . "/" . ( $start + 10 ) . "\" class=\"leader-actions\">Next</a>\n";
+			if($start > 0)
+				$markup = $markup . "<a href=\"/leaderboard/" . $board . "/" . $sort . "/" . max(0, $start - 10 ) . "\" class=\"leader-actions\">Previous</a>\n";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = $markup . "<div class=\"leaderboard-not-ready\">\n";
+			$markup = $markup . "The leaderboard is not ready, please wait.";
+			$markup = $markup . "</div>\n";
+		}
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-leaderboard\">";
+			$markup = $markup . "This leaderboard does not exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal leaderboard not available. ' . $account->name . '. Status %status', array (
+					'%status' => $request_headers->http_code 
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+	
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup 
+	);
+	return $page;
+}
 function eechat_block_info() {
 	$blocks ['eechat'] = array (
 			'info' => t ( 'Earth Eternal Chat' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE
+			'cache' => DRUPAL_CACHE_PER_ROLE 
 	);
-
+	
 	$blocks ['eewho'] = array (
 			'info' => t ( 'Earth Eternal Who' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE
+			'cache' => DRUPAL_CACHE_PER_ROLE 
 	);
-
+	
 	$blocks ['eeaccountinfo'] = array (
 			'info' => t ( 'Earth Eternal Account Info' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE
+			'cache' => DRUPAL_CACHE_PER_ROLE 
 	);
 	
 	return $blocks;
 }
-
 function eechat_block_configure($delta = '') {
 	$form = array ();
-	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo' ) {
+	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
 		$form ['eechat_url'] = array (
 				'#type' => 'textfield',
 				'#title' => t ( 'Server API URL' ),
@@ -63,80 +175,73 @@ function eechat_block_configure($delta = '') {
 	}
 	return $form;
 }
-
 function eechat_block_save($delta = '', $edit = array()) {
 	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
 		variable_set ( 'eechat_url', $edit ['eechat_url'] );
 	}
 }
-
 function eechat_block_view($delta = '') {
 	// The $delta parameter tells us which block is being requested.
 	switch ($delta) {
 		case 'eechat' :
 			$block ['subject'] = t ( 'Earth Eternal Chat' );
 			$block ['content'] = eechat_contents ( $delta );
-			drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eechat.js');
+			drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eechat.js' );
 			break;
 		case 'eewho' :
 			$block ['subject'] = t ( 'Earth Eternal Who' );
 			$block ['content'] = eechat_contents ( $delta );
-			drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');
+			drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eewho.js' );
 			break;
 		case 'eeaccountinfo' :
 			$block ['subject'] = t ( 'Earth Eternal Account' );
 			$block ['content'] = eechat_contents ( $delta );
-			/*drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');*/
+			/* drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js'); */
 			break;
 	}
 	return $block;
 }
-
 function eechat_contents($which_block) {
 	switch ($which_block) {
 		
 		case 'eewho' :
-			list($data, $request_headers) = _doJson("/who"); 
-			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+			list ( $data, $request_headers ) = _doJson ( "/who" );
+			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$result = array (
-						'#markup' => t('Earth Eternal is OFFLINE')
+						'#markup' => t ( 'Earth Eternal is OFFLINE' ) 
 				);
-			}
-			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-				$who = json_decode($data);
+			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$who = json_decode ( $data );
 				$markup = "<div id=\"block-eechat-eewho-who\">\n<ul>\n";
-				foreach($who as $name => $info) {
-					$markup = $markup . "<li>" . htmlentities($name) . "</li>\n";
+				foreach ( $who as $name => $info ) {
+					$markup = $markup . "<li>" . htmlentities ( $name ) . "</li>\n";
 				}
 				$markup = $markup . "</ul>\n</div>\n";
 				$result = array (
-						'#markup' => $markup
+						'#markup' => $markup 
 				);
-			}
-			else {
+			} else {
 				$result = array (
-						'#markup' => t('Earth Eternal online player list unavailable. Status %status',
-								array(
-										'%status' => $request_headers->http_code
-								))
+						'#markup' => t ( 'Earth Eternal online player list unavailable. Status %status', array (
+								'%status' => $request_headers->http_code 
+						) ) 
 				);
 			}
 			return $result;
-			
+		
 		case 'eechat' :
-			list($data, $request_headers) = _doJson("/chat");
-			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+			list ( $data, $request_headers ) = _doJson ( "/chat" );
+			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$result = array (
-						'#markup' => t('Earth Eternal live chat is OFFLINE')
+						'#markup' => t ( 'Earth Eternal live chat is OFFLINE' ) 
 				);
-			}
-			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-				$chat = json_decode($data);
+			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$chat = json_decode ( $data );
 				$markup = "<div id=\"block-eechat-eechat-chat\">\n<ul>\n";
-				foreach($chat as $message) {
-					$m = 0 === strpos($message->message, '[Region]') ? substr($message->message,8) : $message->message;
-					$clazz = 0 === strpos($message->message, '[Region]') ? "region" : "system";
-					$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities($message->time) . "</span> - <span class=\"chat-message\">" . htmlentities($m) . "</span></li>\n";
+				foreach ( $chat as $message ) {
+					$m = 0 === strpos ( $message->message, '[Region]' ) ? substr ( $message->message, 8 ) : $message->message;
+					$clazz = 0 === strpos ( $message->message, '[Region]' ) ? "region" : "system";
+					$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->time ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>\n";
 				}
 				$markup = $markup . "</ul>\n</div>\n";
 				$markup = $markup . "<script type=\"text/javascript\">\n";
@@ -145,161 +250,189 @@ function eechat_contents($which_block) {
 				$markup = $markup . "objDiv.addEventListener(\"scroll\", function() { if (objDiv.scrollHeight - objDiv.scrollTop === objDiv.clientHeight) { document.chatScrollPos = false; } else { document.chatScrollPos = objDiv.scrollTop; } })\n";
 				$markup = $markup . "</script>\n";
 				$result = array (
-						'#markup' => $markup
+						'#markup' => $markup 
+				);
+			} else {
+				$result = array (
+						'#markup' => t ( 'Earth Eternal live chat not available. Status %status', array (
+								'%status' => $request_headers->http_code 
+						) ) 
 				);
 			}
-			else {
-				$result = array (
-						'#markup' => t('Earth Eternal live chat not available. Status %status',
-								array(
-										'%status' => $request_headers->http_code
-								))
-				);				
-			}
 			return $result;
-			
+		
 		case 'eeaccountinfo' :
 			global $user;
 			$is_player = true;
 			$account = $user;
-			$req_uri = request_uri();
-			$parts = explode("/", $req_uri);
-			for ($i = 0 ; $i < count($parts) ; $i++) {
-				$el = $parts[$i];
-				if($el == "user") {
-					if($i + 1 < count($parts)) {
-						$el = $parts[$i + 1];
-						if((string)(int)$el == $el) {
+			$req_uri = request_uri ();
+			$parts = explode ( "/", $req_uri );
+			for($i = 0; $i < count ( $parts ); $i ++) {
+				$el = $parts [$i];
+				if ($el == "user") {
+					if ($i + 1 < count ( $parts )) {
+						$el = $parts [$i + 1];
+						if (( string ) ( int ) $el == $el) {
 							$account = user_load ( $el );
 							$is_player = false;
 						}
 					}
 				}
 			}
-
-			$urlp = "/user/" . urlencode($account->name);
-			list($data, $request_headers) = _doJson($urlp);
+			
+			$urlp = "/user/" . urlencode ( $account->name );
+			list ( $data, $request_headers ) = _doJson ( $urlp );
 			$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
-			if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
-				$markup = $markup . t('Earth Eternal is OFFLINE');
-			}
-			else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-				$eeuser = json_decode($data);
+			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+				$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+				$eeuser = json_decode ( $data );
 				
-				if($eeuser->characters != null) {
-					$markup = $markup . "<div class=\"account-details\">\n";				
+				if ($eeuser->characters != null) {
+					$markup = $markup . "<div class=\"account-details\">\n";
 					$markup = $markup . "<h2>Account</h2>\n";
 					
-					$markup = $markup . "<div class=\"last-login\">\n";			
+					$markup = $markup . "<div class=\"last-login\">\n";
 					$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
 					$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
 					$markup = $markup . "</div>\n";
-	
-					$markup = $markup . "<div class=\"total-kills\">\n";
-					$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
-					$markup = $markup . "<span class=\"total-kills-value player-stat-value\">" . $eeuser->playerStats->kills . "</span>\n";
-					$markup = $markup . "</div>\n";
-	
-					$markup = $markup . "<div class=\"total-deaths\">\n";
-					$markup = $markup . "<span class=\"total-deaths-label player-stat-label\">Total Deaths</span>\n";
-					$markup = $markup . "<span class=\"total-deaths-value player-stat-value\">" . $eeuser->playerStats->deaths . "</span>\n";
-					$markup = $markup . "</div>\n";
-	
-					$markup = $markup . "<div class=\"total-pvp-kills\">\n";
-					$markup = $markup . "<span class=\"total-pvp-kills-label player-stat-label\">Total PVP Kills</span>\n";
-					$markup = $markup . "<span class=\"total-pvp-kills-value player-stat-value\">" . $eeuser->playerStats->pvpKills . "</span>\n";
-					$markup = $markup . "</div>\n";
-	
-					$markup = $markup . "<div class=\"total-pvp-deaths\">\n";
-					$markup = $markup . "<span class=\"total-pvp-deaths-label player-stat-label\">Total PVP Deaths</span>\n";
-					$markup = $markup . "<span class=\"total-pvp-deaths-value player-stat-value\">" . $eeuser->playerStats->pvpDeaths . "</span>\n";
-					$markup = $markup . "</div>\n";
+					
+					$markup = $markup . _get_stats_html ( $eeuser->playerStats );
 					
 					$markup = $markup . "</div>\n";
 					$markup = $markup . "<hr class=\"divider\"/>\n";
-					$markup = $markup . "<div class=\"character-details\">\n";				
-					$markup = $markup . "<h2>Characters</h2>\n";				
+					$markup = $markup . "<div class=\"character-details\">\n";
+					$markup = $markup . "<h2>Characters</h2>\n";
 					$markup = $markup . "<ul>\n";
-					foreach($eeuser->characters as $character) {				
-						$markup = $markup . "<li>\n";				
-						$markup = $markup . "<span class=\"character-name\">" . $character->name . "</span>\n";				
+					foreach ( $eeuser->characters as $character ) {
+						$markup = $markup . "<li>\n";
+						$markup = $markup . "<span class=\"character-name\"><a href=\"/character/" . urlencode ( $character->name ) . "\">" . $character->name . "</a></span>\n";
 						$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
-						$profession = "Unknown";	
-						switch ($character->profession) {
-							case 1:
-								$profession = "Knight";
-								break;
-							case 2:
-								$profession = "Rogue";
-								break;
-							case 3:
-								$profession = "Mage";
-								break;
-							case 4:
-								$profession = "Druid";
-								break;
-						}
-						$markup = $markup . "<span class=\"character-level\">" . $profession . "</span>\n";
-						$markup = $markup . "</li>"; 
-					}				
+						$markup = $markup . "<span class=\"character-level\">" . _get_class_name ( $character->profession ) . "</span>\n";
+						$markup = $markup . "</li>";
+					}
 					$markup = $markup . "</ul>\n";
 					$markup = $markup . "</div>\n";
-				}
-				else {
-					$markup = $markup . "<div class=\"no-characters\">\n";	
-					if($is_player) {
+				} else {
+					$markup = $markup . "<div class=\"no-characters\">\n";
+					if ($is_player) {
 						$markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
-					}
-					else {
-						$markup = $markup . "Player has no characters.";						
+					} else {
+						$markup = $markup . "Player has no characters.";
 					}
 					$markup = $markup . "</div>\n";
 				}
-			}
-			else {
-				if($request_headers->http_code == 404) {
-					$markup = $markup . "<div class=\"no-account\">";	
-					if($is_player) {
+			} else {
+				if ($request_headers->http_code == 404) {
+					$markup = $markup . "<div class=\"no-account\">";
+					if ($is_player) {
 						$markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";
-					}
-					else {
+					} else {
 						$markup = $markup . "Player has no characters.";
-					}	
-					$markup = $markup . "</div>\n";	
-				}
-				else {
-					$markup = t('Earth Eternal user not available. ' . $account->name . '. Status %status',
-									array(
-											'%status' => $request_headers->http_code
-									));
+					}
+					$markup = $markup . "</div>\n";
+				} else {
+					$markup = t ( 'Earth Eternal user not available. ' . $account->name . '. Status %status', array (
+							'%status' => $request_headers->http_code 
+					) );
 				}
 			}
 			$markup = $markup . "</div>\n";
 			$result = array (
-					'#markup' => $markup
+					'#markup' => $markup 
 			);
 			return $result;
-		
 	}
 }
-
 function _doJson($path) {
-
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($curl, CURLOPT_HEADER, false);
-	curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
-	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+	$curl = curl_init ();
+	curl_setopt ( $curl, CURLOPT_VERBOSE, TRUE );
+	curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
+	curl_setopt ( $curl, CURLOPT_HEADER, false );
+	curl_setopt ( $curl, CURLOPT_AUTOREFERER, TRUE );
+	curl_setopt ( $curl, CURLOPT_CONNECTTIMEOUT, 5 );
+	curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, 'GET' );
 	
-	curl_setopt($curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . $path);
-	$data = curl_exec($curl);
-	$request_headers = (object) curl_getinfo($curl);
-	curl_close($curl);
-
-	return array($data, $request_headers);
+	curl_setopt ( $curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . $path );
+	$data = curl_exec ( $curl );
+	$request_headers = ( object ) curl_getinfo ( $curl );
+	curl_close ( $curl );
+	
+	return array (
+			$data,
+			$request_headers 
+	);
 }
+function _get_stats_html($stats) {
+	$markup = "<div class=\"total-kills\">\n";
+	$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
+	$markup = $markup . "<span class=\"total-kills-value player-stat-value\">" . $stats->kills . "</span>\n";
+	$markup = $markup . "</div>\n";
+	
+	$markup = $markup . "<div class=\"total-deaths\">\n";
+	$markup = $markup . "<span class=\"total-deaths-label player-stat-label\">Total Deaths</span>\n";
+	$markup = $markup . "<span class=\"total-deaths-value player-stat-value\">" . $stats->deaths . "</span>\n";
+	$markup = $markup . "</div>\n";
+	
+	$markup = $markup . "<div class=\"total-pvp-kills\">\n";
+	$markup = $markup . "<span class=\"total-pvp-kills-label player-stat-label\">Total PVP Kills</span>\n";
+	$markup = $markup . "<span class=\"total-pvp-kills-value player-stat-value\">" . $stats->pvpKills . "</span>\n";
+	$markup = $markup . "</div>\n";
+	
+	$markup = $markup . "<div class=\"total-pvp-deaths\">\n";
+	$markup = $markup . "<span class=\"total-pvp-deaths-label player-stat-label\">Total PVP Deaths</span>\n";
+	$markup = $markup . "<span class=\"total-pvp-deaths-value player-stat-value\">" . $stats->pvpDeaths . "</span>\n";
+	$markup = $markup . "</div>\n";
+	
+	return $markup;
+}
+function _get_race_name($raceid) {
+	$races = array (
+			'a' => "Anura",
+			'v' => "Atavian",
+			'd' => "Bandicoon",
+			'b' => "Bounder",
+			'r' => "Broccan",
+			'c' => "Caprican",
+			'w' => "Clockwork",
+			'p' => "Cyclops",
+			'e' => "Daemon",
+			'q' => "Dryad",
+			'g' => "Fangren",
+			'f' => "Feline",
+			'x' => "Foxen",
+			'h' => "Hart",
+			'o' => "Longtail",
+			'l' => "Lisian",
+			'n' => "Noctari",
+			't' => "Taurian",
+			's' => "Troblin",
+			'k' => "Tusken",
+			'u' => "Ursine",
+			'y' => "Yeti" 
+	);
+	
+	return $races[$raceid];
+}
+function _get_class_name($classid) {
+	$classname = "Unknown";
+	switch ($classid) {
+		case 1 :
+			$classname = "Mage";
+			break;
+		case 2 :
+			$classname = "Rogue";
+			break;
+		case 3 :
+			$classname = "Mage";
+			break;
+		case 4 :
+			$classname = "Druid";
+			break;
+	}
+	return $classname;
+}
+
 
 /**
 * @} End of "defgroup eechat".
