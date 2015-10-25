@@ -1488,7 +1488,7 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 }
 
 .section-character #content .player-stat-label {
-	width: 94px;
+	width: 130px;
 	display: inline-block;
 	text-shadow: 0px 0px 1px yellow;
 }
