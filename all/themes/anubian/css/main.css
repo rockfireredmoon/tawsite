@@ -1371,6 +1371,13 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu {
 	border: none !important;
 }
 
+/* Wysiwyg */
+.cke_wysiwyg_frame html {
+	background-image: none;
+	background-color: rgb(0,0,0,0.8) !important;
+}
+
+
 /*
  * Reset some styles for overlays for non-admin users
  */
