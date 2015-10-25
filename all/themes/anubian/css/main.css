@@ -446,6 +446,7 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	line-height: 1.05em;
 	text-align: center; 
 	width: 500px; 
+	font-style: italic;
 	margin: 1em auto;
 }
 
