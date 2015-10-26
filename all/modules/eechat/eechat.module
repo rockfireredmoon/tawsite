@@ -431,7 +431,7 @@ function _get_class_name($classid) {
 	$classname = "Unknown";
 	switch ($classid) {
 		case 1 :
-			$classname = "Mage";
+			$classname = "Knight";
 			break;
 		case 2 :
 			$classname = "Rogue";
