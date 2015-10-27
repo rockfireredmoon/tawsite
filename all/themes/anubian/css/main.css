@@ -206,6 +206,8 @@ input[type=submit] {
 	display: inline-block;
 	text-align: top;
 	width: 99px;
+	margin: 0;
+	padding: 0;
 	height: 32px;
 	line-height: 32px;
 	text-shadow: 0px 0px 2px #000;
@@ -1214,7 +1216,165 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	background-position: center;
 }
 
-/* Live Chat */
+/* Chat (common) */
+
+.chat-area .chat-timestamp {
+	color: orange;
+	font-weight: bold;
+}
+
+.chat-area ul {
+	margin: 0;
+	padding: 8px;	
+}
+
+.chat-area li {
+	text-align: left;
+	list-style-type: none;
+}
+
+.chat-area li.channel-NULL {
+	color: yellow;
+	font-weight: bold;
+}
+
+.chat-area li.channel-syschat {
+	color: white;
+	font-weight: bold;
+}
+
+.chat-area li.channel-gm {
+	color: #33CCFF;
+}
+
+.chat-area li.channel-trade {
+	color: #ff9999;
+}
+
+.chat-area li.doing {
+	font-style: italic;
+}
+
+/* Full Chat (page) */
+
+.section-chat h1#page-title {
+	text-shadow: 0px 0px 1px yellow;
+	text-align: center;
+}
+
+.section-chat .form-item-message label {
+	display: inline;
+}
+
+#block-eechat-eefullchat-chat {
+	width: 100%;
+	/*
+	max-height: 580px;
+	*/
+	min-height: 380px;
+	font-size: 11pt;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+}
+
+#block-eechat-eefullchat-chat {
+	max-height: 260px;
+	overflow-y: auto;
+	width: 100%;
+}
+
+
+.section-chat #eechat-chat-form {
+	padding-top: 2em;
+	background-image: url(../images/divider-medium.png);
+	background-position: top center;
+	background-repeat: no-repeat;
+} 
+
+.section-chat #box {
+	display: none;
+}
+
+.section-chat #eechat-chat-form > div {
+	text-align: left;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 0.5em 0;
+}
+
+.section-chat .form-item-channel {
+	display: inline-block;
+	margin-right: 1em;
+	font-size: 11pt;
+	font-weight: normal;
+	height: 1.2em;
+}
+
+.section-chat .block-refresh-button {
+	position: relative;
+	font-weight: normal;
+	bottom: 32px;
+	color: white;
+}
+
+.section-chat .block-refresh-button a {
+}
+
+.section-chat .form-item {
+	margin: 0;
+	height: 32px;
+	line-height: 32px;
+}
+
+.section-chat .ajax-progress-throbber .message, .section-chat .block-title, .section-chat .form-item-channel .description, .section-chat .form-item-channel label, .section-chat .form-item-character .description, .section-chat .form-item-character label {
+	display: none;
+}
+
+.section-chat .ajax-progress-throbber .throbber {
+	padding: 0;
+	height: 17px;
+	width: 17px;
+	position: absolte;
+	display: inline;
+	right: 0em;
+	float: right;
+	background-image: url(../images/wait-small.png);
+}
+
+.section-chat  .form-item-message, .section-chat .form-item-character, .section-chat .form-item-label {
+	display: inline-block;
+}
+
+.section-chat .form-submit {
+	margin: 0 0.5em;
+}
+
+.section-chat .form-item-character select, .section-chat .form-item-channel select {
+	font-size:  9pt;
+	text-shadow: none;
+	font-weight: normal;	
+}
+.section-chat  .form-item-channel select {
+}
+
+.section-chat  .form-item-channel select, .section-chat  .form-item-character select {
+	height: 32px;
+	line-height: 32px;
+}
+
+.section-chat  .form-item-message input[type=text] {
+	width: 340px;
+	height: 32px;
+	line-height: 32px;
+	padding: 4px;
+	margin: 0;
+	font-size: 11pt;
+	display: inline;
+}
+
+
+
+/* Live Chat (block) */
 #block-eechat-eechat {
 	width: 100%;
 	/*
@@ -1226,16 +1386,19 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	background-repeat: repeat;
 }
 
+#block-eechat-eechat .full-chat-info {
+	text-align: center;
+}
+
+#block-eechat-eechat .full-chat-info a {
+	font-weight: normal;	
+}
+
 .block-refresh-button {
 	color: grey !important;
 	padding: 4px !important;
 	background: none !important;
 	margin: 0 !important;
-}
-
-#block-eechat-eechat-chat .chat-timestamp {
-	color: orange;
-	font-weight: bold;
 }
 
 #block-eechat-eechat-chat {
@@ -1250,22 +1413,6 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	line-height: 1em;
 	text-shadow: 0px 0px 1px yellow;
 }
-
-#block-eechat-eechat ul {
-	margin: 0;
-	padding: 8px;	
-}
-
-#block-eechat-eechat li {
-	text-align: left;
-	list-style-type: none;
-}
-
-#block-eechat-eechat li.system {
-	color: yellow;
-	font-weight: bold;
-}
-
 
 /* Live Who */
 #block-eechat-eewho {
@@ -1512,6 +1659,20 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	width: 130px;
 	display: inline-block;
 	text-shadow: 0px 0px 1px yellow;
+}
+
+/* Launch */
+.section-launch #page-title {
+	display: none;
+}
+
+.section-launch article {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+	margin: 3em auto 0 auto;
+	width: 500px;
 }
 
 /* These are to override the forum styling */

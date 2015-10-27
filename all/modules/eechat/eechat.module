@@ -23,8 +23,130 @@ function eechat_menu() {
 			'title' => 'Character Profile' 
 	);
 	
+	$items ['chat'] = array (
+			'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+			'page arguments' => array('eechat_chat_form'), //put the name of the form here */ 
+			'access callback' => TRUE,
+			'title' => 'Chat' 
+	);
+	
 	return $items;
 }
+
+function eechat_chat_submit_callback($form, $form_state) {
+	$data = array (
+			'msg' => urlencode($form_state['values']['message']),
+			'from' => urlencode($form_state['values']['character']),
+			'channel' => urlencode($form_state['values']['channel']),
+	);
+	list ( $data, $request_headers ) = _doJson ( "/chat", "POST", $data );
+	
+	$chat = json_decode ( $data );
+	$markup = "<ul>\n";
+	$markup = $markup . _render_chat($chat);
+	$markup = $markup . "</ul>";
+	$element = $form['box'];
+	$markup = json_encode($markup);
+	$markup = substr($markup, 1, strlen($markup) - 2);
+	$element['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '" 
+			. $markup . "' ; document.getElementById('edit-message').value = ''; </script>";
+	return $element;
+}
+
+function eechat_chat_form($form, &$form_state) {
+	/* Get characters */
+	global $user;
+	$urlp = "/user/" . urlencode ( $user->name );
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$userdata = json_decode ( $data );
+		$options = array();
+		if($userdata->characters != null) {
+			// Populate channel list
+			$channels = array();
+			if(in_array("administrator", $user->roles)) {
+				$channels["*SysChat"] = "SysChat";
+			}
+			if(in_array("sages", $user->roles) || in_array("administrator", $user->roles)) {
+				$channels["gm/earthsages"] = "Sage";
+			}
+			$channels['rc/'] = 'Region';
+			$channels['tc/'] = 'Trade';
+			
+			// Populate character list
+			foreach ($userdata->characters as $character) {
+				$options[$character->name] = $character->name;
+			}
+			asort($options);
+
+
+			$form['character'] = array(
+					'#type' => 'select',
+					'#title' => t('Character'),
+					'#options' => $options,
+					'#description' => t('The character which to send the chat message as.')
+			);
+			
+			$form['message'] = array(
+					'#title' => t('says'),
+					'#type' => 'textfield',
+					'#required' => TRUE,
+					'#maxlength' => 252,
+			);
+			
+			$form['channel'] = array(
+					'#type' => 'select',
+					'#title' => t('In'),
+					'#options' => $channels,
+					'#description' => t('The channel on which to send the chat message.'),
+					'#default_value' => 'rc/',
+			);
+			
+			$form['box'] = array(
+					'#type' => 'markup',
+				    '#prefix' => '<div id="box">',
+				    '#suffix' => '</div>',
+					'#markup' => '',
+			);
+			
+			$form['submit_button'] = array(
+					'#type' => 'submit',
+					'#value' => 'Send',
+					'#ajax' => array(
+							'callback' => 'eechat_chat_submit_callback',
+							'wrapper' => 'box',
+					),
+			);
+		}
+		else {
+			form_set_error('message', t('You must create a character in-game to be able to chat from the website.'));
+		}
+	}
+	
+	
+	return $form;
+}
+
+function eechat_chat_form_validate($form, &$form_state) {
+	/*if (!($form_state['values']['message'] > 0)){
+		form_set_error('message', t('Message may not be empty.'));
+	}*/
+}
+
+function eechat_chat_form_submit($form, &$form_state) {
+	/*global $user;
+	$url = _get_api_url() . "/chat";
+	$headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+	$data = array (
+			'msg' => $form_state['values']['message'],
+			'from' => $form_state['values']['character'],
+			'channel' => $form_state['values']['channel'],
+			);
+	$response = drupal_http_request($url, $headers, 'POST', http_build_query($data));
+	*/
+}
+
 function eechat_character($id = '0') {
 	$urlp = "/character/" . urlencode ( $id );
 	list ( $data, $request_headers ) = _doJson ( $urlp );
@@ -163,6 +285,11 @@ function eechat_block_info() {
 			'cache' => DRUPAL_CACHE_PER_ROLE 
 	);
 	
+	$blocks ['eefullchat'] = array (
+			'info' => t ( 'Earth Eternal Full Chat' ),
+			'cache' => DRUPAL_CACHE_PER_ROLE
+	);
+	
 	$blocks ['eewho'] = array (
 			'info' => t ( 'Earth Eternal Who' ),
 			'cache' => DRUPAL_CACHE_PER_ROLE 
@@ -177,7 +304,7 @@ function eechat_block_info() {
 }
 function eechat_block_configure($delta = '') {
 	$form = array ();
-	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
+	if ($delta == 'eechat' || $delta == 'eefullchat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
 		$form ['eechat_url'] = array (
 				'#type' => 'textfield',
 				'#title' => t ( 'Server API URL' ),
@@ -189,13 +316,15 @@ function eechat_block_configure($delta = '') {
 	return $form;
 }
 function eechat_block_save($delta = '', $edit = array()) {
-	if ($delta == 'eechat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
+	if ($delta == 'eechat' || $delta == 'eefullchat' || $delta == 'eewho' || $delta == 'eeaccountinfo') {
 		variable_set ( 'eechat_url', $edit ['eechat_url'] );
 	}
 }
+
 function eechat_block_view($delta = '') {
 	// The $delta parameter tells us which block is being requested.
 	switch ($delta) {
+		case 'eefullchat' :
 		case 'eechat' :
 			$block ['subject'] = t ( 'Earth Eternal Chat' );
 			$block ['content'] = eechat_contents ( $delta );
@@ -243,6 +372,7 @@ function eechat_contents($which_block) {
 			return $result;
 		
 		case 'eechat' :
+		case 'eefullchat' :
 			list ( $data, $request_headers ) = _doJson ( "/chat" );
 			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$result = array (
@@ -250,15 +380,19 @@ function eechat_contents($which_block) {
 				);
 			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
 				$chat = json_decode ( $data );
-				$markup = "<div id=\"block-eechat-eechat-chat\">\n<ul>\n";
-				foreach ( $chat as $message ) {
-					$m = 0 === strpos ( $message->message, '[Region]' ) ? substr ( $message->message, 8 ) : $message->message;
-					$clazz = 0 === strpos ( $message->message, '[Region]' ) ? "region" : "system";
-					$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->time ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>\n";
+				$markup = "<div id=\"block-eechat-" . $which_block . "-chat\" class=\"chat-area\">\n<ul>\n";
+				if($chat != null) {
+					$markup = $markup . _render_chat($chat);
 				}
-				$markup = $markup . "</ul>\n</div>\n";
+				$markup = $markup . "</ul>\n";
+				$markup = $markup . "</div>\n";
+				if($which_block == 'eechat') {
+					$markup = $markup . "<div class=\"full-chat-info\">\n";
+					$markup = $markup . "<a href=\"/chat\">Chat Now!</a>\n";
+					$markup = $markup . "</div>\n";
+				}
 				$markup = $markup . "<script type=\"text/javascript\">\n";
-				$markup = $markup . "var objDiv = document.getElementById(\"block-eechat-eechat-chat\");";
+				$markup = $markup . "var objDiv = document.getElementById(\"block-eechat-" . $which_block . "-chat\");";
 				$markup = $markup . "objDiv.scrollTop = document.chatScrollPos ? document.chatScrollPos : objDiv.scrollHeight;\n";
 				$markup = $markup . "objDiv.addEventListener(\"scroll\", function() { if (objDiv.scrollHeight - objDiv.scrollTop === objDiv.clientHeight) { document.chatScrollPos = false; } else { document.chatScrollPos = objDiv.scrollTop; } })\n";
 				$markup = $markup . "</script>\n";
@@ -357,16 +491,35 @@ function eechat_contents($which_block) {
 			return $result;
 	}
 }
-function _doJson($path) {
+
+function _get_api_url() {
+	return variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) );
+}
+
+
+function _doJson($path, $method = 'GET', $postdata = false) {
 	$curl = curl_init ();
 	curl_setopt ( $curl, CURLOPT_VERBOSE, TRUE );
 	curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
 	curl_setopt ( $curl, CURLOPT_HEADER, false );
 	curl_setopt ( $curl, CURLOPT_AUTOREFERER, TRUE );
 	curl_setopt ( $curl, CURLOPT_CONNECTTIMEOUT, 5 );
-	curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, 'GET' );
 	
-	curl_setopt ( $curl, CURLOPT_URL, variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) . $path );
+	if($method === 'GET')
+		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, 'GET' );
+	else {
+		foreach($postdata as $key=>$value) { 
+			$fields_string .= $key.'='.$value.'&'; 
+		}
+		rtrim($fields_string, '&');
+		curl_setopt($curl,CURLOPT_URL, $url);
+		curl_setopt($curl,CURLOPT_POST, count($postdata));
+		curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);
+	}
+	
+	curl_setopt ( $curl, CURLOPT_URL, _get_api_url() . $path );
+	
+	
 	$data = curl_exec ( $curl );
 	$request_headers = ( object ) curl_getinfo ( $curl );
 	curl_close ( $curl );
@@ -444,6 +597,38 @@ function _get_class_name($classid) {
 			break;
 	}
 	return $classname;
+}
+
+function _render_chat($chat) {
+	$markup = "";
+	foreach ( $chat as $message ) {
+	
+		$doing = $m = 0 === strpos ( $message->message, "*");
+		$msg = $message->message;
+	
+		if($doing) {
+			$msg = substr ( $msg, 1 );
+			while (strpos($msg, "*", strlen($msg) - strlen("*")) !== false)
+				$msg = substr ( $msg, 0, strlen($msg) - 1 );
+		}
+	
+		if($message->channel->friendly != '/syschat' && $message->channel->friendly != 'NULL') {
+			$m = $message->sender;
+			if(!$doing)
+				$m = $m . " says: " . $msg;
+			else
+				$m = $m . " " . strtolower(substr($msg, 0, 1)) . substr($msg, 1);
+		}
+		else
+			$m = $msg;
+	
+		$clazz = "channel-" . str_replace("/", "", $message->channel->friendly);
+		if($doing)
+			$clazz = $clazz . " doing";
+	
+		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>\n";
+	}
+	return $markup;
 }
 
 
