@@ -266,7 +266,7 @@ input[type=submit] {
 
 /* Tabs */
 
-ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-leaderboards .menu {
+ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-leaderboards .menu, #block-menu-menu-credit-shop-categories .menu {
 	background-image: url(../images/divider.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
@@ -279,6 +279,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li, .tabs-primary li.is-active, 
 #block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail,
+#block-menu-menu-credit-shop-categories .menu li, #block-menu-menu-credit-shop-categories .menu li.is-active-trail,
 #block-menu-menu-character-leaderboards .menu li, #block-menu-menu-character-leaderboards .menu li.is-active-trail {
 	float: left;
 	border-top-left-radius: 4px !important;
@@ -296,6 +297,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li a, 
 #block-menu-menu-media-menu .menu li a, #block-menu-menu-media-menu .menu li a:active, #block-menu-menu-media-menu .menu li a:hover, #block-menu-menu-media-menu .menu li a:visited,
+#block-menu-menu-credit-shop-categories .menu li a, #block-menu-menu-credit-shop-categories .menu li a:active, #block-menu-menu-credit-shop-categories .menu li a:hover, #block-menu-menu-credit-shop-categories .menu li a:visited,
 #block-menu-menu-character-leaderboards .menu li a, #block-menu-menu-character-leaderboards .menu li a:active, #block-menu-menu-character-leaderboards .menu li a:hover, #block-menu-menu-character-leaderboards .menu li a:visited {
 	background-color: #200;
 	background-image: none !important;
@@ -310,32 +312,37 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li.is-active, 
 #block-menu-menu-media-menu .menu li.is-active-trail,
-#block-menu-menu-character-leaderboards .menu li.is-active-trail {
+#block-menu-menu-character-leaderboards .menu li.is-active-trail,
+#block-menu-menu-credit-shop-categories .menu li.is-active-trail {
 	background-color: #500;
 	opacity: 1;
 }
 
 .tabs-primary li.is-active a, 
 #block-menu-menu-media-menu .menu li.is-active-trail a,
-#block-menu-menu-character-leaderboards .menu li.is-active-trail a {	
+#block-menu-menu-character-leaderboards .menu li.is-active-trail a, 
+#block-menu-menu-credit-shop-categories .menu li.is-active-trail a {	
 	background-color: inherit;
 	color: #ccc;
 }
 
 .tabs-primary li a,
 #block-menu-menu-media-menu .menu li a,
-#block-menu-menu-character-leaderboards .menu li a {
+#block-menu-menu-character-leaderboards .menu li a,
+#block-menu-menu-credit-shop-categories .menu li a {
 	transition: none;	
 }
 
 .tabs-primary a:hover,
 #block-menu-menu-media-menu .menu a:hover,
-#block-menu-menu-character-leaderboards .menu a:hover  {
+#block-menu-menu-character-leaderboards .menu a:hover,
+#block-menu-menu-credit-shop-categories .menu a:hover  {
 	background-color: #500;
 }
 
 .tabs-primary li.is-active a, .tabs-primary li a:hover,
-#block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover,
+#block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover,mary li a:hover,
+#block-menu-menu-character-leaderboards .menu li.is-active-trail a, #block-menu-menu-character-leaderboards .menu li a:hover,
 #block-menu-menu-character-leaderboards .menu li.is-active-trail a, #block-menu-menu-character-leaderboards .menu li a:hover {
 	color: white;
 	text-shadow: none; 
@@ -1659,6 +1666,52 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	width: 130px;
 	display: inline-block;
 	text-shadow: 0px 0px 1px yellow;
+}
+
+/* Credit shop */
+.section-creditshop #page-title {
+	text-shadow: 0px 0px  3px yellow;
+	text-align: center;
+}
+
+.section-creditshop #block-menu-menu-credit-shop-categories .block-title {
+	display: none;	
+}
+
+.section-creditshop .credit-shop-item {
+	float: left;
+	width: 200px;
+	min-height: 200px;
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+	margin: 0.5em;
+}
+
+.section-creditshop .credit-shop-item .description {
+	margin-bottom: 8px;
+}
+
+.section-creditshop .credit-shop-item h1 {
+	line-height: 1em;
+	display: block;
+	margin: 0 0 8px 0;
+	padding: 0;
+	height: 2em;
+	text-align: center;
+	font-size: 15pt;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-creditshop .credit-shop-item .icon {
+	float: left;
+	margin: 0 4px 4px 0;
+}
+
+.section-creditshop .icon-background {
+	width: 32px;
+	height: 32px;
 }
 
 /* Launch */

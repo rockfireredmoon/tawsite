@@ -11,6 +11,12 @@
  * Blocks for Earth Eternal chat integration.
  */
 function eechat_menu() {
+	$items ['creditshop'] = array (
+			'page callback' => 'eechat_creditshop',
+			'access callback' => TRUE,
+			'title' => 'Credit Shop' 
+	);
+	
 	$items ['leaderboard'] = array (
 			'page callback' => 'eechat_leaderboard',
 			'access callback' => TRUE,
@@ -46,7 +52,7 @@ function eechat_chat_submit_callback($form, $form_state) {
 	$markup = $markup . _render_chat($chat);
 	$markup = $markup . "</ul>";
 	$element = $form['box'];
-	$markup = json_encode($markup);
+	$markup = str_replace($markup,"'","\\'");
 	$markup = substr($markup, 1, strlen($markup) - 2);
 	$element['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '" 
 			. $markup . "' ; document.getElementById('edit-message').value = ''; </script>";
@@ -209,6 +215,68 @@ function eechat_character($id = '0') {
 	$page = array (
 			'#type' => 'markup',
 			'#markup' => $markup 
+	);
+	return $page;
+}
+
+function eechat_creditshop($category = 'consumables', $start = 0) {
+	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
+	$urlp = "/cs?category=" . strtoupper($category) . "&start=" . $start;
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-creditshop\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$creditshopdata = json_decode ( $data );
+
+		if ($creditshopdata->data != null) {
+				
+			$markup = $markup . "<div class=\"credit-shop-category\">\n";
+			foreach ( $creditshopdata->data as $shopitem ) {
+				$markup = $markup . "<div class=\"credit-shop-item\">\n";
+				$markup = $markup . "<h1>" . $shopitem->computedTitle . "</h1>\n";
+				$markup = $markup . "<div class=\"icon\">\n";
+				$markup = $markup . "<div class=\"icon-background\" style=\"background-image: url(/sites/default/files/gameicons/" . $shopitem ->icon2 . "); \">\n";
+				$markup = $markup . "<img class=\"icon-foreground\" src=\"/sites/default/files/gameicons/" . $shopitem ->icon1 . "\"/>\n";
+				$markup = $markup . "</div>\n";
+				$markup = $markup . "</div>\n";
+				$markup = $markup . "<div class=\"description\">" . $shopitem->description . "</div>\n";
+				if($shopitem->currency === 'CREDITS' ||  $shopitem->currency === 'CREDITS+COPPER') {
+					$markup = $markup . "<div class=\"credit-price\">\n";
+					$markup = $markup . "<label>Credits</label>\n";
+					$markup = $markup . "<span>" . $shopitem->credits . "</span>\n";
+					$markup = $markup . "</div>\n";
+				}
+				if($shopitem->currency === 'COPPER' ||  $shopitem->currency === 'CREDITS+COPPER') {
+					$markup = $markup . "<div class=\"credit-price\">\n";
+					$markup = $markup . "<label>Copper</label>\n";
+					$markup = $markup . "<span>" . $shopitem->copper . "</span>\n";
+					$markup = $markup . "</div>\n";
+				}
+				$markup = $markup . "</div>\n";
+			}
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = $markup . "<div class=\"creditshop-not-ready\">\n";
+			$markup = $markup . "The credit shop is not ready, please wait.";
+			$markup = $markup . "</div>\n";
+		}
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-leaderboard\">";
+			$markup = $markup . "This credit shop does not exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal credit shop not available. ' . $account->name . '. Status %status', array (
+					'%status' => $request_headers->http_code
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup
 	);
 	return $page;
 }
