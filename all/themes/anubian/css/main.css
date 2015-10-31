@@ -1352,6 +1352,11 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	font-weight: bold;
 }
 
+.chat-area li.channel-clan {
+	color: #33ff00;
+	font-weight: normal;
+}
+
 .chat-area li.channel-gm {
 	color: #33CCFF;
 }

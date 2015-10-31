@@ -103,6 +103,7 @@ function eechat_chat_form($form, &$form_state) {
 			}
 			$channels['rc/'] = 'Region';
 			$channels['tc/'] = 'Trade';
+			$channels['clan'] = 'Clan';
 			
 			// Populate character list
 			foreach ($userdata->characters as $character) {
