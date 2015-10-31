@@ -72,14 +72,9 @@ function eechat_chat_submit_callback($form, $form_state) {
 	list ( $data, $request_headers ) = _doJson ( "/chat", "POST", $data );
 	
 	$chat = json_decode ( $data );
-	$markup = "<ul>\n";
-	$markup = $markup . _render_chat($chat);
-	$markup = $markup . "</ul>";
+	$markup =  _render_chat($chat);
 	$element = $form['box'];
-	$markup = str_replace($markup,"'","\\'");
-	$markup = substr($markup, 1, strlen($markup) - 2);
-	$element['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '" 
-			. $markup . "' ; document.getElementById('edit-message').value = ''; </script>";
+	$element['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '<ul>" . $markup . "</ul>' ; document.getElementById('edit-message').value = ''; </script>"; 
 	return $element;
 }
 
@@ -103,14 +98,15 @@ function eechat_chat_form($form, &$form_state) {
 			}
 			$channels['rc/'] = 'Region';
 			$channels['tc/'] = 'Trade';
-			$channels['clan'] = 'Clan';
+			
+			// TODO won't work till server side chat buffer holds clan messages too
+			//$channels['clan'] = 'Clan';
 			
 			// Populate character list
 			foreach ($userdata->characters as $character) {
 				$options[$character->name] = $character->name;
 			}
 			asort($options);
-
 
 			$form['character'] = array(
 					'#type' => 'select',
@@ -147,8 +143,10 @@ function eechat_chat_form($form, &$form_state) {
 					'#ajax' => array(
 							'callback' => 'eechat_chat_submit_callback',
 							'wrapper' => 'box',
+							'event' => 'click'
 					),
 			);
+			
 		}
 		else {
 			form_set_error('message', t('You must create a character in-game to be able to chat from the website.'));
@@ -986,7 +984,7 @@ function _render_chat($chat) {
 		if($doing)
 			$clazz = $clazz . " doing";
 	
-		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>\n";
+		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>";
 	}
 	return $markup;
 }
