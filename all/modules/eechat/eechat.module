@@ -29,6 +29,30 @@ function eechat_menu() {
 			'title' => 'Character Profile' 
 	);
 	
+	$items ['clan'] = array (
+			'page callback' => 'eechat_clan',
+			'access callback' => TRUE,
+			'title' => 'Clan Profile' 
+	);
+	
+	$items ['clans'] = array (
+			'page callback' => 'eechat_clans',
+			'access callback' => TRUE,
+			'title' => 'Clans' 
+	);
+	
+	$items ['guild'] = array (
+			'page callback' => 'eechat_guild',
+			'access callback' => TRUE,
+			'title' => 'Guild Profile' 
+	);
+	
+	$items ['guilds'] = array (
+			'page callback' => 'eechat_guilds',
+			'access callback' => TRUE,
+			'title' => 'Guilds' 
+	);
+	
 	$items ['chat'] = array (
 			'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
 			'page arguments' => array('eechat_chat_form'), //put the name of the form here */ 
@@ -153,6 +177,122 @@ function eechat_chat_form_submit($form, &$form_state) {
 	*/
 }
 
+function eechat_clan($id) {
+	$urlp = "/clan/" . urlencode ( $id );
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-clan\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$clandata = json_decode ( $data );
+		
+		$markup = $markup . "<h2 class=\"clan-name\">" . $clandata->name . "</h2>\n";
+		$markup = $markup . "<h4 class=\"motd\">" . $clandata->motd . "</h4>\n";
+		//$markup = $markup . "<h4 class=\"status\">" . $characterdata->status . "</h4>\n";
+		
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		
+		// Date Created
+		$markup = $markup . "<div class=\"created\">\n";
+		$markup = $markup . "<span class=\"created-label clan-label\">Date Created</span>\n";
+		$markup = $markup . "<span class=\"created-value clan-value\">" . date ( "Y-m-d, h:i A", $clandata->createdTime ) . "</span>\n";
+		$markup = $markup . "</div>\n";
+		
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		
+		// Stats
+		$markup = $markup . "<div class=\"player-stats\">\n";
+		$markup = $markup . _get_stats_html ( $clandata->playerStats );
+		$markup = $markup . "</div>\n";
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		
+		// Roster
+		$markup = $markup . "<h2 class=\"members\">Members</h3>\n";
+		$markup = $markup . "<table class=\"member-table\">\n";
+		foreach ( $clandata->members as $member ) {
+			$markup = $markup . "<tr class=\"member-row\">\n";
+
+			$markup = $markup . "<td class=\"rank rank-" . strtolower(_get_rank($member->rank)) . "\">" . _get_rank($member->rank) . "</td>\n";
+			$markup = $markup . "<td class=\"member-name\"><a href=\"/character/" . urlencode ($member->name) . "\">" . $member->name . "</a></td>\n";
+			$markup = $markup . "<td class=\"member-level\">" . $member->level . "</td>\n";
+			$markup = $markup . "</tr>\n";
+		}
+		$markup = $markup . "</table>\n";
+		
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-clan\">";
+			$markup = $markup . "This clan does not exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal clan not available. ' . $id . '. Status %status', array (
+					'%status' => $request_headers->http_code 
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+	
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup 
+	);
+	return $page;
+}
+
+function eechat_guild($id) {
+	$urlp = "/guild/" . urlencode ( $id );
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-guild\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$guilddata = json_decode ( $data );
+
+		$markup = $markup . "<h2 class=\"guild-name\">" . $guilddata->name . "</h2>\n";
+		$markup = $markup . "<h4 class=\"motto\">" . $guilddata->motto . "</h4>\n";
+		//$markup = $markup . "<h4 class=\"status\">" . $characterdata->status . "</h4>\n";
+
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+
+		// Stats
+		//$markup = $markup . "<div class=\"player-stats\">\n";
+		//$markup = $markup . _get_stats_html ( $clandata->playerStats );
+		//$markup = $markup . "</div>\n";
+		//$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+
+		// Roster
+		//$markup = $markup . "<h2 class=\"members\">Members</h3>\n";
+		//$markup = $markup . "<table class=\"member-table\">\n";
+		//foreach ( $clandata->members as $member ) {
+//			$markup = $markup . "<tr class=\"member-row\">\n";
+//
+	//		$markup = $markup . "<td class=\"rank rank-" . strtolower(_get_rank($member->rank)) . "\">" . _get_rank($member->rank) . "</td>\n";
+		//	$markup = $markup . "<td class=\"member-name\"><a href=\"/character/" . urlencode ($member->name) . "\">" . $member->name . "</a></td>\n";
+			//$markup = $markup . "<td class=\"member-level\">" . $member->level . "</td>\n";
+			//$markup = $markup . "</tr>\n";
+		//}
+		//$markup = $markup . "</table>\n";
+
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-guild\">";
+			$markup = $markup . "This guild does not exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal guild not available. ' . $id . '. Status %status', array (
+					'%status' => $request_headers->http_code
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup
+	);
+	return $page;
+}
+
 function eechat_character($id = '0') {
 	$urlp = "/character/" . urlencode ( $id );
 	list ( $data, $request_headers ) = _doJson ( $urlp );
@@ -165,6 +305,10 @@ function eechat_character($id = '0') {
 		$markup = $markup . "<h2 class=\"character-name\">" . $characterdata->cdef->css->display_name . "</h2>\n";
 		$markup = $markup . "<h3 class=\"level\">Level " . $characterdata->cdef->css->level . "</h3>\n";
 		$markup = $markup . "<h4 class=\"status\">" . $characterdata->status . "</h4>\n";
+		if(isset ( $characterdata->clanName)) {
+			$markup = $markup . "<h5 class=\"clan\"><a href=\"/clan/" . $characterdata->clanName . "\">A member of Clan " . $characterdata->clanName . "</a></h4>\n";
+			
+		}
 		
 		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
 		
@@ -183,7 +327,7 @@ function eechat_character($id = '0') {
 		// Race 
 		$markup = $markup . "<div class=\"race\">\n";
 		$markup = $markup . "<span class=\"race-label character-profile-label\">Race</span>\n";
-		$markup = $markup . "<span class=\"race-value character-profile-value\">" . _get_race_name($characterdata->appearance->r) . "</span>\n";
+		$markup = $markup . "<span class=\"race-value character-profile-value\"><a href=\"/" . strtolower(_get_race_name($characterdata->appearance->r)) . "\">" . _get_race_name($characterdata->appearance->r) . "</a></span>\n";
 		$markup = $markup . "</div>\n";
 		
 		// Class
@@ -221,7 +365,7 @@ function eechat_character($id = '0') {
 
 function eechat_creditshop($category = 'consumables', $start = 0) {
 	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
-	$urlp = "/cs?category=" . strtoupper($category) . "&start=" . $start;
+	$urlp = "/cs?category=" . strtoupper($category) . "&count=100&start=" . $start;
 	list ( $data, $request_headers ) = _doJson ( $urlp );
 	$markup = "<div id=\"block-eechat-creditshop\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
@@ -229,8 +373,16 @@ function eechat_creditshop($category = 'consumables', $start = 0) {
 	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
 		$creditshopdata = json_decode ( $data );
 
+		$markup = $markup . "<p class=\"credit-shop-help helpbox\">\n";
+		$markup = $markup . "The credit shop is our special store for items that are not restricted by your progress through \n";
+		$markup = $markup . "the game, i.e. you can usually buy items at any level. It consists of both cosmetic and \n";
+		$markup = $markup . "gameplay affecting items. Some items required credits, some require gold, and some require both! \n";
+		$markup = $markup . "You can also access the credit shop in game by clicking on the <i>Credit Shop</i> in your toolbar.\n";
+		$markup = $markup . "</p class=\"credit-shop-help helpbox\">\n";
+		
 		if ($creditshopdata->data != null) {
-				
+
+			
 			$markup = $markup . "<div class=\"credit-shop-category\">\n";
 			foreach ( $creditshopdata->data as $shopitem ) {
 				$markup = $markup . "<div class=\"credit-shop-item\">\n";
@@ -240,15 +392,20 @@ function eechat_creditshop($category = 'consumables', $start = 0) {
 				$markup = $markup . "<img class=\"icon-foreground\" src=\"/sites/default/files/gameicons/" . $shopitem ->icon1 . "\"/>\n";
 				$markup = $markup . "</div>\n";
 				$markup = $markup . "</div>\n";
+				$markup = $markup . "<div class=\"status\">\n";
+				$markup = $markup . "<div class=\"status-icon status-icon-" . $shopitem->status . "\">\n";
+				$markup = $markup . "</div>\n";
+				$markup = $markup . "</div>\n";
 				$markup = $markup . "<div class=\"description\">" . $shopitem->description . "</div>\n";
+				$markup = $markup . "<hr class=\"clearfix fancy-small-divider\"/>\n";
 				if($shopitem->currency === 'CREDITS' ||  $shopitem->currency === 'CREDITS+COPPER') {
-					$markup = $markup . "<div class=\"credit-price\">\n";
+					$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
 					$markup = $markup . "<label>Credits</label>\n";
 					$markup = $markup . "<span>" . $shopitem->credits . "</span>\n";
 					$markup = $markup . "</div>\n";
 				}
 				if($shopitem->currency === 'COPPER' ||  $shopitem->currency === 'CREDITS+COPPER') {
-					$markup = $markup . "<div class=\"credit-price\">\n";
+					$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
 					$markup = $markup . "<label>Copper</label>\n";
 					$markup = $markup . "<span>" . $shopitem->copper . "</span>\n";
 					$markup = $markup . "</div>\n";
@@ -347,6 +504,125 @@ function eechat_leaderboard($board = 'character', $sort = 'kills', $start = 0) {
 	);
 	return $page;
 }
+
+
+function eechat_clans($start = 0) {
+	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
+	$urlp = "/clans?start=" . $start;
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-clans\">\n";
+	$markup = $markup . "<p class=\"helpbox clans-description\">\n";
+	$markup = $markup . "Clans are one of the two social groupings available to players. Where <a href=\"guilds\">Guilds</a> are fixed ";
+	$markup = $markup . "groupings of players, membership of which will affect gameplay, Clans are different in that anybody can form one and "; 
+	$markup = $markup . "gameplay is not affected. You could think of your fellow <i>Clan</i> as your family, and your <i>Guild</i> as your colleagues!";
+	$markup = $markup . "</p>\n";
+	$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$clansdata = json_decode ( $data );
+
+		$markup = $markup . "<table class=\"clans-table\">\n";
+		$markup = $markup . "<thead>\n";
+		$markup = $markup . "<tr>\n";
+		$markup = $markup . "<td>Name</td>\n";
+		$markup = $markup . "<td>Leader</td>\n";
+		$markup = $markup . "<td>Members</td>\n";
+		$markup = $markup . "</tr>\n";
+		$markup = $markup . "</thead>\n";
+		$markup = $markup . "<tbody>\n";
+		foreach ( $clansdata as $clan ) {
+			$markup = $markup . "<tr class=\"clans-row\">\n";
+			$markup = $markup . "<td class=\"clan-name\"><a href=\"/clan/" . urlencode ($clan->name) . "\">" . $clan->name . "</a></td>\n";
+			$markup = $markup . "<td class=\"clan-leader\"><a href=\"/character/" . urlencode ($clan->leader->name) . "\">" . $clan->leader->name . "</a></td>\n";
+			$markup = $markup . "<td class=\"clan-size\">" . $clan->size . "</td>\n";
+			$markup = $markup . "</tr>\n";
+		}
+		$markup = $markup . "</tbody>\n";
+		$markup = $markup . "</table>\n";
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+		$markup = $markup . "<div class=\"clans-actions\">\n";
+		$size = sizeof($clansdata);
+		if($start + 10 < $size)
+			$markup = $markup . "<a href=\"/leaderboard/" . $board . "/" . $sort . "/" . ( $start + 10 ) . "\" class=\"leader-actions\">Next</a>\n";
+		if($start > 0)
+			$markup = $markup . "<a href=\"/leaderboard/" . $board . "/" . $sort . "/" . max(0, $start - 10 ) . "\" class=\"leader-actions\">Previous</a>\n";
+		$markup = $markup . "</div>\n";
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-clans\">";
+			$markup = $markup . "No clans exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal clans not available. ' . $account->name . '. Status %status', array (
+					'%status' => $request_headers->http_code
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup
+	);
+	return $page;
+}
+
+function eechat_guilds($start = 0) {
+	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
+	$urlp = "/guilds?start=" . $start;
+	list ( $data, $request_headers ) = _doJson ( $urlp );
+	$markup = "<div id=\"block-eechat-guilds\">\n";
+	$markup = $markup . "<p class=\"helpbox guilds-description\">\n";
+	$markup = $markup . "Guilds are one of the two social groupings available to players. Where <a href=\"/clans\">Clans</a> are informal ";
+	$markup = $markup . "groupings of players, Guilds are different in that guilds are pre-formed and being a member of one will affect the quest ";
+	$markup = $markup . "that you are able to perform and other gameplay affecting mechanics. You could think of your fellow <i>Clan</i> as your family, and your <i>Guild</i> as your colleagues!";
+	$markup = $markup . "</p>\n";
+	$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$guildsdata = json_decode ( $data );
+
+		$markup = $markup . "<table class=\"guilds-table\">\n";
+		$markup = $markup . "<thead>\n";
+		$markup = $markup . "<tr>\n";
+		$markup = $markup . "<td>Name</td>\n";
+		$markup = $markup . "<td>Type</td>\n";
+		$markup = $markup . "<td>Motto</td>\n";
+		$markup = $markup . "</tr>\n";
+		$markup = $markup . "</thead>\n";
+		$markup = $markup . "<tbody>\n";
+		foreach ( $guildsdata as $guild ) {
+			$markup = $markup . "<tr class=\"guild-row\">\n";
+			$markup = $markup . "<td class=\"guild-name\"><a href=\"/guild/" . urlencode ($guild->name) . "\">" . $guild->name . "</a></td>\n";
+			$markup = $markup . "<td class=\"guild-type\">" . $guild->type . "</td>\n";
+			$markup = $markup . "<td class=\"guild-motto\">" . $guild->motto . "</td>\n";
+			$markup = $markup . "</tr>\n";
+		}
+		$markup = $markup . "</tbody>\n";
+		$markup = $markup . "</table>\n";
+		$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-clans\">";
+			$markup = $markup . "No guilds exist.";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal guilds not available. ' . $account->name . '. Status %status', array (
+					'%status' => $request_headers->http_code
+			) );
+		}
+	}
+	$markup = $markup . "</div>\n";
+
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup
+	);
+	return $page;
+}
+
 function eechat_block_info() {
 	$blocks ['eechat'] = array (
 			'info' => t ( 'Earth Eternal Chat' ),
@@ -515,7 +791,7 @@ function eechat_contents($which_block) {
 					$markup = $markup . _get_stats_html ( $eeuser->playerStats );
 					
 					$markup = $markup . "</div>\n";
-					$markup = $markup . "<hr class=\"divider\"/>\n";
+					$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
 					$markup = $markup . "<div class=\"character-details\">\n";
 					$markup = $markup . "<h2>Characters</h2>\n";
 					$markup = $markup . "<ul>\n";
@@ -647,6 +923,21 @@ function _get_race_name($raceid) {
 	);
 	
 	return $races[$raceid];
+}
+
+function _get_rank($rankid) {
+
+	switch($rankid) {
+		case 4:
+			return "Leader";
+		case 3:
+			return "Officer";
+		case 2:
+			return "Member";
+		case 1:
+			return "Initiate";
+	}
+	return "None";
 }
 function _get_class_name($classid) {
 	$classname = "Unknown";

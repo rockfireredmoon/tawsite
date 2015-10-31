@@ -98,6 +98,20 @@ fieldset {
 	padding: 0 1em;
 }
 
+hr.fancy-small-divider {
+	display: block;
+	border: none;
+	height: 25px;
+	width: 100%;
+	padding: 0;
+	clear: both;
+	margin: 0;
+	background-image: url(../images/divider-small.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
 /* Various 'icon' blocks */
 
 .icon-paraheader {
@@ -174,6 +188,16 @@ thead tr, thead tr {
 	color:white;
 	border: none;
 	text-shadow: 0px 0px 1px yellow; 
+}
+
+.helpbox {
+	font-size: 10pt;
+	font-style: italic;
+	padding: 0 0 0 3em;
+	margin: 1em 3em 1em 3em;
+	background-image: url(../images/DefaultSkin-Cursor-Talk.png);
+	background-position: center left;
+	background-repeat: no-repeat;
 }
 
 /* Global form styles */
@@ -377,7 +401,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 	text-shadow: 0px 0px  1px yellow;
 }
 
-.section-leaderboard table.leader-table tr:hover {
+.section-leaderboard table.leader-table tbody tr:hover {
 	background-color: black;
 	color: white;
 	text-shadow: 0px 0px  1px yellow;
@@ -410,6 +434,96 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 
 #block-menu-menu-character-leaderboards h2 {
 	display: none;
+}
+
+
+/* Clans */
+
+.section-clans #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding:  8px;
+}
+
+.section-clans #page-title {
+	text-shadow: 0px 0px  3px yellow;
+	text-align: center;
+}
+
+.section-clans table.clans-table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.section-clans table.clans-table tr {
+	font-size: 14pt;
+}
+
+.section-clans table.clans-table tbody tr:hover {
+	background-color: black;
+	color: white;
+	text-shadow: 0px 0px  1px yellow;
+}
+
+.clans-actions {
+	text-align: center;
+	margin-top: 1em;	
+}
+
+a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:hover {
+	text-align: center;
+	padding: 0;
+	box-shadow: none;
+	margin: 0;
+	line-height: 32px;
+	display: inline-block;
+	font-weight: normal;
+	font-size: inherit;
+	width: 160px;
+	height: 32px;
+	background-color: inherit;
+	border: none;
+	text-shadow: 0px 0px 2px #000;
+	color: white;
+	background-position: center;
+	background-image: url(../images/buttons/long-green.png);
+}
+
+/*#block-menu-menu-character-leaderboards h2 {
+	display: none;
+}*/
+
+/* Guilds */
+
+
+/* Guilds */
+
+.section-guilds #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding:  8px;
+}
+
+.section-guilds #page-title {
+	text-shadow: 0px 0px  3px yellow;
+	text-align: center;
+}
+
+.section-guilds table.guilds-table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.section-guilds table.guilds-table tr {
+	font-size: 14pt;
+}
+
+.section-guilds table.guilds-table tbody tr:hover {
+	background-color: black;
+	color: white;
+	text-shadow: 0px 0px  1px yellow;
 }
 
 /* Login */
@@ -1211,18 +1325,6 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	font-style: italic;
 }
 
-#block-eechat-eeaccountinfo-accountinfo hr {
-	display: block;
-	border: none;
-	height: 25px;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	background-image: url(../images/divider-small.png);
-	background-repeat: no-repeat;
-	background-position: center;
-}
-
 /* Chat (common) */
 
 .chat-area .chat-timestamp {
@@ -1617,7 +1719,8 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 
 
 .section-character #page-title {
-	display: none;
+	text-align: center;
+	text-shadow: 0px 0px 3px yellow;
 } 
 
 .section-character #content h2 {
@@ -1635,6 +1738,8 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 .section-character #content h4.status {
 	font-style: italic;
 	color: #0a0;
+	line-height: 1em;
+	margin: 0;
 }
 
 .section-character #content .player-stat-value {
@@ -1668,10 +1773,183 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	text-shadow: 0px 0px 1px yellow;
 }
 
+
+
+/* Clan */
+
+.section-clan #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+}
+
+
+.section-clan #page-title {
+	text-align: center;
+	text-shadow: 0px 0px 3px yellow;
+} 
+
+.section-clan #content h2 {
+	text-shadow: 0px 0px 3px yellow;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-clan #content h4.motd {
+	font-style: italic;
+	color: #0a0;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-clan #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-clan #content .clan-label {
+	width: 180px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-clan #content .clan-value {
+	display: inline-block;
+}
+
+.section-clan #content .player-stats {
+	font-size: 10pt;
+	padding: 1em;
+}
+
+.section-clan #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-clan #content .player-stat-label {
+	width: 130px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-clan table.member-table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.section-clan table.member-table tr {
+	font-size: 14pt;
+}
+
+.section-clan table.member-table td.rank-leader {
+	color: green;
+}
+
+.section-clan table.member-table td.rank-officer {
+	color: orange;
+}
+
+.section-clan table.member-table td.rank-initiate {
+	color: pink;
+}
+
+.section-clan table.member-table tbody tr:hover {
+	background-color: black;
+	color: white;
+	text-shadow: 0px 0px  1px yellow;
+}
+
+
+
+/* Guild */
+
+.section-guild #content {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+}
+
+
+.section-guild #page-title {
+	text-align: center;
+	text-shadow: 0px 0px 3px yellow;
+} 
+
+.section-guild #content h2 {
+	text-shadow: 0px 0px 3px yellow;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-guild #content h4.motto {
+	font-style: italic;
+	color: #0a0;
+	line-height: 1em;
+	margin: 0;
+}
+
+.section-guild #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-guild #content .clan-label {
+	width: 180px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-guild #content .clan-value {
+	display: inline-block;
+}
+
+.section-guild #content .player-stats {
+	font-size: 10pt;
+	padding: 1em;
+}
+
+.section-guild #content .player-stat-value {
+	min-width: 100px;
+	font-weight: bold;
+}
+
+.section-guild #content .player-stat-label {
+	width: 130px;
+	display: inline-block;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-guild table.member-table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.section-guild table.member-table tr {
+	font-size: 14pt;
+}
+
+.section-guild table.member-table tbody tr:hover {
+	background-color: black;
+	color: white;
+	text-shadow: 0px 0px  1px yellow;
+}
+
 /* Credit shop */
 .section-creditshop #page-title {
 	text-shadow: 0px 0px  3px yellow;
 	text-align: center;
+}
+
+.section-creditshop .price {
+	clear: both;
+}
+
+.section-creditshop .price label {
+	float: left;
+	margin-right: 1em;
 }
 
 .section-creditshop #block-menu-menu-credit-shop-categories .block-title {
@@ -1691,6 +1969,8 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 
 .section-creditshop .credit-shop-item .description {
 	margin-bottom: 8px;
+	font-size: 10pt;
+	font-style: italic;
 }
 
 .section-creditshop .credit-shop-item h1 {
@@ -1713,6 +1993,21 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	width: 32px;
 	height: 32px;
 }
+
+.section-creditshop .status-icon {
+	width: 32px;
+	height: 32px;
+	float: right;
+}
+
+.section-creditshop .status-icon-NEW {
+	background-image: url(../images/new.png);
+}
+
+.section-creditshop .status-icon-HOT {
+	background-image: url(../images/new.png);
+}
+
 
 /* Launch */
 .section-launch #page-title {
