@@ -981,6 +981,8 @@ function _render_chat($chat) {
 			$m = $msg;
 	
 		$clazz = "channel-" . str_replace("/", "", $message->channel->friendly);
+
+		$m = str_replace("'", "\\'", $m);
 		if($doing)
 			$clazz = $clazz . " doing";
 	
