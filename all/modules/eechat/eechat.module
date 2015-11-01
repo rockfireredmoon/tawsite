@@ -982,11 +982,10 @@ function _render_chat($chat) {
 	
 		$clazz = "channel-" . str_replace("/", "", $message->channel->friendly);
 
-		$m = str_replace("'", "\'", $m);
 		if($doing)
 			$clazz = $clazz . " doing";
 	
-		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>";
+		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . str_replace("'", "\'", htmlentities($m) ) . "</span></li>";
 	}
 	return $markup;
 }
