@@ -74,6 +74,7 @@ function eechat_chat_submit_callback($form, $form_state) {
 	$chat = json_decode ( $data );
 	$markup =  _render_chat($chat);
 	$element = $form['box'];
+	$markup = str_replace("'", "\'", $markup );
 	$element['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '<ul>" . $markup . "</ul>' ; document.getElementById('edit-message').value = ''; </script>"; 
 	return $element;
 }
@@ -985,7 +986,7 @@ function _render_chat($chat) {
 		if($doing)
 			$clazz = $clazz . " doing";
 	
-		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . str_replace("'", "\'", htmlentities($m) ) . "</span></li>";
+		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities($m)  . "</span></li>";
 	}
 	return $markup;
 }
