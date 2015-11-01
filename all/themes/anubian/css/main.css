@@ -238,6 +238,39 @@ input[type=submit] {
 	background-image: url(../images/buttons/green.png);	
 }
 
+/* General styles */
+#page-title {
+	text-shadow: 0px 0px  3px yellow;
+	text-align: center;
+}
+
+a.small-styled-button, a.small-styled-button:link, a.small-styled-button:visited, a.small-styled-button:hover {
+	text-align: center;
+	width: 99px;
+	display: inline-block;
+	line-height: 32px;
+	padding: 0;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	box-shadow: none;
+	margin: 0;
+	font-size: 10pt;
+	height: 32px;
+	background-color: inherit;
+	border: none;
+	color: #ccc;
+	background-position: center;
+	background-image: url(../images/buttons/green.png);
+}
+
+a.small-styled-button:hover {
+	color: white;
+	background-image: url(../images/buttons/lightgreen.png);
+}
+
+
 /* Main navigation menu */
 #block-system-main-menu h2 {
 	display: none;
@@ -382,11 +415,6 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 	padding:  8px;
 }
 
-.section-leaderboard #page-title {
-	text-shadow: 0px 0px  3px yellow;
-	text-align: center;
-}
-
 .section-leaderboard table.leader-table {
 	width: 500px;
 	margin: 0 auto;
@@ -446,11 +474,6 @@ a.leader-actions, a.leader-actions:visited, a.leader-actions:link, a.leader-acti
 	padding:  8px;
 }
 
-.section-clans #page-title {
-	text-shadow: 0px 0px  3px yellow;
-	text-align: center;
-}
-
 .section-clans table.clans-table {
 	width: 500px;
 	margin: 0 auto;
@@ -504,11 +527,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
 	padding:  8px;
-}
-
-.section-guilds #page-title {
-	text-shadow: 0px 0px  3px yellow;
-	text-align: center;
 }
 
 .section-guilds table.guilds-table {
@@ -752,10 +770,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 /* Documents */
-
-.node-type-document #page-title {
-	text-align: center;
-}
 
 .node-type-document #content, .page-filter-tips #content {
 	background-color: inherit;
@@ -1036,7 +1050,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 .node-type-forum #page-title, .page-comment-reply #page-title {
 	font-size: 1.5em;
-	text-shadow: 0px 0px 3px #000;
 	line-height: 1.5em;
 }
 
@@ -1370,11 +1383,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 /* Full Chat (page) */
-
-.section-chat h1#page-title {
-	text-shadow: 0px 0px 1px yellow;
-	text-align: center;
-}
 
 .section-chat .form-item-message label {
 	display: inline;
@@ -1722,12 +1730,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	padding: 8px;
 }
 
-
-.section-character #page-title {
-	text-align: center;
-	text-shadow: 0px 0px 3px yellow;
-} 
-
 .section-character #content h2 {
 	text-shadow: 0px 0px 3px yellow;
 	line-height: 1em;
@@ -1788,12 +1790,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background-repeat: repeat;
 	padding: 8px;
 }
-
-
-.section-clan #page-title {
-	text-align: center;
-	text-shadow: 0px 0px 3px yellow;
-} 
 
 .section-clan #content h2 {
 	text-shadow: 0px 0px 3px yellow;
@@ -1877,12 +1873,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	padding: 8px;
 }
 
-
-.section-guild #page-title {
-	text-align: center;
-	text-shadow: 0px 0px 3px yellow;
-} 
-
 .section-guild #content h2 {
 	text-shadow: 0px 0px 3px yellow;
 	line-height: 1em;
@@ -1943,10 +1933,6 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 /* Credit shop */
-.section-creditshop #page-title {
-	text-shadow: 0px 0px  3px yellow;
-	text-align: center;
-}
 
 .section-creditshop .price {
 	clear: both;
@@ -1961,10 +1947,16 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	display: none;	
 }
 
-.section-creditshop .credit-shop-item {
+.section-creditshop .item-action a {
+	
+}
+
+/* Credit shop items */
+
+.credit-shop-item {
 	float: left;
 	width: 200px;
-	min-height: 200px;
+	min-height: 220px;
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
@@ -1972,13 +1964,21 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	margin: 0.5em;
 }
 
-.section-creditshop .credit-shop-item .description {
+.credit-shop-item .item-actions {
+	text-align: center;
+	position: relative;
+	bottom: -10px;
+}
+
+.credit-shop-item .description {
 	margin-bottom: 8px;
 	font-size: 10pt;
 	font-style: italic;
+	height: 77px;
+	overflow-y :auto;
 }
 
-.section-creditshop .credit-shop-item h1 {
+.credit-shop-item h1 {
 	line-height: 1em;
 	display: block;
 	margin: 0 0 8px 0;
@@ -1989,30 +1989,39 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	text-shadow: 0px 0px 1px yellow;
 }
 
-.section-creditshop .credit-shop-item .icon {
+.credit-shop-item .icon {
 	float: left;
 	margin: 0 4px 4px 0;
 }
 
-.section-creditshop .icon-background {
+.credit-shop-item .icon-background {
 	width: 32px;
 	height: 32px;
 }
 
-.section-creditshop .status-icon {
+.credit-shop-item  .status-icon {
 	width: 32px;
 	height: 32px;
 	float: right;
 }
 
-.section-creditshop .status-icon-NEW {
+.credit-shop-item .status-icon-NEW {
 	background-image: url(../images/new.png);
 }
 
-.section-creditshop .status-icon-HOT {
+.credit-shop-item .status-icon-HOT {
 	background-image: url(../images/new.png);
 }
 
+
+/* Buy */
+.section-buy .credit-shop-item {
+	float: right;
+}
+
+.section-buy #edit-qty {
+	width: 6em;
+}
 
 /* Launch */
 .section-launch #page-title {

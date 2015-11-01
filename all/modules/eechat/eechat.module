@@ -60,6 +60,13 @@ function eechat_menu() {
 			'title' => 'Chat' 
 	);
 	
+	$items ['buy'] = array (
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('eechat_buy_form'), //put the name of the form here */
+			'access callback' => TRUE,
+			'title' => 'Buy Credit Shop Item' 
+	);
+	
 	return $items;
 }
 
@@ -69,7 +76,7 @@ function eechat_chat_submit_callback($form, $form_state) {
 			'from' => urlencode($form_state['values']['character']),
 			'channel' => urlencode($form_state['values']['channel']),
 	);
-	list ( $data, $request_headers ) = _doJson ( "/chat", "POST", $data );
+	list ( $data, $request_headers ) = _doHTTP ( "/chat", "POST", $data );
 	
 	$chat = json_decode ( $data );
 	$markup =  _render_chat($chat);
@@ -83,7 +90,7 @@ function eechat_chat_form($form, &$form_state) {
 	/* Get characters */
 	global $user;
 	$urlp = "/user/" . urlencode ( $user->name );
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
 		$userdata = json_decode ( $data );
@@ -158,28 +165,124 @@ function eechat_chat_form($form, &$form_state) {
 	return $form;
 }
 
-function eechat_chat_form_validate($form, &$form_state) {
-	/*if (!($form_state['values']['message'] > 0)){
-		form_set_error('message', t('Message may not be empty.'));
-	}*/
+function eechat_buy_form($form, &$form_state) {
+	$parts = explode("/", request_path());
+	$itemname = $parts[sizeof($parts) - 1];
+	
+
+	/* Get item */
+	$urlp = "/cs/" . urlencode ( $itemname );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$itemdata = json_decode ( $data );
+	}
+	else {
+		form_set_error('message', t('Unable to retrieve credit shop data.'));
+		return $form;
+	}
+	
+	/* Get characters */
+	global $user;
+	$urlp = "/user/" . urlencode ( $user->name );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
+
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$userdata = json_decode ( $data );
+	}
+	else {
+		form_set_error('message', t('Unable to retrieve credit shop data.'));
+		return $form;
+	}
+
+	if($userdata->characters === null) {
+		form_set_error('message', t('You must create a character in-game to be able to buy items from the website.'));
+		return $form;
+	}
+	
+	$options = array();
+	// Populate character list
+	foreach ($userdata->characters as $character) {
+		$options[$character->name] = $character->name;
+	}
+	asort($options);
+	$form['shopitem'] = array(
+			'#type' => 'markup',
+			'#markup' => _render_cs_item($itemdata),
+	);
+	
+
+	$form['character'] = array(
+			'#type' => 'select',
+			'#title' => t('Character'),
+			'#options' => $options,
+			'#description' => t('The character which to send the item to.')
+	);
+		
+	$form['qty'] = array(
+			'#title' => t('Quantity'),
+			'#type' => 'textfield',
+			'#required' => TRUE,
+			'#maxlength' => 4,
+			'#default_value' => "1",
+	);
+		
+	$form['item'] = array(
+			'#title' => t('Quantity'),
+			'#type' => 'hidden',
+			'#required' => TRUE,
+			'#default_value' => $itemname,
+	);
+	
+		
+	/*
+	$form['box'] = array(
+			'#type' => 'markup',
+			'#prefix' => '<div id="box">',
+			'#suffix' => '</div>',
+			'#markup' => '',
+	);
+		
+	$form['submit_button'] = array(
+			'#type' => 'submit',
+			'#value' => 'Send',
+			'#ajax' => array(
+					'callback' => 'eechat_chat_submit_callback',
+					'wrapper' => 'box',
+					'event' => 'click'
+			),
+	);
+	*/
+	$form['submit_button'] = array(
+			'#type' => 'submit',
+			'#value' => 'Buy!'
+	);
+
+
+	return $form;
 }
 
-function eechat_chat_form_submit($form, &$form_state) {
-	/*global $user;
-	$url = _get_api_url() . "/chat";
-	$headers = array('Content-Type' => 'application/x-www-form-urlencoded');
-	$data = array (
-			'msg' => $form_state['values']['message'],
-			'from' => $form_state['values']['character'],
-			'channel' => $form_state['values']['channel'],
-			);
-	$response = drupal_http_request($url, $headers, 'POST', http_build_query($data));
-	*/
+function eechat_buy_form_validate($form, &$form_state) {
 }
+
+function eechat_buy_form_submit($form, &$form_state) {
+	$data = array (
+			'qty' => urlencode($form_state['values']['qty']),
+			'item' => urlencode($form_state['values']['item']),
+			'character' => urlencode($form_state['values']['character']),
+	);
+	list ( $data, $request_headers ) = _doHTTP ( "/cs", "POST", $data );
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 200) {
+		drupal_set_message("Item purchased.", $type = 'status');
+	}
+	else {
+		form_set_error('message', t('Failed to buy item. ') . " " . $data);
+	}
+}
+
 
 function eechat_clan($id) {
 	$urlp = "/clan/" . urlencode ( $id );
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-clan\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -241,7 +344,7 @@ function eechat_clan($id) {
 
 function eechat_guild($id) {
 	$urlp = "/guild/" . urlencode ( $id );
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-guild\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -295,7 +398,7 @@ function eechat_guild($id) {
 
 function eechat_character($id = '0') {
 	$urlp = "/character/" . urlencode ( $id );
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-character\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -366,7 +469,7 @@ function eechat_character($id = '0') {
 function eechat_creditshop($category = 'consumables', $start = 0) {
 	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
 	$urlp = "/cs?category=" . strtoupper($category) . "&count=100&start=" . $start;
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-creditshop\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -385,32 +488,7 @@ function eechat_creditshop($category = 'consumables', $start = 0) {
 			
 			$markup = $markup . "<div class=\"credit-shop-category\">\n";
 			foreach ( $creditshopdata->data as $shopitem ) {
-				$markup = $markup . "<div class=\"credit-shop-item\">\n";
-				$markup = $markup . "<h1>" . $shopitem->computedTitle . "</h1>\n";
-				$markup = $markup . "<div class=\"icon\">\n";
-				$markup = $markup . "<div class=\"icon-background\" style=\"background-image: url(/sites/default/files/gameicons/" . $shopitem ->icon2 . "); \">\n";
-				$markup = $markup . "<img class=\"icon-foreground\" src=\"/sites/default/files/gameicons/" . $shopitem ->icon1 . "\"/>\n";
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "<div class=\"status\">\n";
-				$markup = $markup . "<div class=\"status-icon status-icon-" . $shopitem->status . "\">\n";
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "</div>\n";
-				$markup = $markup . "<div class=\"description\">" . $shopitem->description . "</div>\n";
-				$markup = $markup . "<hr class=\"clearfix fancy-small-divider\"/>\n";
-				if($shopitem->currency === 'CREDITS' ||  $shopitem->currency === 'CREDITS+COPPER') {
-					$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
-					$markup = $markup . "<label>Credits</label>\n";
-					$markup = $markup . "<span>" . $shopitem->credits . "</span>\n";
-					$markup = $markup . "</div>\n";
-				}
-				if($shopitem->currency === 'COPPER' ||  $shopitem->currency === 'CREDITS+COPPER') {
-					$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
-					$markup = $markup . "<label>Copper</label>\n";
-					$markup = $markup . "<span>" . $shopitem->copper . "</span>\n";
-					$markup = $markup . "</div>\n";
-				}
-				$markup = $markup . "</div>\n";
+				$markup = $markup . _render_cs_item($shopitem, true);
 			}
 			$markup = $markup . "</div>\n";
 		} else {
@@ -441,7 +519,7 @@ function eechat_creditshop($category = 'consumables', $start = 0) {
 function eechat_leaderboard($board = 'character', $sort = 'kills', $start = 0) {
 	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
 	$urlp = "/leaderboard?board=" . $board . "&start=" . $start . "&sort=" . $sort;
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-leaderboard\">\n";
 	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -509,7 +587,7 @@ function eechat_leaderboard($board = 'character', $sort = 'kills', $start = 0) {
 function eechat_clans($start = 0) {
 	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
 	$urlp = "/clans?start=" . $start;
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-clans\">\n";
 	$markup = $markup . "<p class=\"helpbox clans-description\">\n";
 	$markup = $markup . "Clans are one of the two social groupings available to players. Where <a href=\"guilds\">Guilds</a> are fixed ";
@@ -571,7 +649,7 @@ function eechat_clans($start = 0) {
 function eechat_guilds($start = 0) {
 	drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );
 	$urlp = "/guilds?start=" . $start;
-	list ( $data, $request_headers ) = _doJson ( $urlp );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
 	$markup = "<div id=\"block-eechat-guilds\">\n";
 	$markup = $markup . "<p class=\"helpbox guilds-description\">\n";
 	$markup = $markup . "Guilds are one of the two social groupings available to players. Where <a href=\"/clans\">Clans</a> are informal ";
@@ -691,7 +769,7 @@ function eechat_contents($which_block) {
 	switch ($which_block) {
 		
 		case 'eewho' :
-			list ( $data, $request_headers ) = _doJson ( "/who" );
+			list ( $data, $request_headers ) = _doHTTP ( "/who" );
 			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$result = array (
 						'#markup' => t ( 'Earth Eternal is OFFLINE' ) 
@@ -717,7 +795,7 @@ function eechat_contents($which_block) {
 		
 		case 'eechat' :
 		case 'eefullchat' :
-			list ( $data, $request_headers ) = _doJson ( "/chat" );
+			list ( $data, $request_headers ) = _doHTTP ( "/chat" );
 			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$result = array (
 						'#markup' => t ( 'Earth Eternal live chat is OFFLINE' ) 
@@ -772,7 +850,7 @@ function eechat_contents($which_block) {
 			}
 			
 			$urlp = "/user/" . urlencode ( $account->name );
-			list ( $data, $request_headers ) = _doJson ( $urlp );
+			list ( $data, $request_headers ) = _doHTTP ( $urlp );
 			$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
 			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
 				$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
@@ -841,7 +919,7 @@ function _get_api_url() {
 }
 
 
-function _doJson($path, $method = 'GET', $postdata = false) {
+function _doHTTP($path, $method = 'GET', $postdata = false) {
 	$curl = curl_init ();
 	curl_setopt ( $curl, CURLOPT_VERBOSE, TRUE );
 	curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
@@ -852,17 +930,16 @@ function _doJson($path, $method = 'GET', $postdata = false) {
 	if($method === 'GET')
 		curl_setopt ( $curl, CURLOPT_CUSTOMREQUEST, 'GET' );
 	else {
+		$fields_string = "";
 		foreach($postdata as $key=>$value) { 
 			$fields_string .= $key.'='.$value.'&'; 
 		}
 		rtrim($fields_string, '&');
-		curl_setopt($curl,CURLOPT_URL, $url);
 		curl_setopt($curl,CURLOPT_POST, count($postdata));
 		curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);
 	}
 	
 	curl_setopt ( $curl, CURLOPT_URL, _get_api_url() . $path );
-	
 	
 	$data = curl_exec ( $curl );
 	$request_headers = ( object ) curl_getinfo ( $curl );
@@ -956,6 +1033,44 @@ function _get_class_name($classid) {
 			break;
 	}
 	return $classname;
+}
+
+function _render_cs_item($shopitem, $showbuy = false) {
+	$markup = "<div class=\"credit-shop-item\">\n";
+	$markup = $markup . "<h1>" . $shopitem->computedTitle . "</h1>\n";
+	$markup = $markup . "<div class=\"icon\">\n";
+	$markup = $markup . "<div class=\"icon-background\" style=\"background-image: url(/sites/default/files/gameicons/" . $shopitem ->icon2 . "); \">\n";
+	$markup = $markup . "<img class=\"icon-foreground\" src=\"/sites/default/files/gameicons/" . $shopitem ->icon1 . "\"/>\n";
+	$markup = $markup . "</div>\n";
+	$markup = $markup . "</div>\n";
+	$markup = $markup . "<div class=\"status\">\n";
+	$markup = $markup . "<div class=\"status-icon status-icon-" . $shopitem->status . "\">\n";
+	$markup = $markup . "</div>\n";
+	$markup = $markup . "</div>\n";
+	$markup = $markup . "<div class=\"description\">" . $shopitem->description . "</div>\n";
+	$markup = $markup . "<hr class=\"clearfix fancy-small-divider\"/>\n";
+	if($shopitem->currency === 'CREDITS' ||  $shopitem->currency === 'CREDITS+COPPER') {
+		$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
+		$markup = $markup . "<label>Credits</label>\n";
+		$markup = $markup . "<span>" . $shopitem->credits . "</span>\n";
+		$markup = $markup . "</div>\n";
+	}
+	if($shopitem->currency === 'COPPER' ||  $shopitem->currency === 'CREDITS+COPPER') {
+		$markup = $markup . "<div class=\"clearfix price credit-price\">\n";
+		$markup = $markup . "<label>Copper</label>\n";
+		$markup = $markup . "<span>" . $shopitem->copper . "</span>\n";
+		$markup = $markup . "</div>\n";
+	}
+	
+	if($showbuy) {
+		$markup = $markup . "<div class=\"item-actions\">\n";
+		$markup = $markup . "<a class=\"small-styled-button item-action item-action-buy\" href=\"/buy/" . $shopitem->id ."\">Buy!</a>\n";
+		$markup = $markup . "</div>\n";
+	}
+	
+	$markup = $markup . "</div>\n";
+	
+	return $markup;
 }
 
 function _render_chat($chat) {
