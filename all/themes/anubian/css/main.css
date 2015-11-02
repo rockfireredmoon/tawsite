@@ -119,33 +119,41 @@ hr.fancy-small-divider {
 	margin-right: 1em;
 }
 
-.icon-block {	
-	display: inline-block;
-}
 
 .windows-logo {
-	height: 64px;
-	width: 64px;
-	background-repeat: none;
 	background-image: url(../images/windows.png);
+	width: 64px;
+	height: 64px;
 }
 
 .linux-logo {
-	height: 64px;
-	width: 64px;
 	background-image: url(../images/linux.png);
+	width: 64px;
+	height: 64px;
 }
 
 .macosx-logo {
-	height: 64px;
-	width: 64px;
 	background-image: url(../images/mac.png);
+	width: 64px;
+	height: 64px;
 }
 
 .busy-icon {
 	height: 35px;
 	width: 35px;
 	background-image: url(../images/wait.png);
+}
+
+.icon-block {	
+	display: inline-block;
+	font-size: 11pt;
+	text-align: center;
+	color: white;
+	height: 84px;
+	width: 64px;
+	text-shadow: 0px 0px 1px black; 
+	background-repeat: no-repeat;
+	background-position: bottom;
 }
 
 /* Breadcrumbs (hidden by default - explicity enabled for forums) */
@@ -1571,6 +1579,37 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 #block-eechat-eewho li.system {
 	color: yellow;
 	font-weight: bold;
+}
+
+/* Downloads */
+#block-views-public-downloads-summary-block {
+	padding-bottom: 2em;
+}
+
+#block-views-public-downloads-summary-block h2 {
+	text-align: center;
+	margin: 1em 0;
+}
+
+.section-downloads .view-public-downloads-summary .views-field-title {
+	width: 50%;
+	float: left;
+}
+
+.section-downloads .view-public-downloads-summary .views-row {
+	margin: 0 auto;
+	width: 80%;
+}
+
+.section-downloads .view-public-downloads-summary .views-field-title a {
+	font-weight: normal;
+	font-style: italic;
+}
+
+
+.section-downloads .view-public-downloads-summary .views-row:hover {
+	background-color: black;
+	text-shadow: 0px 0px 1px yellow;
 }
 
 
