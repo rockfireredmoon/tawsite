@@ -2076,6 +2076,12 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	width: 500px;
 }
 
+/* Shroomies Search */ 
+.section-shroomies-search #flash-game {
+	margin: auto auto;
+	text-align: center;
+}
+
 /* These are to override the forum styling */
 /* TODO remove forum styling and make our own */
 .forum-table-wrap table, .forum-table-topics {

@@ -67,6 +67,19 @@ function eechat_menu() {
 			'title' => 'Buy Credit Shop Item' 
 	);
 	
+	$items ['shroomies-search'] = array (
+			'page callback' => 'eechat_shroomies_search',
+			'access callback' => TRUE,
+			'title' => 'Shroomies Search',
+	);
+	
+	$items ['minigame_scores'] = array (
+			'page callback' => 'eechat_minigame_scores',
+			'access callback' => TRUE,
+			'title' => 'Minigame Scores', 
+    		'type' => MENU_CALLBACK,
+	);
+	
 	return $items;
 }
 
@@ -279,6 +292,77 @@ function eechat_buy_form_submit($form, &$form_state) {
 	}
 }
 
+function eechat_shroomies_search() {
+	global $user;
+	
+
+// 	(function ($) {
+// 		jQuery(document).ready(function() {
+// 			var al = $(".menu a.active");
+// 			al.closest("li.menu__item").addClass("is-active-trail");
+// 		});
+	
+// 	})(jQuery);
+	
+	$markup = "<script type=\"text/javascript\" src=\"ShroomiesSearch/swfobject.js\"></script>\n";
+	$markup = $markup . "<div id=\"flash-game\">\n";
+	$markup = $markup . "    <script type=\"text/javascript\">\n";
+	$markup = $markup . "    function embedFlashHead() {\n";
+	$markup = $markup . "        var so = new SWFObject(\"ShroomiesSearch/ShroomieSearch.swf\", \"ShroomieSearch\", \"640\", \"480\", \"9\", \"000000\");\n";
+	$markup = $markup . "        so.addParam(\"wmode\", \"transparent\");\n";
+	$markup = $markup . "        so.addVariable(\"username\", \"" . $user->name . "\");\n";
+	$markup = $markup . "        so.write(\"flash-game\");\n";
+	$markup = $markup . "    }\n";
+	$markup = $markup . "    (function ($) {\n";
+	$markup = $markup . "        jQuery(document).ready(function() {\n";
+	$markup = $markup . "            embedFlashHead();\n";
+	$markup = $markup . "        });\n";
+	$markup = $markup . "    })(jQuery);\n";
+	$markup = $markup . "    </script>\n";
+	$markup = $markup . "</div>\n";
+	$page = array (
+			'#type' => 'markup',
+			'#markup' => $markup
+	);
+	return $page;
+}
+
+function eechat_minigame_scores($params) {
+	// http://stackoverflow.com/questions/2285944/returning-untemplated-output-in-drupal-from-menu-callback-function
+	// https://www.drupal.org/node/1423126
+	// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/URLLoaderDataFormat.html#includeExamplesSummary
+	if(isset ( $params->gamename )) {
+		
+	}
+// 	else {
+		drupal_add_http_header('Content-Type','text/xml');
+		print "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+		
+// 		$role = user_role_load_by_name("players");
+// 		$query = 'SELECT ur.uid FROM {users_roles} AS ur WHERE ur.rid = :rid';
+// 		$result = db_query($query, array(':rid' => $role->rid));
+// 		$uids = $result->fetchCol();
+		
+// 		return user_load_multiple($uids);
+
+		print "<data>\r\n";
+		print "<game>\r\n";
+		
+		print "<player rank=\"1\" name=\"Emerald Icemoon\" score=\"1234\"/>\r\n";		
+		print "<player rank=\"2\" name=\"Emerald Icemoon 2\" score=\"123\"/>\r\n";		
+		print "<player rank=\"3\" name=\"Emerald Icemoon 3\" score=\"12\"/>\r\n";		
+		print "<player rank=\"4\" name=\"Emerald Icemoon 4\" score=\"2\"/>\r\n";		
+		print "<player rank=\"5\" name=\"Emerald Icemoon 6\" score=\"1\"/>\r\n";		
+		
+		print "</game>\r\n";
+		print "<rank>\r\n";
+		print "<player rank=\"1\" name=\"Emerald Icemoon\" score=\"1234\"/>\r\n";
+		print "</rank>\r\n";
+		print "</data>\r\n";
+		
+		exit(0);
+// 	}
+}
 
 function eechat_clan($id) {
 	$urlp = "/clan/" . urlencode ( $id );
