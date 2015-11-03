@@ -327,7 +327,8 @@ function eechat_shroomies_search() {
 	return $page;
 }
 
-function eechat_minigame_scores($params) {
+function eechat_minigame_scores($params = '') {
+	// gamename=shroomies%5Fsearch&verify=73d09a3d834790a96feb5f6eb322b437
 	// http://stackoverflow.com/questions/2285944/returning-untemplated-output-in-drupal-from-menu-callback-function
 	// https://www.drupal.org/node/1423126
 	// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/URLLoaderDataFormat.html#includeExamplesSummary
