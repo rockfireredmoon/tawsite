@@ -144,6 +144,24 @@ hr.fancy-small-divider {
 	background-image: url(../images/wait.png);
 }
 
+.copper-icon, .silver-icon, .gold-icon {
+	height: 16px;
+	width: 16px;
+	display: inline-block;
+}
+
+.copper-icon {
+	background-image: url(../images/MoneyCopperIcon.png);
+}
+
+.silver-icon {
+	background-image: url(../images/MoneySilverIcon.png);
+}
+
+.gold-icon {
+	background-image: url(../images/MoneyGoldIcon.png);
+}
+
 .icon-block {	
 	display: inline-block;
 	font-size: 11pt;
@@ -1995,12 +2013,16 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 .credit-shop-item {
 	float: left;
 	width: 200px;
-	min-height: 220px;
+	min-height: 240px;
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
 	padding: 8px;
 	margin: 0.5em;
+}
+
+.credit-shop-item .prices {
+	height: 46px;
 }
 
 .credit-shop-item .item-actions {
@@ -2050,6 +2072,43 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 .credit-shop-item .status-icon-HOT {
 	background-image: url(../images/new.png);
+}
+
+.credit-shop-item .credit-price label, .credit-shop-item .copper-price label {
+	display: inline-block;
+	width: 52px;
+	text-align: left;
+}
+
+.credit-shop-item .credit-price {
+	padding-bottom: 4px;
+	text-align: center;
+}
+
+.credit-shop-item .amount-value {
+	display: inline;
+	margin: 0 0.5em;
+}
+
+.credit-shop-item .amount-icon {
+	text-indent: -9999px;
+}
+
+.credit-shop-item .credit-price span {
+	display: inline;
+	background-image: url(../images/CreditIcon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 24px;
+	margin-right: 8px;
+}
+
+.credit-shop-item .credit-price, .credit-shop-item .copper-price {
+	font-size: 10pt;
+}
+
+ .credit-shop-item .copper-price .suffix {
+ 	display: none;
 }
 
 
@@ -2128,6 +2187,81 @@ body #overlay input, body #overlay select {
 	border: 1px solid black;
 	background: inherit;
 }
+
+/*
+ * Purse
+ */
+ 
+#block-eechat-eecurrencyinfo {
+	width: 100%;
+	/*
+	max-height: 580px;
+	*/
+	margin: 8px;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	font-size: 10pt;
+}
+
+#block-eechat-eecurrencyinfo .character-name {
+	display: inline-block;
+	width: 140px;
+}
+
+#block-eechat-eecurrencyinfo ul {
+	padding: 1em 0;
+	margin: 0;
+	text-align: center;
+}
+
+#block-eechat-eecurrencyinfo li {
+	text-align: left;
+	display: inline-block;
+	margin: 0 auto;
+	list-style: none;
+}
+
+#block-eechat-eecurrencyinfo .amount {
+	font-weight: bold;
+	margin: 0 0.5em;
+}
+
+#block-eechat-eecurrencyinfo .suffix {
+	margin: 0 1em 0 0;
+}
+
+#block-eechat-eecurrencyinfo .amount-icon {
+	text-indent: -9999px;
+}
+
+#block-eechat-eecurrencyinfo .amount-value {
+	display: inline-block;
+	margin: 0 0.5em;
+}
+
+#block-eechat-eecurrencyinfo  .block-title {
+	text-align: center;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+#block-eechat-eecurrencyinfo .credits {
+	text-align: center;
+}
+
+#block-eechat-eecurrencyinfo .credits .credits-value {
+	display: inline;
+	background-image: url(../images/CreditIcon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 24px;
+	margin-right: 8px;
+}
+
+#block-eechat-eecurrencyinfo .credits label {
+	display: inline;
+	width: 92px;
+}
+
 
 /* 
  * Browser specific hacks
