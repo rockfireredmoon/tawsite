@@ -1,18 +1,20 @@
 <?php
 
 function eechat_chat_submit_callback($form, $form_state) {
-	$data = array (
-			'msg' => urlencode ( $form_state ['values'] ['message'] ),
-			'from' => urlencode ( $form_state ['values'] ['character'] ),
-			'channel' => urlencode ( $form_state ['values'] ['channel'] ) 
-	);
-	list ( $data, $request_headers ) = _doHTTP ( "/chat", "POST", $data );
-	
-	$chat = json_decode ( $data );
-	$markup = _render_chat ( $chat );
 	$element = $form ['box'];
-	$markup = str_replace ( "'", "\'", $markup );
-	$element ['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '<ul>" . $markup . "</ul>' ; document.getElementById('edit-message').value = ''; </script>";
+	if(strlen($form_state ['values'] ['message']) > 0) {
+		$data = array (
+				'msg' => urlencode ( $form_state ['values'] ['message'] ),
+				'from' => urlencode ( $form_state ['values'] ['character'] ),
+				'channel' => urlencode ( $form_state ['values'] ['channel'] ) 
+		);
+		list ( $data, $request_headers ) = _doHTTP ( "/chat", "POST", $data );
+		
+		$chat = json_decode ( $data );
+		$markup = _render_chat ( $chat );
+		$markup = str_replace ( "'", "\'", $markup );
+		$element ['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '<ul>" . $markup . "</ul>' ; document.getElementById('edit-message').value = ''; </script>";
+	}
 	return $element;
 }
 
@@ -164,7 +166,11 @@ function _render_chat($chat) {
 		if ($doing)
 			$clazz = $clazz . " doing";
 		
-		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . htmlentities ( $m ) . "</span></li>";
+		//$m = check_markup(htmlentities($m), "filtered_html", "", false);
+		$m = check_markup(htmlentities($m), "filtered_html", "", true);
+		$m = substr($m,3, strlen($m) - 7);
+		
+		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . $m . "</span></li>";
 	}
 	return $markup;
 }
