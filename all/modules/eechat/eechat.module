@@ -207,7 +207,8 @@ function eechat_block_view($delta = '') {
 			break;
 		case 'eeaccountinfo' :
 			$block ['subject'] = t ( 'Earth Eternal Account' );
-			$block ['content'] = eechat_contents ( $delta );
+			$block ['content'] = _render_character_info();
+			break;
 			/* drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js'); */
 		case 'eecurrencyinfo' :
 			$block ['subject'] = t ( 'Your Current Balance' );
@@ -247,88 +248,90 @@ function eechat_contents($which_block) {
 		case 'eechat' :
 		case 'eefullchat' :
 			return _render_chat_block($which_block);
-		case 'eeaccountinfo' :
-			global $user;
-			$is_player = true;
-			$account = $user;
-			$req_uri = request_uri ();
-			$parts = explode ( "/", $req_uri );
-			for($i = 0; $i < count ( $parts ); $i ++) {
-				$el = $parts [$i];
-				if ($el == "user") {
-					if ($i + 1 < count ( $parts )) {
-						$el = $parts [$i + 1];
-						if (( string ) ( int ) $el == $el) {
-							$account = user_load ( $el );
-							$is_player = false;
-						}
-					}
+	}
+}
+
+function _render_character_info() {
+	global $user;
+	$is_player = true;
+	$account = $user;
+	$req_uri = request_uri ();
+	$parts = explode ( "/", $req_uri );
+	for($i = 0; $i < count ( $parts ); $i ++) {
+		$el = $parts [$i];
+		if ($el == "user") {
+			if ($i + 1 < count ( $parts )) {
+				$el = $parts [$i + 1];
+				if (( string ) ( int ) $el == $el) {
+					$account = user_load ( $el );
+					$is_player = false;
 				}
 			}
-			
-			$urlp = "/user/" . urlencode ( $account->name );
-			list ( $data, $request_headers ) = _doHTTP ( $urlp );
-			$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
-			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
-				$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
-			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-				$eeuser = json_decode ( $data );
+		}
+	}
+		
+	$urlp = "/user/" . urlencode ( $account->name );
+	list ( $data, $request_headers ) = _doHTTP ( $urlp );
+	$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
+	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
+		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
+	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+		$eeuser = json_decode ( $data );
+	
+		if ($eeuser->characters != null) {
+			$markup = $markup . "<div class=\"account-details\">\n";
+			$markup = $markup . "<h2>Account</h2>\n";
 				
-				if ($eeuser->characters != null) {
-					$markup = $markup . "<div class=\"account-details\">\n";
-					$markup = $markup . "<h2>Account</h2>\n";
-					
-					$markup = $markup . "<div class=\"last-login\">\n";
-					$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
-					$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
-					$markup = $markup . "</div>\n";
-					
-					$markup = $markup . _get_stats_html ( $eeuser->playerStats );
-					
-					$markup = $markup . "</div>\n";
-					$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
-					$markup = $markup . "<div class=\"character-details\">\n";
-					$markup = $markup . "<h2>Characters</h2>\n";
-					$markup = $markup . "<ul>\n";
-					foreach ( $eeuser->characters as $character ) {
-						$markup = $markup . "<li>\n";
-						$markup = $markup . "<span class=\"character-name\"><a href=\"/character/" . urlencode ( $character->name ) . "\">" . $character->name . "</a></span>\n";
-						$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
-						$markup = $markup . "<span class=\"character-level\">" . _get_class_name ( $character->profession ) . "</span>\n";
-						$markup = $markup . "</li>";
-					}
-					$markup = $markup . "</ul>\n";
-					$markup = $markup . "</div>\n";
-				} else {
-					$markup = $markup . "<div class=\"no-characters\">\n";
-					if ($is_player) {
-						$markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
-					} else {
-						$markup = $markup . "Player has no characters.";
-					}
-					$markup = $markup . "</div>\n";
-				}
+			$markup = $markup . "<div class=\"last-login\">\n";
+			$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
+			$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
+			$markup = $markup . "</div>\n";
+				
+			$markup = $markup . _get_stats_html ( $eeuser->playerStats );
+				
+			$markup = $markup . "</div>\n";
+			$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
+			$markup = $markup . "<div class=\"character-details\">\n";
+			$markup = $markup . "<h2>Characters</h2>\n";
+			$markup = $markup . "<ul>\n";
+			foreach ( $eeuser->characters as $character ) {
+				$markup = $markup . "<li>\n";
+				$markup = $markup . "<span class=\"character-name\"><a href=\"/character/" . urlencode ( $character->name ) . "\">" . $character->name . "</a></span>\n";
+				$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
+				$markup = $markup . "<span class=\"character-level\">" . _get_class_name ( $character->profession ) . "</span>\n";
+				$markup = $markup . "</li>";
+			}
+			$markup = $markup . "</ul>\n";
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = $markup . "<div class=\"no-characters\">\n";
+			if ($is_player) {
+				$markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
 			} else {
-				if ($request_headers->http_code == 404) {
-					$markup = $markup . "<div class=\"no-account\">";
-					if ($is_player) {
-						$markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";
-					} else {
-						$markup = $markup . "Player has no characters.";
-					}
-					$markup = $markup . "</div>\n";
-				} else {
-					$markup = t ( 'Earth Eternal user not available. ' . $account->name . '. Status %status', array (
-							'%status' => $request_headers->http_code 
-					) );
-				}
+				$markup = $markup . "Player has no characters.";
 			}
 			$markup = $markup . "</div>\n";
-			$result = array (
-					'#markup' => $markup 
-			);
-			return $result;
+		}
+	} else {
+		if ($request_headers->http_code == 404) {
+			$markup = $markup . "<div class=\"no-account\">";
+			if ($is_player) {
+				$markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";
+			} else {
+				$markup = $markup . "Player has no characters.";
+			}
+			$markup = $markup . "</div>\n";
+		} else {
+			$markup = t ( 'Earth Eternal user not available. ' . $account->name . '. Status %status', array (
+					'%status' => $request_headers->http_code
+			) );
+		}
 	}
+	$markup = $markup . "</div>\n";
+	$result = array (
+			'#markup' => $markup
+	);
+	return $result;
 }
 
 /**
