@@ -167,8 +167,8 @@ function _render_chat($chat) {
 			$clazz = $clazz . " doing";
 		
 		//$m = check_markup(htmlentities($m), "filtered_html", "", false);
-// 		$m = check_markup(htmlentities($m), "filtered_html", "", true);
-		$m = check_markup($m, "filtered_html", "", true);
+		$m = check_markup(htmlentities($m), "filtered_html", "", true);
+		
 		$m = substr($m,3, strlen($m) - 7);
 		
 		$markup = $markup . "<li class=\"" . $clazz . "\"><span class=\"chat-timestamp\">" . htmlentities ( $message->timeReadable ) . "</span> - <span class=\"chat-message\">" . $m . "</span></li>";
