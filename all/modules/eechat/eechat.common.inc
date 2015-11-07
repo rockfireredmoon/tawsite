@@ -41,7 +41,6 @@ function _render_purse() {
 		
 		$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
 		$markup = $markup . "<div class=\"character-purse\">\n";
-
 		$markup = $markup . $charmarkup;
 		$markup = $markup. "</div>\n";
 	}

@@ -128,7 +128,7 @@ function eechat_menu() {
 	
 	$items ['shroomies-search'] = array (
 			'page callback' => 'eechat_shroomies_search',
-    		'access arguments' => array('shroomies search'),
+    		'access arguments' => array('shroomies'),
 			'title' => 'Shroomies Search',
     		'file' => 'eechat.minigames.inc'
 	);
@@ -217,6 +217,7 @@ function eechat_block_view($delta = '') {
 	}
 	return $block;
 }
+
 function eechat_contents($which_block) {
 	switch ($which_block) {
 		
@@ -248,6 +249,13 @@ function eechat_contents($which_block) {
 		case 'eechat' :
 		case 'eefullchat' :
 			return _render_chat_block($which_block);
+	}
+}
+
+function eechat_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+	$current_user = user_uid_optional_load ();
+	if ($current_user->uid != 1) {
+		$form ['field_shroomies_score'] ['#access'] = FALSE;
 	}
 }
 

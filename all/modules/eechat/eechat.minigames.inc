@@ -49,10 +49,11 @@ function eechat_minigame_scores() {
 // 		$ciphertext_base64 = $params->verify;
 // 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);
 		
-		// TODO protect this in configuration fwiw
+		//TODO protect this in configuration fwiw
 		$key = "45$97$56842568#52157%526@872#3$5";
 		$h2b = hex2bin($params['verify']);
-		error_log ( "h2b " . $h2b . "\n", 3, "/tmp/phpxx.log" );
+// 		$h2b = $params['verify'];
+		error_log ( "h2b " . $h2b . " (len: " . strlen($h2b) . "\n", 3, "/tmp/phpxx.log" );
 		
 // 		$ciphertext_dec = base64_decode ( $ciphertext_base64 );
 // 		$ciphertext_dec = $ciphertext_base64;
@@ -67,16 +68,25 @@ function eechat_minigame_scores() {
 		// may remove 00h valued characters from end of plain text
 // 		$plaintext_dec = mcrypt_decrypt ( MCRYPT_RIJNDAEL_128, $key, $ciphertext_dec, MCRYPT_MODE_ECB, $iv_dec );
 
+		$blockSize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);
+		$padding = $blockSize - (strlen($h2b) % $blockSize);
+		$h2b .= str_repeat(chr($padding), $padding);
 		
-		$plaintext_dec = rtrim(
-				mcrypt_decrypt(
-						MCRYPT_RIJNDAEL_128,
-						$key,
-						$h2b,
-						MCRYPT_MODE_ECB,
-						null
-				), "\0"
-		);
+		error_log ( "h2b2 " . $h2b . " (len: " . strlen($h2b) . "\n", 3, "/tmp/phpxx.log" );
+		
+
+		$iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB), MCRYPT_RAND);
+		$plaintext_dec = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $h2b, MCRYPT_MODE_ECB, "\0"));
+		
+// 		$plaintext_dec = rtrim(
+// 				mcrypt_decrypt(
+// 						MCRYPT_RIJNDAEL_128,
+// 						$key,
+// 						$h2b,
+// 						MCRYPT_MODE_ECB,
+// 						null
+// 				), "\0"
+// 		);
 		
 		
 		
@@ -85,29 +95,57 @@ function eechat_minigame_scores() {
 	// else {
 	drupal_add_http_header ( 'Content-Type', 'text/xml' );
 	print "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-	
-	// $role = user_role_load_by_name("players");
-	// $query = 'SELECT ur.uid FROM {users_roles} AS ur WHERE ur.rid = :rid';
-	// $result = db_query($query, array(':rid' => $role->rid));
-	// $uids = $result->fetchCol();
-	
-	// return user_load_multiple($uids);
-	
+
 	print "<data>\r\n";
 	print "<game>\r\n";
 	
-	print "<player rank=\"1\" name=\"Emerald Icemoon\" score=\"1234\"/>\r\n";
-	print "<player rank=\"2\" name=\"Emerald Icemoon 2\" score=\"123\"/>\r\n";
-	print "<player rank=\"3\" name=\"Emerald Icemoon 3\" score=\"12\"/>\r\n";
-	print "<player rank=\"4\" name=\"Emerald Icemoon 4\" score=\"2\"/>\r\n";
-	print "<player rank=\"5\" name=\"Emerald Icemoon 6\" score=\"1\"/>\r\n";
+	$players = array ();
+	
+	global $user;
+	
+	$allusers = entity_load('user');
+	foreach ($allusers as $user_id => $gameuser) {
+		try {
+			$score = $gameuser->field_shroomies_score['und'][0]['value'];
+		}
+		catch (Exception $e) {
+		}
+		if(strlen($score) == 0) {
+			$score = 0;
+		}
+		if(strlen($gameuser->name) > 0)
+			$players[$gameuser->name] = $score;
+	}
+	arsort($players);
+	$c = 1;
+	foreach ($players as $username => $score) {
+		if(c > 10)
+			break;
+		print "<player rank=\"" . $c . "\" name=\"" . $username . "\" score=\"" . $score . "\"/>\r\n";
+		$c += 1;
+	}
 	
 	print "</game>\r\n";
 	print "<rank>\r\n";
-	print "<player rank=\"1\" name=\"Emerald Icemoon\" score=\"1234\"/>\r\n";
+	print "<player rank=\"" . (array_search($user->name,array_keys($players)) + 1) . "\" name=\"" . $user->name . "\" score=\"" . $players[$user->name] . "\"/>\r\n";
 	print "</rank>\r\n";
 	print "</data>\r\n";
 	
 	exit ( 0 );
-	// }
 }
+
+function _user_to_player_record($user) {
+	try {
+		$score = $user->field_shroomies_score['und'][0]['value'];
+	}
+	catch (Exception $e) {
+	}
+	if(strlen($score) == 0) {
+		$score = 0;
+	}
+	return array (
+			'name' => $user->name,
+			'score' => $score
+	);
+}
+
