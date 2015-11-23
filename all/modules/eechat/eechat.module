@@ -34,6 +34,10 @@ function eechat_permission() {
 					'title' => t('View and use creditshop'),
 					'description' => t('May view and use the credit shop.'),
 			),
+			'auction house' => array(
+					'title' => t('View and use auction house'),
+					'description' => t('May view and use the auction house.'),
+			),
 			'character details' => array(
 					'title' => t('View character details'),
 					'description' => t('May view character details.'),
@@ -46,6 +50,10 @@ function eechat_permission() {
 					'title' => t('View clans'),
 					'description' => t('May view clans.'),
 			),
+			'item details' => array(
+					'title' => t('View item details'),
+					'description' => t('May view item details.'),
+			),
 	);
 }
 
@@ -57,6 +65,13 @@ function eechat_permission() {
  * Blocks for Earth Eternal chat integration.
  */
 function eechat_menu() {
+	$items ['auctionhouse'] = array (
+			'page callback' => 'eechat_auctionhouse',
+    		'access arguments' => array('auction house'), 
+			'title' => 'Auction House',
+    		'file' => 'eechat.auctionhouse.inc'
+	);
+	
 	$items ['creditshop'] = array (
 			'page callback' => 'eechat_creditshop',
     		'access arguments' => array('credit shop'), 
@@ -124,6 +139,13 @@ function eechat_menu() {
     		'access arguments' => array('credit shop'),
 			'title' => 'Buy Credit Shop Item',
     		'file' => 'eechat.creditshop.inc',
+	);
+	
+	$items ['tooltip/item'] = array (
+			'page callback' => 'eechat_tooltip_item',
+    		'access arguments' => array('item details'),
+			'title' => 'Item Details',
+    		'file' => 'eechat.items.inc'
 	);
 	
 	$items ['shroomies-search'] = array (

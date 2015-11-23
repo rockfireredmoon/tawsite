@@ -1,15 +1,51 @@
 <?php
+class ItemType {
+	const UNKNOWN = 0;
+	const SYSTEM = 1;
+	const WEAPON = 2;
+	const ARMOR = 3;
+	const CHARM = 4;
+	const CONSUMABLE = 5;
+	const CONTAINER = 6;
+	const BASIC = 7;
+	const SPECIAL = 8;
+	const QUEST = 9;
+	const RECIPE = 10;
+}
+
+class WeaponType {
+	const NONE = 0;
+	const SMALL = 1;
+	const ONE_HAND = 2;
+	const TWO_HAND = 3;
+	const POLE = 4;
+	const WAND = 5;
+	const BOW = 6;
+	const THROWN = 7;
+	const ARCANE_TOTEM = 8;
+}
+
+class BindingType {
+	const BIND_NEVER = 0;
+	const BIND_ON_PICKUP = 1;
+	const BIND_ON_EQUIP = 2;
+}
+
+$BINDING_TYPE_NAMES = array(
+		BindingType::BIND_NEVER => "Never",
+		BindingType::BIND_ON_PICKUP => "On Pickup",
+		BindingType::BIND_ON_EQUIP => "On Equip",
+);
 
 function _render_currency($copper) {
-	$gold = (int)( $copper / 10000 );
-	$silver = (int) ( ( $copper - ( $gold * 10000 ) ) / 100 );
-	$copper =  $copper - ( $gold * 10000 ) - ( $silver * 100 );
+	$gold = ( int ) ($copper / 10000);
+	$silver = ( int ) (($copper - ($gold * 10000)) / 100);
+	$copper = $copper - ($gold * 10000) - ($silver * 100);
 	$m = "<div class=\"amount-value gold-value\"><span class=\"amount-icon gold-icon\">G</span><span class=\"amount gold-amount\">" . $gold . "</span><span class=\"suffix gold-suffix\">Gold</span></div>";
 	$m .= "<div class=\"amount-value silver-value\"><span class=\"amount-icon silver-icon\">S</span><span class=\"amount silver-amount\">" . $silver . "</span><span class=\"suffix silver-suffix\">Silver</span></div>";
 	$m .= "<div class=\"amount-value copper-value\"><span class=\"amount-icon copper-icon\">C</span><span class=\"amount copper-amount\">" . $copper . "</span><span class=\"suffix copper-suffix\">Copper</span></div>";
 	return $m;
 }
-
 function _render_purse() {
 	global $user;
 	$urlp = "/user/" . urlencode ( $user->name ) . "?detailed=true";
@@ -26,28 +62,26 @@ function _render_purse() {
 		foreach ( $userdata->characters as $character ) {
 			$charmarkup = $charmarkup . "<li>\n";
 			$charmarkup = $charmarkup . "<span class=\"character-name\"><a href=\"/character/" . urlencode ( $character->name ) . "\">" . $character->name . "</a></span>\n";
-			$copper = array_key_exists('copper', $character->details->cdef->css) ? $character->details->cdef->css->copper : 0;
-			$charmarkup = $charmarkup . _render_currency($copper);
+			$copper = array_key_exists ( 'copper', $character->details->cdef->css ) ? $character->details->cdef->css->copper : 0;
+			$charmarkup = $charmarkup . _render_currency ( $copper );
 			$charmarkup = $charmarkup . "</li>";
 			$totalcopper += 1;
 		}
 		$charmarkup = $charmarkup . "</ul>\n";
 		
-		
-		$markup = $markup. "<div class=\"credits\">\n";
-		$markup = $markup. "<span class=\"credits-value\">" . $userdata->credits . "</span>";
-		$markup = $markup. "<label class=\"credits-label\">Credits</label>";
-		$markup = $markup. "</div>\n";
+		$markup = $markup . "<div class=\"credits\">\n";
+		$markup = $markup . "<span class=\"credits-value\">" . $userdata->credits . "</span>";
+		$markup = $markup . "<label class=\"credits-label\">Credits</label>";
+		$markup = $markup . "</div>\n";
 		
 		$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
 		$markup = $markup . "<div class=\"character-purse\">\n";
 		$markup = $markup . $charmarkup;
-		$markup = $markup. "</div>\n";
+		$markup = $markup . "</div>\n";
 	}
 	$markup = $markup . "</div>\n";
 	return $markup;
 }
-
 function _get_stats_html($stats) {
 	$markup = "<div class=\"total-kills\">\n";
 	$markup = $markup . "<span class=\"total-kills-label player-stat-label\">Total Kills</span>\n";
@@ -71,11 +105,9 @@ function _get_stats_html($stats) {
 	
 	return $markup;
 }
-
 function _get_api_url() {
 	return variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) );
 }
-
 function _doHTTP($path, $method = 'GET', $postdata = false) {
 	$curl = curl_init ();
 	curl_setopt ( $curl, CURLOPT_VERBOSE, TRUE );
@@ -107,7 +139,6 @@ function _doHTTP($path, $method = 'GET', $postdata = false) {
 			$request_headers 
 	);
 }
-
 function _get_race_name($raceid) {
 	$races = array (
 			'a' => "Anura",
@@ -136,7 +167,6 @@ function _get_race_name($raceid) {
 	
 	return $races [$raceid];
 }
-
 function _get_rank($rankid) {
 	switch ($rankid) {
 		case 4 :
@@ -150,7 +180,6 @@ function _get_rank($rankid) {
 	}
 	return "None";
 }
-
 function _get_class_name($classid) {
 	$classname = "Unknown";
 	switch ($classid) {
@@ -168,4 +197,57 @@ function _get_class_name($classid) {
 			break;
 	}
 	return $classname;
+}
+
+function _get_weapon_type_name($itemtype) {
+	switch ($itemtype) {
+		case WeaponType::NONE:
+			return "None";
+		case WeaponType::SMALL:
+			return "Small";
+		case WeaponType::ONE_HAND:
+			return "One Hand";
+		case WeaponType::TWO_HAND:
+			return "Two Hand";
+		case WeaponType::POLE:
+			return "Pole";
+		case WeaponType::WAND:
+			return "Wand";
+		case WeaponType::BOW:
+			return "Bow";
+		case WeaponType::THROWN:
+			return "Thrown";
+		case WeaponType::ARCANE_TOTEM:
+			return "Totem";
+	}
+	return "Unknown";
+}
+
+
+function _get_item_type_name($itemtype) {
+	switch ($itemtype) {
+		case ItemType::BASIC:
+			return "Basic";
+		case ItemType::SYSTEM:
+			return "System";
+		case ItemType::ARMOR:
+			return "Armor";
+		case ItemType::WEAPON:
+			return "Weapon";
+		case ItemType::CHARM:
+			return "Charm";
+		case ItemType::CONSUMABLE:
+			return "Consumable";
+		case ItemType::CONTAINER:
+			return "Container";
+		case ItemType::BASIC:
+			return "Basic";
+		case ItemType::SPECIAL:
+			return "Special";
+		case ItemType::QUEST:
+			return "Quest";
+		case ItemType::RECIPE:
+			return "Recipe";
+	}
+	return "Unknown";
 }

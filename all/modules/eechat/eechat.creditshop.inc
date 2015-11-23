@@ -123,7 +123,7 @@ function eechat_creditshop($category = 'consumables', $start = 0) {
 		$markup = $markup . "the game, i.e. you can usually buy items at any level. It consists of both cosmetic and \n";
 		$markup = $markup . "gameplay affecting items. Some items required credits, some require gold, and some require both! \n";
 		$markup = $markup . "You can also access the credit shop in game by clicking on the <i>Credit Shop</i> in your toolbar.\n";
-		$markup = $markup . "</p class=\"credit-shop-help helpbox\">\n";
+		$markup = $markup . "</p>\n";
 		
 		if ($creditshopdata->data != null) {
 			
