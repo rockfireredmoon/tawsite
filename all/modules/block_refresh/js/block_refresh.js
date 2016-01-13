@@ -1,8 +1,16 @@
-(function($) {
+/**
+ * @file block refresh JS.
+ */
+
+(function ($) {
   Drupal.behaviors.block_refresh = {
-    attach: function(context) {
-      $.each(Drupal.settings.block_refresh.settings, function(key, settings) {
+    attach: function (context) {
+      $.each(Drupal.settings.block_refresh.settings, function (key, settings) {
         var element = settings.element;
+        // Sanity check: do nothing is settings.element is not defined.
+        if (typeof element === 'undefined') {
+          return;
+        }
         setBlockRefresh('#' + element, '.content', settings['auto'], settings['manual'], settings['init'], settings['timer'], settings['arguments'], settings['block']['block'], settings['block']['delta'], false);
 
         if (settings['panels']) {
@@ -10,9 +18,9 @@
           // Views blocks in panels need special treatment.
           // eg an element '#block-views-now-playing-block'
           // will be rendered as .pane-views.pane-now-playing
-          if (element.search('-views-')) {
-            element = element.replace('-block' , '');
-            element = element.replace('-views-' , '-views.pane-');
+          if (element.search('-views-') != -1) {
+            element = element.replace('-block', '');
+            element = element.replace('-views-', '-views.pane-');
           }
           setBlockRefresh('.' + element, '.pane-content', settings['auto'], settings['manual'], settings['init'], settings['timer'], settings['arguments'], settings['block']['block'], settings['block']['delta'], true);
         }
@@ -26,35 +34,31 @@
 
         $(element).addClass('block-refresh-processed');
 
-        //Get argument from referring page and append to end of load request
+        // Get the argument from the referring page and append the to end of
+        // the load request.
         args = '';
         query = '';
         if (arguments) {
-          $.each(Drupal.settings.block_refresh.args, function(index, arg) {
+          $.each(Drupal.settings.block_refresh.args, function (index, arg) {
             args += '/' + arg;
           });
           query = Drupal.settings.block_refresh.query;
         }
         var path = Drupal.settings.basePath + Drupal.settings.pathPrefix + 'block_refresh/' + block + '/' + delta + args + query;
         if (auto && context == document) {
-          setInterval(function() {
-            BlockRefreshContent(path, element, element_content, panels);
+          setInterval(function () {
+            BlockRefreshContent(path, element, element_content, panels, false);
           }, timer * 1000); // We need to multiply by 1000 because the admin enters a number in seconds,  but the setInterval() function expects milliseconds
         }
         if (manual) {
-          addBlockRefreshButton(element, element_content);
+          addBlockRefreshButton(path, element, element_content, panels, true);
         }
         if (init && context == document) {
-          BlockRefreshContent(path, element, element_content, panels);
+          BlockRefreshContent(path, element, element_content, panels, false);
         }
-
-        $('.block-refresh-button').click(function() {
-          $(this).addClass('block-refresh-button-throbbing');
-          BlockRefreshContent(path, element, element_content, panels);
-        });
       }
 
-      function addBlockRefreshButton(element, element_content) {
+      function addBlockRefreshButton(path, element, element_content, panels, manual) {
         var refresh_link = '<div class="block-refresh-button">' + Drupal.t('Refresh') + '</div>';
         // We'll attach the refresh link to the header if it exists...
         if ($(element + ' h2').length) {
@@ -64,10 +68,17 @@
         else {
           $(element + ' ' + element_content).before(refresh_link);
         }
+
+        //register click function
+        $(element + ' .block-refresh-button').click(function () {
+          $(this).addClass('block-refresh-button-throbbing');
+          BlockRefreshContent(path, element, element_content, panels, manual);
+        });
+
       }
 
-      function BlockRefreshContent(path, element, element_content, panels) {
-        $.get(path, function(data) {
+      function BlockRefreshContent(path, element, element_content, panels, manual) {
+        $.get(path, function (data) {
           var contents = $(data).html();
           // if this is a panel, preserve panel title.
           var oldh2 = $(element + ' h2.pane-title');
@@ -82,8 +93,11 @@
             //panels renders block content in a 'pane-content' wrapper.
             $(element + ' .content').removeClass('content').addClass('pane-content');
           }
-          $(element).removeClass('block-refresh-processed');
-          Drupal.attachBehaviors(this);
+          //$(element).removeClass('block-refresh-processed');
+          if (manual) {
+            addBlockRefreshButton(path, element, element_content, panels, manual);
+          }
+          Drupal.attachBehaviors();
         });
       }
     }

@@ -168,6 +168,9 @@ function imce_private_files_passthrough($uri) {
  *    Return TRUE if this file is managed by IMCE, FALSE otherwise.
  */
 function imce_private_files_check_uri($uri) {
+  if (variable_get('imce_private_files_skip_check')) {
+    return true;
+  }
   $files = file_load_multiple(array(), array('uri' => $uri));
   $file = reset($files);
   $usage = file_usage_list($file);

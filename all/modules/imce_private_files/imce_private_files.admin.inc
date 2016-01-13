@@ -19,6 +19,12 @@ function imce_private_files_settings_form() {
     '#type' => 'checkbox',
     '#default_value' => variable_get('imce_private_files_debug'),
   );
+  $form['imce_private_files_skip_check'] = array(
+    '#title' => "Skip 'IMCE-owned files' table check",
+    '#description' => t('By default, IMCE Private Files only applies access control to files that are "owned" by IMCE in the file_usage table. Tick this box to apply to all files.'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('imce_private_files_skip_check'),
+  );
   $form['mode'] = array(
     '#title' => 'Privacy Mode',
     '#description' => t('Select which privacy mode to use.'),
