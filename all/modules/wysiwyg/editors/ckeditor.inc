@@ -17,13 +17,13 @@ function wysiwyg_ckeditor_editor() {
       '' => array(
         'title' => 'Default',
         'files' => array(
-          'ckeditor.js' => array('preprocess' => FALSE),
+          'ckeditor/ckeditor.js' => array('preprocess' => FALSE),
         ),
       ),
       'src' => array(
         'title' => 'Source',
         'files' => array(
-          'ckeditor_source.js' => array('preprocess' => FALSE),
+          'ckeditor/ckeditor_source.js' => array('preprocess' => FALSE),
         ),
       ),
     ),
