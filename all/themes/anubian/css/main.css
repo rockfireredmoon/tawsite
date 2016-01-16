@@ -2246,7 +2246,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 /* Votes */
 
-.node-type-advpolls article {
+.node-type-advpoll article {
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
