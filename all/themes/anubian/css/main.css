@@ -2244,8 +2244,9 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	text-indent: -9999px;
 }
 
-/* Launch */
-.section-votes article {
+/* Votes */
+
+.node-type-advpolls article {
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
@@ -2313,24 +2314,25 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background-image: url(../images/buttons/long-green.png);
 	margin-top: 1em;
 }
-.section-votes article .poll {
+
+.node-type-advpoll .poll {
 	width: 20em;
 	margin: auto;
 }
 
-.section-votes article .percent {
+.node-type-advpoll .percent {
 	font-size: 10pt;
 	opacity: 0.75;
 	font-style: italic;
 }
 
-.section-votes article .total {
+.node-type-advpoll .total {
 	font-size: 10pt;
 	font-weight: bold;
 	font-style: italic;
 }
 
-.section-votes article .poll-message {
+.node-type-advpoll .poll-message {
     font-size: 18pt;
 	font-style: italic;
 	text-shadow: 0px 0px 3px yellow;
@@ -2338,25 +2340,25 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	margin-top: 1em;
 }
 
-.section-votes article .poll-bar .text {
+.node-type-advpoll .poll-bar .text {
     font-size: 14pt;
 	text-shadow: 0px 0px 1px yellow;
 }
 
-.section-votes article .bar, .section-votes article .voted .bar {
+.node-type-advpoll .bar, .node-type-advpoll .voted .bar {
     background: url(../images/black-trans-60.png) repeat; 
     border-radius: 4px;
     border:  1px solid #D9AA39;
     padding-right: 4px;
 }
 
-.section-votes article .bar .foreground {
+.node-type-advpoll .bar .foreground {
     background: #800;
     margin: 2px;
     height: 12px;
 }
 
-/* Vote */
+/* Launch */
 .section-launch #page-title {
 	display: none;
 }
