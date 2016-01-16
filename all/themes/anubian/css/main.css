@@ -2245,6 +2245,118 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 /* Launch */
+.section-votes article {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 8px;
+	margin: 1em auto 0 auto;
+	width: 765px;
+}
+
+.section-votes article .form-radios {
+	text-align: left;
+}
+
+.section-votes article .form-type-radio {
+	width: 15em;	
+	height: 32px;
+	margin: 1em auto;
+}
+
+.section-votes article input[type="radio"] {
+    display:none;
+}
+
+.section-votes article input[type="radio"] ~ label {
+    display:inline;
+    font-size: 14pt;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-votes article input[type="radio"] ~ label:before {
+    content: '';
+    width: 32px;
+    height: 32px;
+    background: url(../images/checkbox_x_u.png) no-repeat;
+    display: inline-block;
+    cursor: pointer;
+    vertical-align: text-top;
+    margin-right: 3px; /*rtl*/
+}
+
+.section-votes article input[type="radio"]:checked ~ label:before {
+    content: '';
+    background: url(../images/checkbox_x_h.png) no-repeat;
+}
+
+.section-votes article form {
+	text-align: center;
+}
+
+.section-votes article .field-name-body img {
+	width: inherit;
+	height: 110px;
+}
+.section-votes article .field-name-body table td {
+	text-align: center;
+	padding: 2px;
+}
+
+.section-votes article #comments form {
+	text-align: left;
+}
+
+.section-votes article .form-submit {
+	width: 160px;
+	height: 32px;
+	background-image: url(../images/buttons/long-green.png);
+	margin-top: 1em;
+}
+.section-votes article .poll {
+	width: 20em;
+	margin: auto;
+}
+
+.section-votes article .percent {
+	font-size: 10pt;
+	opacity: 0.75;
+	font-style: italic;
+}
+
+.section-votes article .total {
+	font-size: 10pt;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.section-votes article .poll-message {
+    font-size: 18pt;
+	font-style: italic;
+	text-shadow: 0px 0px 3px yellow;
+	text-align: center;
+	margin-top: 1em;
+}
+
+.section-votes article .poll-bar .text {
+    font-size: 14pt;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.section-votes article .bar, .section-votes article .voted .bar {
+    background: url(../images/black-trans-60.png) repeat; 
+    border-radius: 4px;
+    border:  1px solid #D9AA39;
+    padding-right: 4px;
+}
+
+.section-votes article .bar .foreground {
+    background: #800;
+    margin: 2px;
+    height: 12px;
+}
+
+/* Vote */
 .section-launch #page-title {
 	display: none;
 }
