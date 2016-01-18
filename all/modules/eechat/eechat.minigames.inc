@@ -82,8 +82,9 @@ function eechat_minigame_scores() {
 		}
 			
 		if(strlen($gameuser->name) > 0 && $setuser === $gameuser->name) {
-			$edit['field_shroomies_score']['und'][0]['value'] = "" . $setscore;
-			user_save($gameuser, $edit);
+			$shroomie_field = $edit['field_shroomies_score']; 
+			$shroomie_field['und'][0]['value'] = "" . $setscore;
+			user_save($gameuser, array('field_shroomies_score' => $shroomie_field));
 			$score = "" . $setscore;
 		}
 		
