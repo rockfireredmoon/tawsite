@@ -205,12 +205,21 @@ function eechat_block_configure($delta = '') {
 				'#description' => t ( 'The HTTP API URL of the Planet Forever server. For example http://server.theanubianwar.com/api' ),
 				'#default_value' => variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) 
 		);
+		
+		$form ['eechat_key'] = array (
+				'#type' => 'textfield',
+				'#title' => t ( 'Shroomie Search Encryption Key' ),
+				'#size' => 60,
+				'#description' => t ( 'The encryption key used for encrypting scores.' ),
+				'#default_value' => variable_get ( 'eechat_key', t ( '' ) ) 
+		);
 	}
 	return $form;
 }
 function eechat_block_save($delta = '', $edit = array()) {
 	if ($delta == 'eechat' || $delta == 'eefullchat' || $delta == 'eewho' || $delta == 'eeaccountinfo' || $delta == 'eecurrencyinfo') {
 		variable_set ( 'eechat_url', $edit ['eechat_url'] );
+		variable_set ( 'eechat_key', $edit ['eechat_key'] );
 	}
 }
 function eechat_block_view($delta = '') {
