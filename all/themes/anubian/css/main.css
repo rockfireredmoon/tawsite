@@ -1839,6 +1839,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	 max-width: 769px !important; 	
 } */
 
+
 .page-media .view-media .item-list {
 	text-align: center;
 }
@@ -1848,11 +1849,23 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	display: inline;
 }
 
+.page-media ul.contextual-links {
+	background: none !important;
+	border: none !important;
+	margin: 0;
+}
+
 .page-media .view-media .view-content li {
 	list-style-type: none;
 	height: 216px;
 	margin: 8px;
 	display: inline-block;
+}
+
+.page-media .view-media .view-content ul.contextual-links li {
+	height: auto;
+	margin: 0;
+	font-size: 9pt;
 }
 
 .page-media .view-media article {
