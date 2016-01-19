@@ -673,6 +673,10 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	margin-top: 3em;
 }
 
+.front article table td img {
+	height: 160px;
+}
+
 #createaccount, #createaccount:active, #createaccount:focus, #playnow, #playnow:active, #playnow:focus {
 	margin-top: auto;
 	margin-bottom: auto;
