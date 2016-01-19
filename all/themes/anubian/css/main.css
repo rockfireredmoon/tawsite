@@ -1,4 +1,3 @@
-
 /* Earth Eternal - The Anubian War */
 
 /* Global styles */
@@ -18,6 +17,7 @@ html {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  width: 100%;
 }
 
 h2 {
@@ -90,12 +90,12 @@ fieldset {
 /* Dividers */
 .fancy-separator {
 	height: 25px;
-	width: 543px;
+	width: 100%;
 	background-image: url(../images/divider-medium.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
 	margin: 0 auto;
-	padding: 0 1em;
+	/* padding: 0 1em; */
 }
 
 hr.fancy-small-divider {
@@ -213,7 +213,8 @@ hr.fancy-small-divider {
 	margin: 0.5em auto;
 	/*position: relative;
 	top: 48px; */
-	width: 765px;
+	/* width: 765px; */
+	/* max-width: 765px; */
 }
 
 .sidebars {
@@ -337,6 +338,15 @@ a.large-styled-button:hover {
 	background-image: url(../images/buttons/big-lightgreen.png);
 }
 
+
+article {
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 1em;
+	margin: 0 auto;
+	max-width: 769px; 	
+}
+
 /* Main navigation menu */
 #block-system-main-menu h2 {
 	display: none;
@@ -383,7 +393,7 @@ a.large-styled-button:hover {
 
 /* Secondary menu (tabs) */
 #block-menu-menu-media-menu {
-	width: 765px;
+	max-width: 765px; 
 	margin: 0 auto;
 }
 
@@ -393,18 +403,20 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 	background-image: url(../images/divider.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
-	margin: 0;
-	padding-left: 3em;
-	height: 40px;
+	margin: 0 auto;
+	padding-left: 5em;
+	padding-bottom: 16px;
+	/* height: 40px; */
 	opacity: 1;
-	line-height: 40px;
+	 max-width: 765px; 
+	/* line-height: 40px; */
 }
 
 .tabs-primary li, .tabs-primary li.is-active, 
 #block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail,
 #block-menu-menu-credit-shop-categories .menu li, #block-menu-menu-credit-shop-categories .menu li.is-active-trail,
 #block-menu-menu-character-leaderboards .menu li, #block-menu-menu-character-leaderboards .menu li.is-active-trail {
-	float: left;
+	/* float: left; */
 	border-top-left-radius: 4px !important;
 	border-top-right-radius: 4px !important;
 	background-color: #300;
@@ -646,13 +658,14 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 /* Home page */
 .front article {
 	text-shadow: 0px 0px 1px black;
+	background: inherit;
 }
 
 .front .front-text {
 	font-size: 10pt;
 	line-height: 1.05em;
 	text-align: center; 
-	width:  600px; 
+	/* width:  600px;  */
 	font-style: italic;
 	margin: 1em auto;
 }
@@ -674,7 +687,12 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 .front article table td img {
-	height: 160px;
+	/* max-width: 256px;
+	max-height: 256px; */
+}
+
+.front article table td {
+	width: 50%;
 }
 
 #createaccount, #createaccount:active, #createaccount:focus, #playnow, #playnow:active, #playnow:focus {
@@ -713,6 +731,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	padding: 4px;
 	background-color:rgba(0,0,0,0.6);
 	line-height: 1em;
+	text-align: center;
 }
 
 #footer table {
@@ -742,6 +761,10 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	line-height: 12px;
 }
 
+#footer table td {
+	text-align: left;
+}
+
 #footer table thead td {
 	min-width: 80px;	
 }
@@ -761,12 +784,16 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 #footer-center {	
 	margin-left: 1em;
-	float: left;
+	/* float: left; */
+}
+
+#footer-left, #footer-center, #footer-right {
+	display: inline-block;	
 }
 
 #footer-left {
 	/*width:300px;*/
-	float: left;
+	/* float: left; */
 }
 
 #footer-social {
@@ -782,7 +809,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	max-width:230px;
 	/*width:300px;*/
 	/*min-width: 120px;*/
-	float: right;
+	/* float: right; */
 	line-height: 1em;
 	font-size: 9pt;
 	text-shadow: 0px 0px 2px yellow;
@@ -852,8 +879,8 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 .node-type-document #content, .page-filter-tips #content {
 	background-color: inherit;
-	background-image: url(../images/black-trans-60.png);
-	background-repeat: repeat;
+	/* background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat; */
 }
 
 .node-type-document #content h1, .node-type-document #content h2,  .page-filter-tips #content h1,  .page-filter-tips #content h2 {
@@ -933,7 +960,9 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 /* Header */
 #header {
-	clear: none;
+	clear: both;
+	width: 100%;
+	display: block;
 	line-height: 1em;
 	font-size: 10pt;
 	margin: 0;
@@ -1759,13 +1788,8 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 /* Media */
 
-#views_slideshow_controls_text_previous_media-page a, #views_slideshow_controls_text_previous_media-page a:link, #views_slideshow_controls_text_previous_media-page a:visited, #views_slideshow_controls_text_previous_media-page a:hover,
-#views_slideshow_controls_text_next_media-page a, #views_slideshow_controls_text_next_media-page a:link, #views_slideshow_controls_text_next_media-page a:visited, #views_slideshow_controls_text_next_media-page a:hover,
-#views_slideshow_controls_text_pause_media-page a, #views_slideshow_controls_text_pause_media-page a:link, #views_slideshow_controls_text_pause_media-page a:visited, #views_slideshow_controls_text_pause_media-page a:hover,
-#views_slideshow_controls_text_previous_media_video-page a, #views_slideshow_controls_text_previous_media_video-page a:link, #views_slideshow_controls_text_previous_media_video-page a:visited, #views_slideshow_controls_text_previous_media_video-page a:hover,
-#views_slideshow_controls_text_next_media_video-page a, #views_slideshow_controls_text_next_media_video-page a:link, #views_slideshow_controls_text_next_media_video-page a:visited, #views_slideshow_controls_text_next_media_video-page a:hover,
-#views_slideshow_controls_text_pause_media_video-page a, #views_slideshow_controls_text_pause_media_video-page a:link, #views_slideshow_controls_text_pause_media_video-page a:visited, #views_slideshow_controls_text_pause_media_video-page a:hover { 
-	text-align: center;
+.page-media .view .pager a, .page-media .view .pager a:visited, .page-media .view .pager a:hover, .page-media .view .pager a:link {
+	/* text-align: center;
 	padding: 0;
 	font-size: 10pt;
 	border-top-left-radius: 0px;
@@ -1774,7 +1798,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	border-bottom-right-radius: 0px;
 	box-shadow: none;
 	margin: 0;
-	line-height: 28px;
+	line-height: 32px;
 	display: inline-block;
 	width: 99px;
 	height: 32px;
@@ -1782,14 +1806,14 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	border: none;
 	color: #ccc;
 	background-position: center;
-	background-image: url(../images/buttons/green.png);
+	background-image: url(../images/buttons/green.png); */
 }
 
-.page-media .views-slideshow-controls-text, .page-media-video .views-slideshow-controls-text {
-	margin-top: 1em;
+.page-media .view .pager a:hover {
+	/* margin-top: 1em; */
 }
 
-#views_slideshow_controls_text_next_media-page a:hover,
+/* #views_slideshow_controls_text_next_media-page a:hover,
 #views_slideshow_controls_text_previous_media-page a:hover,
 #views_slideshow_controls_text_pause_media-page a:hover,
 #views_slideshow_controls_text_next_media_video-page a:hover,
@@ -1812,7 +1836,65 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 .page-media .views_slideshow_slide, .page-media-video .views_slideshow_slide {
-	width: 769px !important;	
+	 max-width: 769px !important; 	
+} */
+
+.page-media .view-clone-of-media .item-list {
+	text-align: center;
+}
+
+.page-media .view-clone-of-media .view-content ul {
+	padding: 0;
+	display: inline;
+}
+
+.page-media .view-clone-of-media .view-content li {
+	list-style-type: none;
+	height: 216px;
+	margin: 8px;
+	display: inline-block;
+}
+
+.page-media .view-clone-of-media article {
+	width: 192px;
+	height: 100%;
+	padding: 0;
+	max-width: inherit;
+}
+.page-media .view-clone-of-media article h2 {
+	font-size: 11pt;
+	margin: 4px;
+	text-align: center;
+}
+
+.page-media .view-clone-of-media article .field-name-body {
+	display: none;
+}
+
+.page-media .view-clone-of-media article .field-type-image {
+	height: 80%;
+	text-align: center;
+    white-space: nowrap;
+}
+
+.page-media .view-clone-of-media article .field-type-image .field-item {
+	height: 100%;
+	position:relative;
+	text-align: center;
+}
+.page-media .view-clone-of-media article .field-type-image .field-items {
+	height: 100%;
+}
+
+.page-media .view-clone-of-media article .field-type-image img {
+	position:absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+	max-width: 160px;
+	max-height: 160px;
 }
 
 .page-media-video .field-name-field-video .field-item {
@@ -2637,7 +2719,6 @@ body #overlay input, body #overlay select {
 	margin-right: 0.5em;
 	font-size: smaller;
 }
-
 
 /* 
  * Browser specific hacks
