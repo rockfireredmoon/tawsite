@@ -1839,54 +1839,54 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	 max-width: 769px !important; 	
 } */
 
-.page-media .view-clone-of-media .item-list {
+.page-media .view-media .item-list {
 	text-align: center;
 }
 
-.page-media .view-clone-of-media .view-content ul {
+.page-media .view-media .view-content ul {
 	padding: 0;
 	display: inline;
 }
 
-.page-media .view-clone-of-media .view-content li {
+.page-media .view-media .view-content li {
 	list-style-type: none;
 	height: 216px;
 	margin: 8px;
 	display: inline-block;
 }
 
-.page-media .view-clone-of-media article {
+.page-media .view-media article {
 	width: 192px;
 	height: 100%;
 	padding: 0;
 	max-width: inherit;
 }
-.page-media .view-clone-of-media article h2 {
+.page-media .view-media article h2 {
 	font-size: 11pt;
 	margin: 4px;
 	text-align: center;
 }
 
-.page-media .view-clone-of-media article .field-name-body {
+.page-media .view-media article .field-name-body {
 	display: none;
 }
 
-.page-media .view-clone-of-media article .field-type-image {
+.page-media .view-media article .field-type-image {
 	height: 80%;
 	text-align: center;
     white-space: nowrap;
 }
 
-.page-media .view-clone-of-media article .field-type-image .field-item {
+.page-media .view-media article .field-type-image .field-item {
 	height: 100%;
 	position:relative;
 	text-align: center;
 }
-.page-media .view-clone-of-media article .field-type-image .field-items {
+.page-media .view-media article .field-type-image .field-items {
 	height: 100%;
 }
 
-.page-media .view-clone-of-media article .field-type-image img {
+.page-media .view-media article .field-type-image img {
 	position:absolute;
     top: 0;
     bottom: 0;
