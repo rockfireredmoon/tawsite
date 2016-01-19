@@ -1849,10 +1849,10 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	display: inline;
 }
 
-.page-media ul.contextual-links {
+.page-media .view-media article  ul.contextual-links {
 	background: none !important;
 	border: none !important;
-	margin: 0;
+	margin: 0 auto;
 }
 
 .page-media .view-media .view-content li {
@@ -1862,7 +1862,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	display: inline-block;
 }
 
-.page-media .view-media .view-content ul.contextual-links li {
+.page-media .view-media article ul.contextual-links li {
 	height: auto;
 	margin: 0;
 	font-size: 9pt;
