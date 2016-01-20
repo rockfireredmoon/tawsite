@@ -290,6 +290,10 @@ input[type=submit] {
 }
 
 /* General styles */
+#page {
+	max-width: inherit;
+}
+
 #page-title {
 	text-shadow: 0px 0px  3px yellow;
 	text-align: center;
@@ -1792,68 +1796,84 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 /* Media */
 
-.page-media .view-media .item-list {
+.page-media .view-media .item-list, .page-media .view-media-video .item-list {
 	text-align: center;
 	max-width: 765px;
 	margin: auto;
 }
 
-.page-media .view-media .view-content ul {
+.page-media .view-media .view-content ul, .page-media .view-media-video .view-content ul {
 	padding: 0;
 	display: inline;
 }
 
-.page-media .view-media article  ul.contextual-links {
+.page-media .view-media article  ul.contextual-links, .page-media .view-media-video article  ul.contextual-links {
 	background: none !important;
 	border: none !important;
 	margin: 0 auto;
 }
 
-.page-media .view-media .view-content li {
+.page-media .view-media .view-content li, .page-media .view-media-video .view-content li {
 	list-style-type: none;
-	height: 216px;
 	margin: 8px;
 	display: inline-block;
 }
 
-.page-media .view-media article ul.contextual-links li {
+.page-media .view-media .view-content li {
+	height: 216px;
+}
+
+.page-media .view-media-video .view-content li {
+	height: 400px;
+}
+
+.page-media .view-media article ul.contextual-links li, .page-media .view-media-videop article ul.contextual-links li {
 	height: auto;
 	margin: 0;
 	font-size: 9pt;
 }
 
-.page-media .view-media article {
-	width: 192px;
+.page-media .view-media article, .page-media .view-media-video article {
 	height: 100%;
 	padding: 0;
 	max-width: inherit;
 }
-.page-media .view-media article h2 {
+
+
+.page-media .view-media article {
+	width: 192px;
+}
+
+.page-media .view-media-video article {
+	width: 500px;
+}
+
+.page-media .view-media article h2, .page-media .view-media-video article h2 {
 	font-size: 11pt;
 	margin: 4px;
 	text-align: center;
 }
 
-.page-media .view-media article .field-name-body {
+.page-media .view-media article .field-name-body, .page-media .view-media-video article .field-name-body {
 	display: none;
 }
 
-.page-media .view-media article .field-type-image {
+.page-media .view-media article .field-type-image, .page-media .view-media-video article .field-type-image {
 	height: 80%;
 	text-align: center;
     white-space: nowrap;
 }
 
-.page-media .view-media article .field-type-image .field-item {
+.page-media .view-media article .field-type-image .field-item, .page-media .view-media-video article .field-type-image .field-item {
 	height: 100%;
 	position:relative;
 	text-align: center;
 }
-.page-media .view-media article .field-type-image .field-items {
+.page-media .view-media article .field-type-image .field-items, .page-media .view-media-video article .field-type-image .field-items {
 	height: 100%;
 }
 
-.page-media .view-media article .field-type-image img {
+.page-media .view-media article .field-type-image img, .page-media .view-media-video article .field-type-image img {
 	position:absolute;
     top: 0;
     bottom: 0;
