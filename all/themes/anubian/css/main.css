@@ -1901,6 +1901,10 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	text-shadow: 0px 0px 2px #000;	
 }
 
+.page-media-video .views-slideshow-cycle-main-frame {
+	margin: auto !important;
+}
+
 .page-media-video .field-name-body {
 	text-align: center;
 	font-style: italic;
@@ -2418,7 +2422,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	background-repeat: repeat;
 	padding: 8px;
 	margin: 1em auto 0 auto;
-	width: 765px;
+	max-width: 765px;
 }
 
 .section-votes article .form-radios {
@@ -2522,6 +2526,18 @@ article .node-readmore a:hover, article .comment-add a:hover {
     background: #800;
     margin: 2px;
     height: 12px;
+}
+
+.page-node-advpoll-votes #content {
+	max-width: 765px;
+}
+
+.page-node-advpoll-votes  td.active {
+	background-color: inherit;
+}
+
+.page-node-advpoll-votes #advpoll-clear-votes-form input[type=submit] {
+	font-size: 8pt;
 }
 
 /* Launch */
