@@ -1601,7 +1601,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 .section-chat .form-item {
-	margin: 0;
+	margin: 8px;
 	height: 32px;
 	line-height: 32px;
 }
