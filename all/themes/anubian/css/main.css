@@ -351,6 +351,38 @@ article {
 	max-width: 769px; 	
 }
 
+/* Comment subscription */
+
+
+a.long-styled-button, a.long-styled-button:link, a.long-styled-button:visited, a.long-styled-button:hover,
+.subscriptions-subscribe a, .subscriptions-subscribe a:link, .subscriptions-subscribe a:visited, .subscriptions-subscribe a:hover {
+	text-align: center;
+	padding: 0;
+	box-shadow: none;
+	margin: 0;
+	line-height: 32px;
+	display: inline-block;
+	font-weight: normal;
+	font-size: inherit;
+	width: 160px;
+	height: 32px;
+	background-color: inherit;
+	border: none;
+	text-shadow: 0px 0px 2px #000;
+	color: white;
+	background-position: center;
+	background-image: url(../images/buttons/long-green.png);
+}
+
+a.long-styled-button:hover, .subscriptions-subscribe a:hover {
+	background-image: url(../images/buttons/light-long-green.png);
+}
+
+ul.links  {
+	display: inline-block;
+	margin: 1em 0 0  0;
+}
+
 /* Main navigation menu */
 #block-system-main-menu h2 {
 	display: none;
@@ -396,14 +428,15 @@ article {
 }
 
 /* Secondary menu (tabs) */
-#block-menu-menu-media-menu {
+#block-menu-menu-media-menu, #block-menu-menu-developer-tools-menu {
 	max-width: 765px; 
 	margin: 0 auto;
 }
 
 /* Tabs */
 
-ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-leaderboards .menu, #block-menu-menu-credit-shop-categories .menu {
+ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-leaderboards .menu, #block-menu-menu-credit-shop-categories .menu,
+#block-menu-menu-developer-tools-menu .menu {
 	background-image: url(../images/divider.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
@@ -418,6 +451,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li, .tabs-primary li.is-active, 
 #block-menu-menu-media-menu .menu li, #block-menu-menu-media-menu .menu li.is-active-trail,
+#block-menu-menu-developer-tools-menu .menu li, #block-menu-menu-developer-tools-menu .menu li.is-active-trail,
 #block-menu-menu-credit-shop-categories .menu li, #block-menu-menu-credit-shop-categories .menu li.is-active-trail,
 #block-menu-menu-character-leaderboards .menu li, #block-menu-menu-character-leaderboards .menu li.is-active-trail {
 	/* float: left; */
@@ -436,6 +470,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li a, 
 #block-menu-menu-media-menu .menu li a, #block-menu-menu-media-menu .menu li a:active, #block-menu-menu-media-menu .menu li a:hover, #block-menu-menu-media-menu .menu li a:visited,
+#block-menu-menu-developer-tools-menu .menu li a, #block-menu-menu-developer-tools-menu .menu li a:active, #block-menu-menu-developer-tools-menu .menu li a:hover, #block-menu-menu-developer-tools-menu .menu li a:visited,
 #block-menu-menu-credit-shop-categories .menu li a, #block-menu-menu-credit-shop-categories .menu li a:active, #block-menu-menu-credit-shop-categories .menu li a:hover, #block-menu-menu-credit-shop-categories .menu li a:visited,
 #block-menu-menu-character-leaderboards .menu li a, #block-menu-menu-character-leaderboards .menu li a:active, #block-menu-menu-character-leaderboards .menu li a:hover, #block-menu-menu-character-leaderboards .menu li a:visited {
 	background-color: #200;
@@ -451,6 +486,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li.is-active, 
 #block-menu-menu-media-menu .menu li.is-active-trail,
+#block-menu-menu-developer-tools-menu .menu li.is-active-trail,
 #block-menu-menu-character-leaderboards .menu li.is-active-trail,
 #block-menu-menu-credit-shop-categories .menu li.is-active-trail {
 	background-color: #500;
@@ -459,6 +495,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li.is-active a, 
 #block-menu-menu-media-menu .menu li.is-active-trail a,
+#block-menu-menu-developer-tools-menu .menu li.is-active-trail a,
 #block-menu-menu-character-leaderboards .menu li.is-active-trail a, 
 #block-menu-menu-credit-shop-categories .menu li.is-active-trail a {	
 	background-color: inherit;
@@ -467,6 +504,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li a,
 #block-menu-menu-media-menu .menu li a,
+#block-menu-menu-developer-tools-menu .menu li a,
 #block-menu-menu-character-leaderboards .menu li a,
 #block-menu-menu-credit-shop-categories .menu li a {
 	transition: none;	
@@ -474,6 +512,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary a:hover,
 #block-menu-menu-media-menu .menu a:hover,
+#block-menu-menu-developer-tools-menu .menu a:hover,
 #block-menu-menu-character-leaderboards .menu a:hover,
 #block-menu-menu-credit-shop-categories .menu a:hover  {
 	background-color: #500;
@@ -481,6 +520,7 @@ ul.tabs-primary, #block-menu-menu-media-menu .menu, #block-menu-menu-character-l
 
 .tabs-primary li.is-active a, .tabs-primary li a:hover,
 #block-menu-menu-media-menu .menu li.is-active-trail a, #block-menu-menu-media-menu .menu li a:hover,mary li a:hover,
+#block-menu-menu-developer-tools-menu .menu li.is-active-trail a, #block-menu-menu-developer-tools-menu .menu li a:hover,mary li a:hover,
 #block-menu-menu-character-leaderboards .menu li.is-active-trail a, #block-menu-menu-character-leaderboards .menu li a:hover,
 #block-menu-menu-character-leaderboards .menu li.is-active-trail a, #block-menu-menu-character-leaderboards .menu li a:hover {
 	color: white;
@@ -822,6 +862,15 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 /* User */
 .page-user {	
 	text-shadow: 0px 0px 2px black;
+}
+
+.page-user form {
+	background-color: inherit;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding:  8px;
+	max-width: 765px; 
+	margin: 0 auto;
 }
 
 .logged-in.page-user h3, #edit-picture .fieldset-legend, #edit-timezone .fieldset-legend {
@@ -2714,6 +2763,26 @@ body #overlay input, body #overlay select {
 #block-eechat-eecurrencyinfo .credits label {
 	display: inline;
 	width: 92px;
+}
+
+/*
+ * Developer tools 
+ */
+#block-menu-menu-developer-tools-menu .block-title  {
+	text-align: center;
+}
+
+/*
+ * Developer downloads
+ */
+.node-type-developer-download .field-label {
+	float: left;
+	width: 10em;
+	text-shadow: 0px 0px 1px yellow;
+}
+
+.node-type-developer-download .field-name-body .field-label {
+	display: none;
 }
 
 /*
