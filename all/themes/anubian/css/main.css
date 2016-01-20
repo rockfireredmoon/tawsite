@@ -1786,7 +1786,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 .section-news article {
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
-	margin: 0 0 1em 0;
+	margin: 0 auto 1em auto;
 	padding: 8px;
 }
 
