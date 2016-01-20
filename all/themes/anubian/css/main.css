@@ -1556,8 +1556,6 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 #block-eechat-eefullchat-chat {
-	max-width: 765px;
-	margin: auto;
 	max-height: 260px;
 	overflow-y: auto;
 	width: 100%;
@@ -1566,6 +1564,8 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 .section-chat #eechat-chat-form {
 	padding-top: 2em;
+	max-width: 765px;
+	margin: auto;
 	background-image: url(../images/divider-medium.png);
 	background-position: top center;
 	background-repeat: no-repeat;
