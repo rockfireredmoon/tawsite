@@ -1132,6 +1132,17 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	display: none;	
 }
 
+.page-forum #forum {
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	margin: 0 auto 1em auto;
+	padding: 8px;
+}
+
+.forum-node-create-links-top {
+	padding: 0;
+}
+
 .section-forum #content {
 	max-width: 765px;
 }
