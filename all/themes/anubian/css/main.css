@@ -1543,10 +1543,12 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 #block-eechat-eefullchat-chat {
-	width: 100%;
+	max-width: 765px;
+	margin: auto;
 	/*
 	max-height: 580px;
 	*/
+	
 	min-height: 380px;
 	font-size: 11pt;
 	background-image: url(../images/black-trans-60.png);
