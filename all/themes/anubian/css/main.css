@@ -111,6 +111,28 @@ hr.fancy-small-divider {
 	background-position: center;
 }
 
+/* Pagers */
+.pager {
+	margin: 0;
+}
+
+.pager a, .pager a:visited, .pager a:link, .pager a:hover, .pager a:active {
+	background: inherit !important;
+	border: inherit !important;
+	opacity: 0.5;
+}
+
+.pager a:hover {
+	text-decoration: underline !important;
+	opacity: 1 !important;
+	color: white !important;
+}
+
+.pager .pager-current {
+	background: inherit !important;
+	color: white !important;
+	text-shadow: 0px 0px 1px yellow !important; 
+}
 
 /* Various 'icon' blocks */
 
@@ -363,7 +385,7 @@ a.long-styled-button, a.long-styled-button:link, a.long-styled-button:visited, a
 	line-height: 32px;
 	display: inline-block;
 	font-weight: normal;
-	font-size: inherit;
+	font-size: 10pt;
 	width: 160px;
 	height: 32px;
 	background-color: inherit;
@@ -736,7 +758,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 .front article table td {
-	width: 50%;
+	/*max-width: 300px;*/
 }
 
 #createaccount, #createaccount:active, #createaccount:focus, #playnow, #playnow:active, #playnow:focus {
@@ -841,10 +863,13 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 #footer-social {
-	padding: 2em 0 0 1em;
+	margin: 0 1em 0 1em;
+	padding: 0;
+	position: relative;
+	bottom: 2em;
 	/*width:300px;*/
 	/*min-width: 120px;*/
-	float: left;
+	display: inline-block;
 	line-height: 1em;
 	font-size: 10pt;
 }
@@ -1179,6 +1204,13 @@ article .node-readmore a:hover, article .comment-add a:hover {
 /* Forums */
 .page-forum .forum-table-superheader {
 	display: none;	
+}
+
+.section-forum .forum-pager {
+}
+
+.node-type-forum #content {
+	max-width: 765px;
 }
 
 .page-forum #forum {
@@ -1860,6 +1892,11 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 /* Media */
 
+.node-type-media .field-type-image .field-label {
+	display: none;
+}
+
+
 .page-media .view-media .item-list, .page-media .view-media-video .item-list {
 	text-align: center;
 	max-width: 765px;
@@ -2063,6 +2100,8 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
 	padding: 8px;
+	margin: 1em auto;
+	max-width: 765px;
 }
 
 .section-character #content h2 {
