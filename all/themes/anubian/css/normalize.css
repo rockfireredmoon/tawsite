@@ -376,6 +376,20 @@ img {
   width: auto;
 }
 
+// Styles for Firefox
+@-moz-document url-prefix() {
+    img {
+        width: 100%;
+    }
+}
+
+// Styles for IE10
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	img {
+        width: 100%;
+    }
+}
+
 /* Correct overflow displayed oddly in IE 9. */
 svg:not(:root) {
   overflow: hidden;
