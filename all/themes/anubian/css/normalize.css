@@ -376,18 +376,6 @@ img {
   width: auto;
 }
 
-@-moz-document url-prefix() {
-    img {
-        width: 100%;
-    }
-}
-
-@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	img {
-        width: 100%;
-    }
-}
-
 /* Correct overflow displayed oddly in IE 9. */
 svg:not(:root) {
   overflow: hidden;
