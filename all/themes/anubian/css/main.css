@@ -1897,7 +1897,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 
-.page-media .view-media .item-list, .page-media .view-media-video .item-list {
+.page-media .view-media .item-list, .page-media .view-media-video .item-list, .page-media .view-fan-artwork-and-screenshots .item-list {
 	text-align: center;
 	max-width: 765px;
 	margin: auto;
@@ -1914,13 +1914,13 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	margin: 0 auto;
 }
 
-.page-media .view-media .view-content li, .page-media .view-media-video .view-content li {
+.page-media .view-media .view-content li, .page-media .view-media-video .view-content li, .page-media .view-fan-artwork-and-screenshots .view-content li {
 	list-style-type: none;
 	margin: 8px;
 	display: inline-block;
 }
 
-.page-media .view-media .view-content li {
+.page-media .view-media .view-content li, .page-media .view-fan-artwork-and-screenshots .view-content li {
 	height: 216px;
 }
 
