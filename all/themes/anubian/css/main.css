@@ -727,6 +727,21 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background: inherit;
 }
 
+
+/* Hack for image resizing on Firefox */
+
+@-moz-document url-prefix() {
+    .front article img {
+        width: 100%;
+    }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.front article img {
+        width: 100%;
+    }
+}
+
 .front .front-text {
 	font-size: 10pt;
 	line-height: 1.05em;
