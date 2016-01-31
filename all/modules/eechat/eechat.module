@@ -54,6 +54,14 @@ function eechat_permission() {
 					'title' => t('View item details'),
 					'description' => t('May view item details.'),
 			),
+			'server' => array(
+					'title' => t('View game server status'),
+					'description' => t('May view the game server status.'),
+			),
+			'start server' => array(
+					'title' => t('Start game server'),
+					'description' => t('May start the game server.'),
+			),
 	);
 }
 
@@ -81,7 +89,7 @@ function eechat_menu() {
 	
 	$items ['leaderboard'] = array (
 			'page callback' => 'eechat_leaderboard',
-    		'access arguments' => array('leaderboard'), 
+    		'access arguments' => array('leaderboards'), 
 			'title' => 'Leaderboard',
     		'file' => 'eechat.stats.inc' 
 	);
@@ -105,6 +113,17 @@ function eechat_menu() {
     		'access arguments' => array('clans'),
 			'title' => 'Clans',
     		'file' => 'eechat.clans.inc'
+	);
+	
+	$items ['server'] = array (
+			'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+			'page arguments' => array (
+					'eechat_server_form' 
+			), 
+			/*'page callback' => 'eechat_server',*/
+    		'access arguments' => array('server'),
+			'title' => 'Server',
+    		'file' => 'eechat.server.inc'
 	);
 	
 	$items ['guild'] = array (
