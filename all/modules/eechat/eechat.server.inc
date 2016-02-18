@@ -3,64 +3,63 @@
 require_once dirname(__FILE__) . '/eechat.common.inc';
 
 
-function eechat_server_start_main($form, &$form_state) {
-	$element = $form ['box_main'];
+function eechat_server_stop($form, &$form_state) {
+	//form_set_error ( 'message', t ( 'You must create a character in-game to be able to chat from the website.' ) );
+
+	$server_name = explode(" ", $form_state['values'][$form_state['triggering_element']['#name']])[1];
+	error_log("Server name " . $server_name);
+	$service_name=$form_state['values']["service_name_" . $server_name ];
+	error_log("Service name " . $service_name);
+	
+	// Sanity check service name
+	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
+		throw new Exception("An incorrect service name was provided.");
+	}
+	
+	$element = $form ['box_' . $server_name];
+	$element ['#markup'] = "<h1>DONE!</h1>";
+	$_SESSION['stopping_' . $server_name] = true;
+	$_SESSION['starting_' . $server_name] = false;
+	$_SESSION['state_expire_' . $server_name ] = time() + 30;
+	
+	_run_ssh("nohup service " . $service_name . " stop &");
+	
 	return $element;
 }
 
-function eechat_server_stop_main($form, &$form_state) {
-	$element = $form ['box_main'];
-	return $element;
-}
+function eechat_server_start($form, &$form_state) {
+	
+	//form_set_error ( 'message', t ( 'You must create a character in-game to be able to chat from the website.' ) );
 
-function eechat_server_stop_dev($form, &$form_state) {
-			form_set_error ( 'message', t ( 'You must create a character in-game to be able to chat from the website.' ) );
+	$server_name = explode(" ", $form_state['values'][$form_state['triggering_element']['#name']])[1];
+	error_log("Server name " . $server_name);
+	$service_name=$form_state['values']["service_name_" . $server_name ];
+	error_log("Service name " . $service_name);
+	
+	// Sanity check service name
+	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
+		throw new Exception("An incorrect service name was provided.");
+	}
+	
+	
 	$element = $form ['box_dev'];
 	$element ['#markup'] = "<h1>DONE!</h1>";
-	$_SESSION['stopping_dev'] = true;
-	$_SESSION['starting_dev'] = false;
-	return $element;
-}
-
-function eechat_server_start_dev($form, &$form_state) {
-	$element = $form ['box_dev'];
 	$_SESSION['stopping_dev'] = false;
 	$_SESSION['starting_dev'] = true;
+	$_SESSION['state_expire_dev'] = time() + 30;
+
+	_run_ssh("nohup service hypersocket-service start &");
+	
 	return $element;
 }
-
-/*function eechat_server_submit_callback($form, $form_state) {
-	$element = $form ['box'];
-	$element = $form ['box'];
-	if(strlen($form_state ['values'] ['message']) > 0) {
-		$data = array (
-				'msg' => urlencode ( $form_state ['values'] ['message'] ),
-				'from' => urlencode ( $form_state ['values'] ['character'] ),
-				'channel' => urlencode ( $form_state ['values'] ['channel'] )
-		);
-		list ( $data, $request_headers ) = _doHTTP ( "/chat", "POST", $data );
-
-		$chat = json_decode ( $data );
-		$markup = _render_chat ( $chat );
-		$markup = str_replace ( "'", "\'", $markup );
-		$element ['#markup'] = "<script type=\"text/javascript\">document.getElementById('block-eechat-eefullchat-chat').innerHTML = '<ul>" . $markup . "</ul>' ; document.getElementById('edit-message').value = ''; </script>";
-	}
-	$element ['#markup'] = "<h1>DONE!</h1>";
-	return $element;
-}
-	*/
 
 function eechat_server_form($form, &$form_state) {
 	global $user;
 	
-	/*drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );*/
-	$urlp = "/up" ;
-	list ( $data, $request_headers ) = _doHTTP ( $urlp );
-	
 	// Info
 	$markup = "<div id=\"server-status\">\n";
 	$markup = $markup . "<p class=\"helpbox server-description\">\n";
-	$markup = $markup . "This page shows the current status of our servers.";
+	$markup = $markup . "This page shows the current status of our servers. NOTE. FOR NOW, YOU WILL HAVE TO MANUALLY REFRESH THIS PAGE. THIS IS TEMPORARY";
 	$markup = $markup . "</p>\n";
 	$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
 	$markup = $markup . "</div>\n";
@@ -69,132 +68,95 @@ function eechat_server_form($form, &$form_state) {
 			'#type' => 'markup',
 			'#markup' => $markup
 	);
-
-	// Dev server
-	$main_status = "down";
-	$main_status_text = "Server not responding";
 	
-	if(isset($_SESSION['starting_dev']) && $_SESSION['starting_dev']) {
-		$main_status = "starting";
-		$main_status_text = "You have requested the server start. Please wait";
-	}
-	else if(isset($_SESSION['stopping_dev']) && $_SESSION['stopping_dev']) {
-		$main_status = "stopping";
-		$main_status_text = "You have requested the server stop. Please wait";
-	}
-	else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-		$clansdata = json_decode ( $data );
-		$main_status = "up";
-		$main_status_text = "Server accepting requests";
-	}
-	else if (isset ( $request_headers->http_code ) && $request_headers->http_code != 0) {
-		$main_status_text = "Server up, but not accepting requests. Response code " . $request_headers->http_code ;
-	}
+	_build_server_status_markup("dev", "iceee-dev", "Development (TAWD)", $form);
+	_build_server_status_markup("main", "iceee", "Official (SOAD)", $form);
 	
-	$markup = "<div class=\"server-status main-server\">\n";
-	$markup = $markup . "<h2>Developer Server (TAWD)</h2>";
-	$markup = $markup . "<label class=\"status status-" . $main_status . "\">" . $main_status . "</label>";
-	$markup = $markup . "<span class=\"status-detail\">" . $main_status_text . "</span>";
-	$markup = $markup . "</div>\n";
-	
-	$form ['box_dev'] = array (
-			'#type' => 'markup',
-			'#prefix' => '<div class="server-status-box server-status-box-dev">',
-			'#suffix' => '</div>',
-			'#markup' => $markup
-	);
-	
-	if($main_status === "up")
-		$form ['stop_dev'] = array (
-				'#type' => 'submit',
-				'#value' => 'Stop1',
-				'#submit' => array('eechat_server_stop_dev')
-		);
-	else if($main_status === "down")
-		$form ['start_dev'] = array (
-				'#type' => 'submit',
-				'#value' => 'Start1',
-				'#submit' => array('eechat_server_start_dev')
-		);
-	
-	// Main server
-	$main_status = "down";
-	$main_status_text = "Server not responding";
-	
-	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-		$clansdata = json_decode ( $data );
-		$main_status = "up";
-		$main_status_text = "Server accepting requests";
-	}
-	else if (isset ( $request_headers->http_code ) && $request_headers->http_code != 0) {
-		$main_status_text = "Server up, but not accepting requests. Response code " . $request_headers->http_code ;
-	}
-	
-	$markup = "<div class=\"server-status main-server\">\n";
-	$markup = $markup . "<h2>Main Server (SOAD)</h2>";
-	$markup = $markup . "<label class=\"status status-" . $main_status . "\">" . $main_status . "</label>";
-	$markup = $markup . "<span class=\"status-detail\">" . $main_status_text . "</span>";
-	$markup = $markup . "</div>\n";
-	
-	$form ['box_main'] = array (
-			'#type' => 'markup',
-			'#prefix' => '<div class="fancy-separator"></div><div class="server-status-box server-status-box-main">',
-			'#suffix' => '</div>',
-			'#markup' => $markup
-	);	
-	if($main_status === "up")
-		$form ['stop_main'] = array (
-				'#type' => 'submit',
-				'#value' => 'Stop',
-				'#submit' => array('eechat_server_stop_main')
-		);
-	else if($main_status === "down")
-		$form ['start_main'] = array (
-				'#type' => 'submit',
-				'#value' => 'Start',
-				'#submit' => array('eechat_server_start_main')
-		);
-
 	return $form;
 }
 
-function eechat_server() {
-	/*drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eeleaderboard.js' );*/
-	$urlp = "/up" ;
-	list ( $data, $request_headers ) = _doHTTP ( $urlp );
-	$markup = "<div id=\"block-eechat-server\">\n";
-	$markup = $markup . "<p class=\"helpbox server-description\">\n";
-	$markup = $markup . "This page shows the current status of our servers.";
-	$markup = $markup . "</p>\n";
-	$markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+function _build_server_status_markup($server_name, $service_name, $server_fullname, &$form) {
+	// Make sure the current state transition has not expired
+	if(!isset($_SESSION['state_expire_' . $server_name ]) || ( isset($_SESSION['state_expire_' . $server_name]) && time() > $_SESSION['state_expire_' . $server_name])) {
+		$_SESSION['stopping_' . $server_name] = false;
+		$_SESSION['starting_' . $server_name] = false;
+	}
 	
+	// Dev server
 	$main_status = "down";
-	$main_status_text = "Server not responding";
+	$main_status_text = "Server is not running";
 	
-	if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-		$clansdata = json_decode ( $data );
-		$main_status = "up";
-		$main_status_text = "Server accepting requests";
+	if(isset($_SESSION['starting_' . $server_name]) && $_SESSION['starting_' . $server_name]) {
+		$main_status = "starting";
+		$main_status_text = "You have requested the server start. Please wait";
 	}
-	else if (isset ( $request_headers->http_code ) && $request_headers->http_code != 0) { 
-		$main_status_text = "Server up, but not accepting requests. Response code " . $request_headers->http_code ;
+	else if(isset($_SESSION['stopping_' . $server_name]) && $_SESSION['stopping_' . $server_name]) {
+		$main_status = "stopping";
+		$main_status_text = "You have requested the server stop. Please wait";
 	}
-		
-	$markup = $markup . "<div class=\"server-status main-server\">\n";
-	$markup = $markup . "<h2>Developer Server (TAWD)</h2>";
-	$markup = $markup . "<label>Developer Server (TAWD)</label>";
-	$markup = $markup . "<span class=\"status\">" . $main_status . "</span>";
+	else {
+		if(strpos(_run_ssh("service " . $service_name . " status"), "stopped") === FALSE) {
+			$main_status = "up";
+			$main_status_text = "Server is running";
+		}
+	}
+	
+	$markup = "<div class=\"server-status " . $server_name . "-server\">\n";
+	$markup = $markup . "<h2>" . $server_fullname . "</h2>";
+	$markup = $markup . "<label class=\"status status-" . $main_status . "\">" . $main_status . "</label>";
 	$markup = $markup . "<span class=\"status-detail\">" . $main_status_text . "</span>";
 	$markup = $markup . "</div>\n";
 	
+	error_log("MARKUOP: " . $markup);
 	
-	$markup = $markup . "</div>\n";
-	
-	$page = array (
+	$form ['box_' . $server_name] = array (
 			'#type' => 'markup',
-			'#markup' => $markup 
+			'#prefix' => '<div class="server-status-box server-status-box-' . $server_name . '">',
+			'#suffix' => '</div>',
+			'#markup' => $markup
 	);
-	return $page;
+	
+	$form ['service_name_' . $server_name ] = array (
+			'#type' => 'hidden',
+			'#value' => $service_name
+	);
+	
+	if($main_status === "up")
+		$form ['stop_' . $server_name] = array (
+				'#type' => 'submit',
+				'#value' => 'Stop ' . $server_name,
+				'#submit' => array('eechat_server_stop')
+	);
+	else if($main_status === "down")
+		$form ['start_' . $server_name ] = array (
+				'#type' => 'submit',
+				'#value' => 'Start ' . $server_name,
+				'#submit' => array('eechat_server_start')
+	);
+	error_log("DONE MARKUOP: " . $markup);
 }
 
+function _run_ssh($command) {
 
+	$connection = ssh2_connect('iceee.servegame.com', 22);
+	ssh2_auth_pubkey_file($connection, 'root', '/var/keys/iceee-id_dsa.pub', '/var/keys/iceee-id_dsa');
+	$stream = ssh2_exec($connection, $command);
+
+	$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+
+	// Enable blocking for both streams
+	stream_set_blocking($errorStream, true);
+	stream_set_blocking($stream, true);
+
+	$output = stream_get_contents($stream);
+
+	// Whichever of the two below commands is listed first will receive its appropriate output.  The second command receives nothing
+	error_log("Output: " . $output);
+	error_log("Error: " . stream_get_contents($errorStream));
+
+	// Close the streams
+	fclose($errorStream);
+	fclose($stream);
+
+	return $output;
+}

@@ -120,7 +120,6 @@ function eechat_menu() {
 			'page arguments' => array (
 					'eechat_server_form' 
 			), 
-			/*'page callback' => 'eechat_server',*/
     		'access arguments' => array('server'),
 			'title' => 'Server',
     		'file' => 'eechat.server.inc'
