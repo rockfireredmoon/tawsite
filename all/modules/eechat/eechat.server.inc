@@ -138,7 +138,10 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 
 function _run_ssh($command) {
 
-	$connection = ssh2_connect('iceee.servegame.com', 22);
+	$connection = ssh2_connect('213.138.110.94', 22);
+	if(!$connection) {
+		throw new Exception("Cannot connect to server");
+	}
 	ssh2_auth_pubkey_file($connection, 'root', '/var/keys/iceee-id_dsa.pub', '/var/keys/iceee-id_dsa');
 	$stream = ssh2_exec($connection, $command);
 
