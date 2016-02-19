@@ -27,24 +27,19 @@ function eechat_server_stop($form, &$form_state) {
 
 function eechat_server_start($form, &$form_state) {
 	
-	//form_set_error ( 'message', t ( 'You must create a character in-game to be able to chat from the website.' ) );
-
 	$server_name = explode(" ", $form_state['values'][$form_state['triggering_element']['#name']])[1];
-	error_log("Server name " . $server_name);
 	$service_name=$form_state['values']["service_name_" . $server_name ];
-	error_log("Service name " . $service_name);
 	
 	// Sanity check service name
 	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
 		throw new Exception("An incorrect service name was provided.");
 	}
 	
-	
-	$element = $form ['box_dev'];
+	$element = $form ['box_' . $server_name ];
 	$element ['#markup'] = "<h1>DONE!</h1>";
-	$_SESSION['stopping_dev'] = false;
-	$_SESSION['starting_dev'] = true;
-	$_SESSION['state_expire_dev'] = time() + 90;
+	$_SESSION['stopping_' . $server_name ] = false;
+	$_SESSION['starting_' . $server_name ] = true;
+	$_SESSION['state_expire_' . $server_name ] = time() + 90;
 
 	_run_ssh("nohup service " . $service_name . " start &");
 	
@@ -93,7 +88,7 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 		$main_status_text = "You have requested the server stop. Please wait";
 	}
 	else {
-		if(strpos(_run_ssh("service " . $service_name . " status"), "stopped") === FALSE && strpos(_run_ssh("service " . $service_name . " status"), "is not running") === FALSE) {
+		if($started) {
 			$main_status = "up";
 			$main_status_text = "Server is running";
 		}
