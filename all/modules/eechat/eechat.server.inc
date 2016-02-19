@@ -88,7 +88,7 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 		$main_status_text = "You have requested the server stop. Please wait";
 	}
 	else {
-		if($started) {
+		if(strpos(_run_ssh("service " . $service_name . " status"), "stopped") === FALSE && strpos(_run_ssh("service " . $service_name . " status"), "is not running") === FALSE) {
 			$main_status = "up";
 			$main_status_text = "Server is running";
 		}
