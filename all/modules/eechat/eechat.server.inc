@@ -18,7 +18,7 @@ function eechat_server_stop($form, &$form_state) {
 	$element ['#markup'] = "<h1>DONE!</h1>";
 	$_SESSION['stopping_' . $server_name] = true;
 	$_SESSION['starting_' . $server_name] = false;
-	$_SESSION['state_expire_' . $server_name ] = time() + 90;
+	$_SESSION['state_expire_' . $server_name ] = time() + 30;
 	
 	_run_ssh("nohup service " . $service_name . " stop &");
 	
@@ -39,7 +39,7 @@ function eechat_server_start($form, &$form_state) {
 	$element ['#markup'] = "<h1>DONE!</h1>";
 	$_SESSION['stopping_' . $server_name ] = false;
 	$_SESSION['starting_' . $server_name ] = true;
-	$_SESSION['state_expire_' . $server_name ] = time() + 90;
+	$_SESSION['state_expire_' . $server_name ] = time() + 30;
 
 	_run_ssh("nohup service " . $service_name . " start &");
 	
