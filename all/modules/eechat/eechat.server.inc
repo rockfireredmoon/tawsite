@@ -7,9 +7,7 @@ function eechat_server_stop($form, &$form_state) {
 	//form_set_error ( 'message', t ( 'You must create a character in-game to be able to chat from the website.' ) );
 
 	$server_name = explode(" ", $form_state['values'][$form_state['triggering_element']['#name']])[1];
-	error_log("Server name " . $server_name);
 	$service_name=$form_state['values']["service_name_" . $server_name ];
-	error_log("Service name " . $service_name);
 	
 	// Sanity check service name
 	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
@@ -20,7 +18,7 @@ function eechat_server_stop($form, &$form_state) {
 	$element ['#markup'] = "<h1>DONE!</h1>";
 	$_SESSION['stopping_' . $server_name] = true;
 	$_SESSION['starting_' . $server_name] = false;
-	$_SESSION['state_expire_' . $server_name ] = time() + 30;
+	$_SESSION['state_expire_' . $server_name ] = time() + 90;
 	
 	_run_ssh("nohup service " . $service_name . " stop &");
 	
@@ -46,7 +44,7 @@ function eechat_server_start($form, &$form_state) {
 	$element ['#markup'] = "<h1>DONE!</h1>";
 	$_SESSION['stopping_dev'] = false;
 	$_SESSION['starting_dev'] = true;
-	$_SESSION['state_expire_dev'] = time() + 30;
+	$_SESSION['state_expire_dev'] = time() + 90;
 
 	_run_ssh("nohup service hypersocket-service start &");
 	
@@ -107,8 +105,6 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 	$markup = $markup . "<span class=\"status-detail\">" . $main_status_text . "</span>";
 	$markup = $markup . "</div>\n";
 	
-	error_log("MARKUOP: " . $markup);
-	
 	$form ['box_' . $server_name] = array (
 			'#type' => 'markup',
 			'#prefix' => '<div class="server-status-box server-status-box-' . $server_name . '">',
@@ -133,12 +129,11 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 				'#value' => 'Start ' . $server_name,
 				'#submit' => array('eechat_server_start')
 	);
-	error_log("DONE MARKUOP: " . $markup);
 }
 
 function _run_ssh($command) {
 
-	$connection = ssh2_connect('213.138.110.94', 22);
+	$connection = ssh2_connect('iceee.servegame.com', 22);
 	if(!$connection) {
 		throw new Exception("Cannot connect to server");
 	}
@@ -147,17 +142,12 @@ function _run_ssh($command) {
 
 	$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 
-	// Enable blocking for both streams
 	stream_set_blocking($errorStream, true);
 	stream_set_blocking($stream, true);
 
 	$output = stream_get_contents($stream);
+	stream_get_contents($errorStream);
 
-	// Whichever of the two below commands is listed first will receive its appropriate output.  The second command receives nothing
-	error_log("Output: " . $output);
-	error_log("Error: " . stream_get_contents($errorStream));
-
-	// Close the streams
 	fclose($errorStream);
 	fclose($stream);
 
