@@ -46,7 +46,7 @@ function eechat_server_start($form, &$form_state) {
 	$_SESSION['starting_dev'] = true;
 	$_SESSION['state_expire_dev'] = time() + 90;
 
-	_run_ssh("nohup service hypersocket-service start &");
+	_run_ssh("nohup service " . $service_name . " start &");
 	
 	return $element;
 }
