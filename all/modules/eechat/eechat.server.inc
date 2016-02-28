@@ -10,7 +10,7 @@ function eechat_server_stop($form, &$form_state) {
 	$service_name=$form_state['values']["service_name_" . $server_name ];
 	
 	// Sanity check service name
-	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
+	if($service_name !== "iceee" && $service_name !== "tawd") {
 		throw new Exception("An incorrect service name was provided.");
 	}
 	
@@ -31,7 +31,7 @@ function eechat_server_start($form, &$form_state) {
 	$service_name=$form_state['values']["service_name_" . $server_name ];
 	
 	// Sanity check service name
-	if($service_name !== "iceee" && $service_name !== "iceee-dev") {
+	if($service_name !== "iceee" && $service_name !== "tawd") {
 		throw new Exception("An incorrect service name was provided.");
 	}
 	
@@ -62,7 +62,7 @@ function eechat_server_form($form, &$form_state) {
 			'#markup' => $markup
 	);
 	
-	_build_server_status_markup("dev", "iceee-dev", "Development (TAWD)", $form);
+	_build_server_status_markup("dev", "tawd", "Development (TAWD)", $form);
 	_build_server_status_markup("main", "iceee", "Official (SOAD)", $form);
 	
 	return $form;
