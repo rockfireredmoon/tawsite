@@ -20,7 +20,7 @@ function eechat_server_stop($form, &$form_state) {
 	$_SESSION['starting_' . $server_name] = false;
 	$_SESSION['state_expire_' . $server_name ] = time() + 30;
 	
-	_run_ssh("nohup service " . $service_name . " stop &");
+	_run_ssh("systemctl stop " . $service_name);
 	
 	return $element;
 }
@@ -41,7 +41,7 @@ function eechat_server_start($form, &$form_state) {
 	$_SESSION['starting_' . $server_name ] = true;
 	$_SESSION['state_expire_' . $server_name ] = time() + 30;
 
-	_run_ssh("nohup service " . $service_name . " start &");
+	_run_ssh("systemctl start " . $service_name );
 	
 	return $element;
 }
@@ -88,7 +88,7 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 		$main_status_text = "You have requested the server stop. Please wait";
 	}
 	else {
-		if(strpos(_run_ssh("service " . $service_name . " status"), "stopped") === FALSE && strpos(_run_ssh("service " . $service_name . " status"), "is not running") === FALSE) {
+		if(strpos(_run_ssh("systemctl status " . $service_name), "stopped") === FALSE && strpos(_run_ssh("systemctl status " . $service_name), "is not running") === FALSE) {
 			$main_status = "up";
 			$main_status_text = "Server is running";
 		}
