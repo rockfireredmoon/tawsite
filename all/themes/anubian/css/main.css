@@ -1912,13 +1912,13 @@ article .node-readmore a:hover, article .comment-add a:hover {
 }
 
 
-.page-media .view-media .item-list, .page-media .view-media-video .item-list, .page-media .view-fan-artwork-and-screenshots .item-list {
+.page-media .view-media .item-list, .page-media .view-media-video .item-list,.page-media .view-media-fan-video .item-list,  .page-media .view-fan-artwork-and-screenshots .item-list {
 	text-align: center;
 	max-width: 765px;
 	margin: auto;
 }
 
-.page-media .view-media .view-content ul, .page-media .view-media-video .view-content ul {
+.page-media .view-media .view-content ul, .page-media .view-media-video .view-content ul, .page-media .view-media-fan-video .view-content ul {
 	padding: 0;
 	display: inline;
 }
@@ -1929,7 +1929,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	margin: 0 auto;
 }
 
-.page-media .view-media .view-content li, .page-media .view-media-video .view-content li, .page-media .view-fan-artwork-and-screenshots .view-content li {
+.page-media .view-media .view-content li, .page-media .view-media-video .view-content li, .page-media .view-media-fan-video .view-content li, .page-media .view-fan-artwork-and-screenshots .view-content li {
 	list-style-type: none;
 	margin: 8px;
 	display: inline-block;
@@ -1939,17 +1939,17 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	height: 216px;
 }
 
-.page-media .view-media-video .view-content li {
+.page-media .view-media-fan-video .view-content li, .page-media .view-media-video .view-content li {
 	height: 400px;
 }
 
-.page-media .view-media article ul.contextual-links li, .page-media .view-media-videop article ul.contextual-links li {
+.page-media .view-media article ul.contextual-links li, .page-media .view-media-video article ul.contextual-links li, .page-media .view-media-fan-video article ul.contextual-links li {
 	height: auto;
 	margin: 0;
 	font-size: 9pt;
 }
 
-.page-media .view-media article, .page-media .view-media-video article {
+.page-media .view-media article, .page-media .view-media-video article, .page-media .view-media-fan-video article {
 	height: 100%;
 	padding: 0;
 	max-width: inherit;
@@ -1960,21 +1960,27 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	width: 192px;
 }
 
-.page-media .view-media-video article {
+.page-media .view-media-video article, .page-media .view-media-fan-video article {
 	width: 500px;
 }
 
-.page-media .view-media article h2, .page-media .view-media-video article h2 {
+.page-media .view-media article h2, .page-media .view-media-video article h2, .page-media .view-media-fan-video article h2 {
 	font-size: 11pt;
 	margin: 4px;
 	text-align: center;
 }
 
-.page-media .view-media article .field-name-body, .page-media .view-media-video article .field-name-body {
+.page-media .view-media article .field-name-body, .page-media .view-media-video article .field-name-body, .page-media .view-media-fan-video article .field-name-body  {
+	/*font-size: 10pt;
+	font-style: italic;*/
 	display: none;
 }
 
-.page-media .view-media article .field-type-image, .page-media .view-media-video article .field-type-image {
+.page-media .view-media-fan-video article .field-name-field-tags {
+	display: none;
+}
+
+.page-media .view-media article .field-type-image, .page-media .view-media-video article .field-type-image, .page-media .view-media-fan-video article .field-type-image {
 	height: 80%;
 	text-align: center;
     white-space: nowrap;
@@ -1985,11 +1991,11 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	position:relative;
 	text-align: center;
 }
-.page-media .view-media article .field-type-image .field-items, .page-media .view-media-video article .field-type-image .field-items {
+.page-media .view-media article .field-type-image .field-items, .page-media .view-media-video article .field-type-image .field-items, .page-media .view-media-fan-video article .field-type-image .field-items {
 	height: 100%;
 }
 
-.page-media .view-media article .field-type-image img, .page-media .view-media-video article .field-type-image img {
+.page-media .view-media article .field-type-image img, .page-media .view-media-video article .field-type-image img, .page-media .view-media-fan-video article .field-type-image img  {
 	position:absolute;
     top: 0;
     bottom: 0;
@@ -2000,11 +2006,11 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	max-height: 160px;
 }
 
-.page-media-video .field-name-field-video .field-item {
+.page-media-video .field-name-field-video .field-item, .page-media-fan-video .field-name-field-video .field-item  {
 	text-align: center;
 }
 
-.page-media-video .field-item iframe {
+.page-media-video .field-item iframe, .page-media-fan-video .field-item iframe  {
 	margin: 0 auto;
 }
 
@@ -2563,27 +2569,27 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	max-width: 765px;
 }
 
-.section-votes article .form-radios {
+article.node-advpoll .form-radios {
 	text-align: left;
 }
 
-.section-votes article .form-type-radio {
+article.node-advpoll .form-type-radio {
 	width: 15em;	
 	height: 32px;
 	margin: 1em auto;
 }
 
-.section-votes article input[type="radio"] {
+article.node-advpoll input[type="radio"] {
     display:none;
 }
 
-.section-votes article input[type="radio"] ~ label {
+article.node-advpoll input[type="radio"] ~ label {
     display:inline;
     font-size: 14pt;
 	text-shadow: 0px 0px 1px yellow;
 }
 
-.section-votes article input[type="radio"] ~ label:before {
+article.node-advpoll input[type="radio"] ~ label:before {
     content: '';
     width: 32px;
     height: 32px;
@@ -2594,53 +2600,53 @@ article .node-readmore a:hover, article .comment-add a:hover {
     margin-right: 3px; /*rtl*/
 }
 
-.section-votes article input[type="radio"]:checked ~ label:before {
+article.node-advpoll input[type="radio"]:checked ~ label:before {
     content: '';
     background: url(../images/checkbox_x_h.png) no-repeat;
 }
 
-.section-votes article form {
+article.node-advpoll form {
 	text-align: center;
 }
 
-.section-votes article .field-name-body img {
+article.node-advpoll .field-name-body img {
 	width: inherit;
 	height: 110px;
 }
-.section-votes article .field-name-body table td {
+article.node-advpoll .field-name-body table td {
 	text-align: center;
 	padding: 2px;
 }
 
-.section-votes article #comments form {
+article.node-advpoll #comments form {
 	text-align: left;
 }
 
-.section-votes article .form-submit {
+article.node-advpoll .form-submit {
 	width: 160px;
 	height: 32px;
 	background-image: url(../images/buttons/long-green.png);
 	margin-top: 1em;
 }
 
-.node-type-advpoll .poll {
+.node-advpoll .poll, .node-type-advpoll .poll {
 	width: 20em;
 	margin: auto;
 }
 
-.node-type-advpoll .percent {
+.node-advpoll .percent {
 	font-size: 10pt;
 	opacity: 0.75;
 	font-style: italic;
 }
 
-.node-type-advpoll .total {
+.node-advpoll .total {
 	font-size: 10pt;
 	font-weight: bold;
 	font-style: italic;
 }
 
-.node-type-advpoll .poll-message {
+.node-advpoll .poll-message {
     font-size: 18pt;
 	font-style: italic;
 	text-shadow: 0px 0px 3px yellow;
@@ -2648,19 +2654,19 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	margin-top: 1em;
 }
 
-.node-type-advpoll .poll-bar .text {
+.node-type-advpoll .poll-bar .text, .node-advpoll .poll-bar .text {
     font-size: 14pt;
 	text-shadow: 0px 0px 1px yellow;
 }
 
-.node-type-advpoll .bar, .node-type-advpoll .voted .bar {
+.node-type-advpoll .bar, .node-type-advpoll .voted .bar, .node-advpoll .bar, .node-advpoll .voted .bar {
     background: url(../images/black-trans-60.png) repeat; 
     border-radius: 4px;
     border:  1px solid #D9AA39;
     padding-right: 4px;
 }
 
-.node-type-advpoll .bar .foreground {
+.node-type-advpoll  .bar .foreground, .node-advpoll .bar .foreground {
     background: #800;
     margin: 2px;
     height: 12px;
