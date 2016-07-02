@@ -10,7 +10,7 @@ function eechat_server_stop($form, &$form_state) {
 	$service_name=$form_state['values']["service_name_" . $server_name ];
 	
 	// Sanity check service name
-	if($service_name !== "iceee" && $service_name !== "tawd") {
+	if($service_name !== "iceee" && $service_name !== "tawd" && $service_name !== "vald") {
 		throw new Exception("An incorrect service name was provided.");
 	}
 	
@@ -31,7 +31,7 @@ function eechat_server_start($form, &$form_state) {
 	$service_name=$form_state['values']["service_name_" . $server_name ];
 	
 	// Sanity check service name
-	if($service_name !== "iceee" && $service_name !== "tawd") {
+	if($service_name !== "iceee" && $service_name !== "tawd" && $service_name !== "vald") {
 		throw new Exception("An incorrect service name was provided.");
 	}
 	
@@ -63,6 +63,7 @@ function eechat_server_form($form, &$form_state) {
 	);
 	
 	_build_server_status_markup("dev", "tawd", "Development (TAWD)", $form);
+	_build_server_status_markup("legacydev", "vald", "Legacy Development (VALD)", $form);
 	_build_server_status_markup("main", "iceee", "Official (SOAD)", $form);
 	
 	return $form;
@@ -128,7 +129,7 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 
 function _run_ssh($command) {
 
-	$connection = ssh2_connect('iceee.servegame.com', 22);
+	$connection = ssh2_connect('scourge.theanubianwar.com', 22);
 	if(!$connection) {
 		throw new Exception("Cannot connect to server");
 	}
