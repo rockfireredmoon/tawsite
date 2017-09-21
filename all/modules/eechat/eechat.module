@@ -57,13 +57,13 @@ function eechat_user_view($account, $view_mode, $langcode)
             
                 $account->content['eechat_request'] = array(
                     '#type' => 'markup',
-                    '#markup' => '<a class="long-styled-button" href="request-key">Request Key</a>&nbsp;',
+                    '#markup' => '<a class="long-styled-button" href="/request-key">Request Key</a>&nbsp;',
                     '#weight' => 101,
                 );
                 
                 $account->content['eechat_link'] = array(
                     '#type' => 'markup',
-                    '#markup' => '<a class="long-styled-button" href="link-account">Link Account</a>&nbsp;',
+                    '#markup' => '<a class="long-styled-button" href="/link-account">Link Account</a>&nbsp;',
                     '#weight' => 102,
                 );
             }
