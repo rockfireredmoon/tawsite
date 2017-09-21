@@ -8,7 +8,7 @@ function _get_games() {
         $games['SOA'] = 'The Scourge Of Abidan';
     }
     if(user_access('access VAL')) {
-        $games['VAL'] = 'Valkals Revenge';
+        $games['VAL'] = 'Valkals Shadow';
     }
     return $games;
 }
@@ -196,12 +196,12 @@ function eechat_link_account_form($form, &$form_state) {
     // Info
     $markup = "<div id=\"server-status\">\n";
     $markup = $markup . "<p class=\"helpbox server-description\">\n";
-    $markup = $markup . "You are chosing to link your game account  on the <i>Earth Eternal - Valkals Revenge</i> ";
+    $markup = $markup . "You are chosing to link your game account  on the <i>Earth Eternal - Valkals Shadow</i> ";
     $markup = $markup . "server to this web server account. There are no immediate benefits to you doing this, but in the " .
                     "future, this will allow you to reset your game passwords and perform other account maintenance tasks." .
                     "It will also be used to aid migration to <i>The Anubian War</i> when it is released.";
     $markup = $markup . "<ul>";
-    $markup = $markup . "<li>Enter the username and password you use to login to the <i>Valkals Revenge</i> server.</li>";
+    $markup = $markup . "<li>Enter the username and password you use to login to the <i>Valkals Shadow</i> server.</li>";
     $markup = $markup . "<li>Click on <b>Link</b>. Your username and password will be validated by the game server.</li>";
     $markup = $markup . "<li>Your registration key will be retrieved from the server, and the key will now be visible in your <a href=\"/user\">Account</a> page.</li>";
     $markup = $markup . "</ul></p>\n";

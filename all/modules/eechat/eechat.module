@@ -21,7 +21,7 @@ function eechat_user_view($account, $view_mode, $langcode)
         );
         $rows = array();
         
-        $result = db_query('SELECT * FROM {eechat}', array(
+        $result = db_query('SELECT * FROM {eechat} WHERE uid = ?', array(
             $account->uid
         ));
         
@@ -40,7 +40,7 @@ function eechat_user_view($account, $view_mode, $langcode)
         
             $account->content['eechat_keys'] = array(
                 '#type' => 'item',
-                '#title' => t('Valkals Revenge Game Keys'),
+                '#title' => t('Valkals Shadow Game Keys'),
                 '#theme' => 'table',
                 '#header' => $header,
                 '#rows' => $rows,
@@ -127,11 +127,11 @@ function eechat_permission()
         ),
         'access SOA' => array(
             'title' => t('Access SOA Server'),
-            'description' => t('May access Scourge Of Abidan revenge server.')
+            'description' => t('May access Scourge Of Abidan server.')
         ),
         'access VAL' => array(
             'title' => t('Access VAL Server'),
-            'description' => t('May access Valkals Revenger server.')
+            'description' => t('May access Valkals Shadow server.')
         )
     );
 }
