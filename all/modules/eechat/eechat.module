@@ -40,7 +40,7 @@ function eechat_user_view($account, $view_mode, $langcode)
         
             $account->content['eechat_keys'] = array(
                 '#type' => 'item',
-                '#title' => t('Valkals Shadow Game Keys'),
+                '#title' => t('Game Keys'),
                 '#theme' => 'table',
                 '#header' => $header,
                 '#rows' => $rows,
