@@ -3,14 +3,7 @@
 /**
  * Initialize editor instances.
  *
- * @todo Is the following note still valid for 3.x?
- * This function needs to be called before the page is fully loaded, as
- * calling tinyMCE.init() after the page is loaded breaks IE6.
- *
- * @param editorSettings
- *   An object containing editor settings for each input format.
- * @param pluginInfo
- *   An object containing global plugin configuration.
+ * @see Drupal.wysiwyg.editor.init.ckeditor()
  */
 Drupal.wysiwyg.editor.init.tinymce = function(settings, pluginInfo) {
   // Fix Drupal toolbar obscuring editor toolbar in fullscreen mode.
@@ -29,22 +22,35 @@ Drupal.wysiwyg.editor.init.tinymce = function(settings, pluginInfo) {
       delete ed._drupalWysiwygInstance;
     }
   });
+  // Register new plugins.
+  Drupal.wysiwyg.editor.update.tinymce(settings, pluginInfo);
+};
 
+/**
+ * Update the editor library when new settings are available.
+ *
+ * @see Drupal.wysiwyg.editor.update.ckeditor()
+ */
+Drupal.wysiwyg.editor.update.tinymce = function(settings, pluginInfo) {
   // Load native external plugins.
   // Array syntax required; 'native' is a predefined token in JavaScript.
   for (var plugin in pluginInfo['native']) {
-    tinymce.PluginManager.load(plugin, pluginInfo['native'][plugin]);
+    if (!(plugin in tinymce.PluginManager.lookup || plugin in tinymce.PluginManager.urls)) {
+      tinymce.PluginManager.load(plugin, pluginInfo['native'][plugin]);
+    }
   }
   // Load Drupal plugins.
   for (var plugin in pluginInfo.drupal) {
-    Drupal.wysiwyg.editor.instance.tinymce.addPlugin(plugin, pluginInfo.drupal[plugin]);
+    if (!(plugin in tinymce.PluginManager.lookup)) {
+      Drupal.wysiwyg.editor.instance.tinymce.addPlugin(plugin, pluginInfo.drupal[plugin]);
+    }
   }
 };
 
 /**
  * Attach this editor to a target element.
  *
- * See Drupal.wysiwyg.editor.attach.none() for a full desciption of this hook.
+ * See Drupal.wysiwyg.editor.attach.none() for a full description of this hook.
  */
 Drupal.wysiwyg.editor.attach.tinymce = function(context, params, settings) {
   // Configure editor settings for this input format.
@@ -88,29 +94,19 @@ Drupal.wysiwyg.editor.attach.tinymce = function(context, params, settings) {
 };
 
 /**
- * Detach a single or all editors.
+ * Detach a single editor instance.
  *
- * See Drupal.wysiwyg.editor.detach.none() for a full desciption of this hook.
+ * See Drupal.wysiwyg.editor.detach.none() for a full description of this hook.
  */
 Drupal.wysiwyg.editor.detach.tinymce = function (context, params, trigger) {
-  if (typeof params != 'undefined') {
-    var instance = tinyMCE.get(params.field);
-    if (instance) {
-      instance.save();
-      if (trigger != 'serialize') {
-        instance.remove();
-      }
-    }
+  var instance = tinyMCE.get(params.field);
+  if (!instance) {
+    return;
   }
-  else {
-    // Save contents of all editors back into textareas.
-    tinyMCE.triggerSave();
-    if (trigger != 'serialize') {
-      // Remove all editor instances.
-      for (var instance in tinyMCE.editors) {
-        tinyMCE.editors[instance].remove();
-      }
-    }
+  instance.save();
+  if (trigger !== 'serialize') {
+    // The onRemove event fires before this returns.
+    instance.remove();
   }
 };
 
@@ -119,7 +115,7 @@ Drupal.wysiwyg.editor.instance.tinymce = {
     if (typeof Drupal.wysiwyg.plugins[plugin] != 'object') {
       return;
     }
-    tinymce.create('tinymce.plugins.' + plugin, {
+    tinymce.create('tinymce.plugins.drupal_' + plugin, {
       /**
        * Initialize the plugin, executed after the plugin has been created.
        *
@@ -130,7 +126,7 @@ Drupal.wysiwyg.editor.instance.tinymce = {
        */
       init: function(ed, url) {
         // Register an editor command for this plugin, invoked by the plugin's button.
-        ed.addCommand(plugin, function() {
+        ed.addCommand('drupal_' + plugin, function() {
           if (typeof Drupal.wysiwyg.plugins[plugin].invoke == 'function') {
             var data = { format: 'html', node: ed.selection.getNode(), content: ed.selection.getContent() };
             // TinyMCE creates a completely new instance for fullscreen mode.
@@ -140,9 +136,9 @@ Drupal.wysiwyg.editor.instance.tinymce = {
         });
 
         // Register the plugin button.
-        ed.addButton(plugin, {
+        ed.addButton('drupal_' + plugin, {
           title : pluginSettings.title,
-          cmd : plugin,
+          cmd : 'drupal_' + plugin,
           image : pluginSettings.icon
         });
 
@@ -190,7 +186,7 @@ Drupal.wysiwyg.editor.instance.tinymce = {
     });
 
     // Register plugin.
-    tinymce.PluginManager.add(plugin, tinymce.plugins[plugin]);
+    tinymce.PluginManager.add('drupal_' + plugin, tinymce.plugins['drupal_' + plugin]);
   },
 
   openDialog: function(dialog, params) {

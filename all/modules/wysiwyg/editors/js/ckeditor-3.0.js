@@ -5,29 +5,55 @@ CKEDITOR.disableAutoInline = true;
 // Exclude every id starting with 'cke_' in ajax_html_ids during AJAX requests.
 Drupal.wysiwyg.excludeIdSelectors.wysiwyg_ckeditor = ['[id^="cke_"]'];
 
+// Keeps track of private instance data.
+var instanceMap;
+
 /**
  * Initialize the editor library.
+ *
+ * This method is called once the first time a library is needed. If new
+ * WYSIWYG fields are added later, update() will be called instead.
+ *
+ * @param settings
+ *   An object containing editor settings for each input format.
+ * @param pluginInfo
+ *   An object containing global plugin configuration.
  */
-Drupal.wysiwyg.editor.init.ckeditor = function (settings, pluginInfo) {
+Drupal.wysiwyg.editor.init.ckeditor = function(settings, pluginInfo) {
+  instanceMap = {};
+  // Nothing to do here other than register new plugins etc.
+  Drupal.wysiwyg.editor.update.ckeditor(settings, pluginInfo);
+};
+
+/**
+ * Update the editor library when new settings are available.
+ *
+ * This method is called instead of init() when at least one new WYSIWYG field
+ * has been added to the document and the library has already been initialized.
+ *
+ * $param settings
+ *   An object containing editor settings for each input format.
+ * $param pluginInfo
+ *   An object containing global plugin configuration.
+ */
+Drupal.wysiwyg.editor.update.ckeditor = function(settings, pluginInfo) {
   // Register native external plugins.
   // Array syntax required; 'native' is a predefined token in JavaScript.
   for (var pluginId in pluginInfo['native']) {
-    if (!pluginInfo['native'].hasOwnProperty(pluginId)) {
-      continue;
+    if (pluginInfo['native'].hasOwnProperty(pluginId) && (!CKEDITOR.plugins.externals || !CKEDITOR.plugins.externals[pluginId])) {
+      var plugin = pluginInfo['native'][pluginId];
+      CKEDITOR.plugins.addExternal(pluginId, plugin.path, plugin.fileName);
     }
-    var plugin = pluginInfo['native'][pluginId];
-    CKEDITOR.plugins.addExternal(pluginId, plugin.path, plugin.fileName);
   }
   // Build and register Drupal plugin wrappers.
   for (var pluginId in pluginInfo.drupal) {
-    if (!pluginInfo.drupal.hasOwnProperty(pluginId)) {
-      continue;
+    if (pluginInfo.drupal.hasOwnProperty(pluginId) && (!CKEDITOR.plugins.registered || !CKEDITOR.plugins.registered[pluginId])) {
+      Drupal.wysiwyg.editor.instance.ckeditor.addPlugin(pluginId, pluginInfo.drupal[pluginId]);
     }
-    Drupal.wysiwyg.editor.instance.ckeditor.addPlugin(pluginId, pluginInfo.drupal[pluginId]);
   }
   // Register Font styles (versions 3.2.1 and above).
   for (var format in settings) {
-    if (settings[format].stylesSet) {
+    if (settings[format].stylesSet && (!CKEDITOR.stylesSet || !CKEDITOR.stylesSet.registered[format])) {
       CKEDITOR.stylesSet.add(format, settings[format].stylesSet);
     }
   }
@@ -89,7 +115,7 @@ Drupal.wysiwyg.editor.attach.ckeditor = function(context, params, settings) {
     },
 
     pluginsLoaded: function(ev) {
-      var wysiwygInstance = this._drupalWysiwygInstance;
+      var wysiwygInstance = instanceMap[this.name];
       var enabledPlugins = wysiwygInstance.pluginInfo.instances.drupal;
       // Override the conversion methods to let Drupal plugins modify the data.
       var editor = ev.editor;
@@ -122,7 +148,7 @@ Drupal.wysiwyg.editor.attach.ckeditor = function(context, params, settings) {
     },
 
     selectionChange: function (event) {
-      var wysiwygInstance = this._drupalWysiwygInstance;
+      var wysiwygInstance = instanceMap[this.name];
       var enabledPlugins = wysiwygInstance.pluginInfo.instances.drupal;
       for (var name in enabledPlugins) {
         var plugin = Drupal.wysiwyg.plugins[name];
@@ -153,43 +179,30 @@ Drupal.wysiwyg.editor.attach.ckeditor = function(context, params, settings) {
 
     destroy: function (event) {
       // Free our reference to the private instance to not risk memory leaks.
-      delete this._drupalWysiwygInstance;
+      delete instanceMap[this.name];
     }
   };
-
+  instanceMap[params.field] = this;
   // Attach editor.
   var editorInstance = CKEDITOR.replace(params.field, settings);
-  editorInstance._drupalWysiwygInstance = this;
 };
 
 /**
- * Detach a single or all editors.
- *
- * @todo 3.x: editor.prototype.getInstances() should always return an array
- *   containing all instances or the passed in params.field instance, but
- *   always return an array to simplify all detach functions.
+ * Detach a single editor instance.
  */
 Drupal.wysiwyg.editor.detach.ckeditor = function (context, params, trigger) {
   var method = (trigger == 'serialize') ? 'updateElement' : 'destroy';
-  if (typeof params != 'undefined') {
-    var instance = CKEDITOR.instances[params.field];
-    if (instance) {
-      instance[method]();
-    }
+  var instance = CKEDITOR.instances[params.field];
+  if (!instance) {
+    return;
   }
-  else {
-    for (var instanceName in CKEDITOR.instances) {
-      if (CKEDITOR.instances.hasOwnProperty(instanceName)) {
-        CKEDITOR.instances[instanceName][method]();
-      }
-    }
-  }
+  instance[method]();
 };
 
 Drupal.wysiwyg.editor.instance.ckeditor = {
   addPlugin: function (pluginName, pluginSettings) {
     CKEDITOR.plugins.add(pluginName, {
-      // Wrap Drupal plugin in a proxy pluygin.
+      // Wrap Drupal plugin in a proxy plugin.
       init: function(editor) {
         if (pluginSettings.css) {
           editor.on('mode', function(ev) {
@@ -211,7 +224,18 @@ Drupal.wysiwyg.editor.instance.ckeditor = {
                   data.node = data.node.$;
                 }
                 if (selection.getType() == CKEDITOR.SELECTION_TEXT) {
-                  data.content = selection.getSelectedText();
+                  if (selection.getSelectedText) {
+                    data.content = selection.getSelectedText();
+                  }
+                  else {
+                    // Pre v3.6.1.
+                    if (CKEDITOR.env.ie) {
+                      data.content = selection.getNative().createRange().text;
+                    }
+                    else {
+                      data.content = selection.getNative().toString();
+                    }
+                  }
                 }
                 else if (data.node) {
                   // content is supposed to contain the "outerHTML".
@@ -240,7 +264,7 @@ Drupal.wysiwyg.editor.instance.ckeditor = {
 
   insert: function(content) {
     content = this.prepareContent(content);
-    if (CKEDITOR.env.webkit || CKEDITOR.env.chrome || CKEDITOR.env.opera || CKEDITOR.env.safari) {
+    if (CKEDITOR.version.split('.')[0] === '3' && (CKEDITOR.env.webkit || CKEDITOR.env.chrome || CKEDITOR.env.opera || CKEDITOR.env.safari)) {
       // Works around a WebKit bug which removes wrapper elements.
       // @see https://drupal.org/node/1927968
       var tmp = new CKEDITOR.dom.element('div'), children, skip = 0, item;

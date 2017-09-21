@@ -1,0 +1,65 @@
+<?php
+/**
+ * @file
+ * Installs, updates, and uninstalls eechat.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function eechat_install() {
+  drupal_set_message('EEChat Installed.');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function eechat_uninstall() {
+}
+
+/**
+ * Implements hook_schema().
+ */
+function eechat_schema() {
+  $schema['eechat'] = array(
+    'description' => 'Stores Earth Eternal Keys',
+    'fields' => array(
+      'uid' => array(
+        'type'          => 'int',
+        'not null'      => TRUE,
+        'unsigned'      => TRUE,
+        'description' => 'Drupal user to which this game user is attached.',
+      ),
+      'game' => array(
+        'description' => 'Game.',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => 'VAL',
+      ),
+      'username' => array(
+        'description' => 'Game Username.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+      ),
+      'regkey' => array(
+        'description' => 'Game Key.',
+        'type' => 'varchar',
+        'length' => 64,
+        'default' => '',
+      ),
+      'grove' => array(
+        'description' => 'Grove Name.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+      ),
+    ),
+    'unique keys' => array(
+      'uid' => array('uid'),
+      'game' => array('game'),
+    ),
+  );
+
+  return $schema;
+}

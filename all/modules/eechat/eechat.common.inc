@@ -105,10 +105,19 @@ function _get_stats_html($stats) {
 	
 	return $markup;
 }
-function _get_api_url() {
-	return variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) );
+
+function _get_api_url($server = "TAW") {
+    if($server == "TAW")
+        return variable_get ( 'eechat_url_TAW', t ( 'http://server.theanubianwar.com/api' ) );
+    else if($server == "SOA")
+        return variable_get ( 'eechat_url_SOA', t ( 'http://scourge.theanubianwar.com' ) );
+    else 
+        return variable_get ( 'eechat_url_VAL', t ( 'http://valkal.theanubianwar.com' ) );
+    
 }
-function _doHTTP($path, $method = 'GET', $postdata = false) {
+
+function _doHTTP($path, $method = 'GET', $postdata = false, $server = "TAW") {
+    
 	$curl = curl_init ();
 	curl_setopt ( $curl, CURLOPT_VERBOSE, TRUE );
 	curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
@@ -128,7 +137,9 @@ function _doHTTP($path, $method = 'GET', $postdata = false) {
 		curl_setopt ( $curl, CURLOPT_POSTFIELDS, $fields_string );
 	}
 	
-	curl_setopt ( $curl, CURLOPT_URL, _get_api_url () . $path );
+    $api_url = _get_api_url ($server);
+	
+	curl_setopt ( $curl, CURLOPT_URL, $api_url . $path );
 	
 	$data = curl_exec ( $curl );
 	$request_headers = ( object ) curl_getinfo ( $curl );

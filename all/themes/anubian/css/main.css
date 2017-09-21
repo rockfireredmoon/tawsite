@@ -293,7 +293,7 @@ input[type=text], input[type=password], input[type=file], textarea {
 	border: 4px solid #300;
 }
 
-input[type=submit] {
+input[type=submit], input[type=button] {
 	background-color: inherit;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -904,6 +904,24 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	text-shadow: 0px 0px 2px black;
 }
 
+.page-user .profile .privatemsg-send-link {
+	margin: 1em 0;
+	display: inline-block;
+}
+
+.page-user .profile .field-label {
+	width: 10em;
+	display: inline-block;
+	font-size: 14pt;
+	
+}
+
+.page-user .profile .field-items {
+	text-shadow: 0px 0px 3px black;
+	font-size: 14pt;
+	color: white;
+}
+
 .page-user form {
 	background-color: inherit;
 	background-image: url(../images/black-trans-60.png);
@@ -919,10 +937,10 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	border: none !important;
 	font-size: 1.2em;
 	padding: 0;
-	margin: 0;
+	margin: 1em 0;
 }
 
-.logged-in.page-user .form-item-hybridauth label {
+.logged-in.page-user .form-item-hybridauth label, .logged-in.page-user .form-item-eechat-keys label {
 	color: white;
 	text-shadow: 0px 0px 3px yellow;
 	font-size: 1.2em;
@@ -938,11 +956,19 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background-repeat: repeat;
 }
 
-.form-item-hybridauth table {
+.form-item-hybridauth table, .form-item-eechat-keys table {
 	background-image: url(../images/black-trans-60.png);
 	background-repeat: repeat;
 }
-.form-item-hybridauth table thead th {
+
+.form-item-hybridauth tbody td, .form-item-eechat-keys tbody td {	
+	color: white;
+	text-shadow: 0px 0px 3px yellow;
+	font-size: 1.2em;
+	padding: 0.5em;
+}
+
+.form-item-hybridauth table thead th, .form-item-eechat-keys table thead th {
 	width: 300px;
 }
 
