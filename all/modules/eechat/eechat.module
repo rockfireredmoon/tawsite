@@ -14,30 +14,34 @@ function eechat_user_view($account, $view_mode, $langcode)
 {
     global $user;
     if ($account->uid == $user->uid) {
-        $header = array(
-            t('Server'),
-            t('Username'),
-            t('Key')
-        );
-        $rows = array();
-        
-        $result = db_query('SELECT * FROM {eechat} WHERE uid = ?', array(
-            $account->uid
-        ));
-        
-        $row_count = 0;
-        
-        foreach ($result as $key) {
-            $row_count++;
-            $rows[] = array(
-                $key->game,
-                $key->username,
-                $key->regkey
-            );
-        }
         
         if(user_access('access SOA') || user_access('access VAL')) {
         
+            $header = array(
+                t('Server'),
+                t('Username'),
+                t('Key'),
+                t('Actions')
+            );
+            $rows = array();
+            
+            $result = db_query('SELECT * FROM {eechat} WHERE uid = ?', array(
+                $account->uid
+            ));
+            
+            $row_count = 0;
+            
+            foreach ($result as $key) {
+                $row_count++;
+                $actions = '<a class="long-styled-button" href="/change-game-password/' . $key->regkey . '">Change Password</a>';
+                $rows[] = array(
+                    $key->game,
+                    $key->username,
+                    $key->regkey,
+                    $actions
+                );
+            }
+            
             $account->content['eechat_keys'] = array(
                 '#type' => 'item',
                 '#title' => t('Game Keys'),
@@ -53,7 +57,7 @@ function eechat_user_view($account, $view_mode, $langcode)
             );
             
             // TODO some configuration of the number of servers there are active supporting this method
-            if($row_count != 2) {
+            if($row_count != 2 || user_access('multiple accounts')) {
             
                 $account->content['eechat_request'] = array(
                     '#type' => 'markup',
@@ -132,6 +136,10 @@ function eechat_permission()
         'access VAL' => array(
             'title' => t('Access VAL Server'),
             'description' => t('May access Valkals Shadow server.')
+        ),
+        'multiple game accounts' => array(
+            'title' => t('Multiple Game Accounts'),
+            'description' => t('May create and link to multiple accounts on any allowed server.')
         )
     );
 }
@@ -192,6 +200,18 @@ function eechat_menu()
             'access content'
         ),
         'title' => 'Link Game Account',
+        'file' => 'eechat.keys.inc'
+    );
+    
+    $items['change-game-password'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_change_password_form'
+        ),
+        'access arguments' => array(
+            'access content'
+        ),
+        'title' => 'Change Game Password',
         'file' => 'eechat.keys.inc'
     );
     

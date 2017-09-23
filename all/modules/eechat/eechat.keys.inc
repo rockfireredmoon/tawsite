@@ -13,8 +13,7 @@ function _get_games() {
     return $games;
 }
 
-function check_server_access($user, $form, &$form_state) {
-    $game = $form_state['values']['game'];
+function check_server_access($user, $game, $check_exists = true) {
     if(!user_access('access ' . $game)) {
         form_set_error ( 'message', t ( 'You do not have access to the ' . $game . ' server.') );
         return false;
@@ -27,9 +26,11 @@ function check_server_access($user, $form, &$form_state) {
     ->condition('n.uid', $user->uid, '=')
     ->fields('n', array('uid'))
     ->execute();
-    if($query->rowCount() > 0) {
-        form_set_error ( 'message', t ( 'You already have an account on this game server.') );
-        return false;
+    if( ( $check_exists && $query->rowCount() > 0 ) || ( !$check_exists && $query->rowCount() == 0 )) {
+        if(!user_access('multiple accounts')) {
+            form_set_error ( 'message', t ( 'You do not have access to the ' . $game . ' server, and are not allow to create multiple accounts.') );
+            return false;
+        }
     }
     
     return true;
@@ -42,11 +43,9 @@ function eechat_link_account_submit($form, &$form_state) {
     $password = $form_state['values']['password'];
     $game = $form_state['values']['game'];
     
-    if(!check_server_access($user, $form, $form_state)) {
+    if(!check_server_access($user, $game)) {
         return;
     }
-    
-    error_log('username ' . $username . " game " . $game);
     
     $data = array (
         'authtoken' => urlencode ( variable_get('eechat_authtoken_' . $game, t('mysecret') ) ),
@@ -85,12 +84,11 @@ function eechat_request_key_submit($form, &$form_state) {
     $password = $form_state['values']['password'];
     $grove = $form_state['values']['grove'];
     $game = $form_state['values']['game'];
+    $confirm_password = $form_state['values']['confirm_password'];
     
-    if(!check_server_access($user, $form, $form_state)) {
+    if(!check_server_access($user, $game)) {
         return;
     }
-    
-    error_log('username ' . $username);
     
     $data = array (
         'authtoken' => urlencode ( variable_get('eechat_authtoken_' . $game, t('mysecret') ) ),
@@ -128,6 +126,22 @@ function eechat_request_key_submit($form, &$form_state) {
     //return $element;
 }
 
+function eechat_request_key_form_validate($form, &$form_state) {
+    
+    $password = $form_state['values']['password'];
+    $confirm_password = $form_state['values']['confirm_password'];
+    
+    if($password != $confirm_password) {
+        form_set_error ( 'message', t ( 'Password and confirmed password do not match.' ));
+        return;
+    }
+    
+    if(strlen($password) < 3 || strlen($password) > 32) {
+        form_set_error ( 'message', t ( 'Password must be between 3 and 32 characters in length.' ));
+        return;
+    }
+}
+
 function eechat_request_key_form($form, &$form_state) {
     global $user;
     
@@ -141,7 +155,8 @@ function eechat_request_key_form($form, &$form_state) {
     $markup = $markup . "<li>Try to use the same username as you use on this site (i.e. <i>" . 
                         $user->name . "</i>). However, if this name is already taken by another player (you will receive an error telling you so), then instead pick another name.</li>";
                         $markup = $markup . "<li>If you already have an account on this game, you should instead use <a href='link-account'>Link Account</a> to link your <b>Game Account</b> to your <b>Website Account</b></li>";
-    $markup = $markup . "<li>A unique <b>Key</b> will be generated for you. We store that on this site for you, but just in case, you should note this down somewhere else as it may be used to identity and retrieve your account in case of emergencies.</li>";
+                        $markup = $markup . "<li>A unique <b>Key</b> will be generated for you. We store that on this site for you, but just in case, you should note this down somewhere else as it may be used to identity and retrieve your account in case of emergencies.</li>";
+                        $markup = $markup . "<li>Your <b>Grove</b> is your own personal home in Earth Eternal. You can decorate your home with any props or creatures found in the game! Please note though, this is an advanced topic. See <a href=\"/gameguides/grovebuilding\">Building Your Grove</a> in the Game Guide.</li>";
     $markup = $markup . "</ul></p>\n";
     $markup = $markup . "<div class=\"fancy-separator\"></div>\n";
     $markup = $markup . "</div>\n";
@@ -173,6 +188,14 @@ function eechat_request_key_form($form, &$form_state) {
         '#default_value' => '',
         '#required' => TRUE
     );
+    $form ['confirm_password' ] = array (
+        '#type' => 'password',
+        '#title' => 'Confirm Game Account Password:',
+        '#maxlength' => 32,
+        '#size' => 15,
+        '#default_value' => '',
+        '#required' => TRUE
+    );
     $form ['grove' ] = array (
         '#type' => 'textfield',
         '#default_value' => $user->name,
@@ -183,6 +206,7 @@ function eechat_request_key_form($form, &$form_state) {
     );
     $form ['submit' ] = array (
         '#type' => 'submit',
+        '#button_type' => 'big-green',
         '#value' => 'Request!',
         '#submit' => array('eechat_request_key_submit')
     );
@@ -196,14 +220,15 @@ function eechat_link_account_form($form, &$form_state) {
     // Info
     $markup = "<div id=\"server-status\">\n";
     $markup = $markup . "<p class=\"helpbox server-description\">\n";
-    $markup = $markup . "You are chosing to link your game account  on the <i>Earth Eternal - Valkals Shadow</i> ";
+    $markup = $markup . "You are chosing to link your game account on an <i>Earth Eternal</i> ";
     $markup = $markup . "server to this web server account. There are no immediate benefits to you doing this, but in the " .
                     "future, this will allow you to reset your game passwords and perform other account maintenance tasks." .
                     "It will also be used to aid migration to <i>The Anubian War</i> when it is released.";
     $markup = $markup . "<ul>";
-    $markup = $markup . "<li>Enter the username and password you use to login to the <i>Valkals Shadow</i> server.</li>";
+    $markup = $markup . "<li>Enter the username and password you use to login to the <i>Earth Eterrnal</i> server.</li>";
     $markup = $markup . "<li>Click on <b>Link</b>. Your username and password will be validated by the game server.</li>";
     $markup = $markup . "<li>Your registration key will be retrieved from the server, and the key will now be visible in your <a href=\"/user\">Account</a> page.</li>";
+    $markup = $markup . "<li>If you have access to more than one server, you will be able to chose it here. This will only be available if you a developer or tester.</li>";
     $markup = $markup . "</ul></p>\n";
     $markup = $markup . "<div class=\"fancy-separator\"></div>\n";
     $markup = $markup . "</div>\n";
@@ -237,8 +262,140 @@ function eechat_link_account_form($form, &$form_state) {
     );
     $form ['submit' ] = array (
         '#type' => 'submit',
+        '#button_type' => 'big-green',
         '#value' => 'Link!',
         '#submit' => array('eechat_link_account_submit')
+    );
+    
+    return $form;
+}
+
+function eechat_change_password_form_validate($form, &$form_state) {
+    
+    $password = $form_state['values']['password'];
+    $confirm_password = $form_state['values']['confirm_password'];
+    
+    if($password != $confirm_password) {
+        form_set_error ( 'message', t ( 'Password and confirmed password do not match.' ));
+        return;
+    }
+    
+    if(strlen($password) < 3 || strlen($password) > 32) {
+        form_set_error ( 'message', t ( 'Password must be between 3 and 32 characters in length.' ));
+        return;
+    }
+}
+
+function eechat_change_password_form_submit($form, &$form_state) {
+    global $user;
+    
+    $request_parts = explode('/', $_SERVER['REQUEST_URI']);
+    $regkey = array_pop($request_parts);
+    $result = db_query('SELECT * FROM {eechat} WHERE regkey = ?', array(
+        $regkey
+    ));
+    $row = $result->fetchObject();
+    $game = $row->game;
+    $username = $row->username;
+    $password = $form_state['values']['password'];
+    
+    if($user->uid != $row->uid) {
+        form_set_error ( 'message', t ( 'You can only set your own users password.' ));
+        return;
+    }
+    
+    if(!check_server_access($user, $game, false)) {
+        return;
+    }
+    
+    $data = array (
+        'regkey' => urlencode ( $regkey ),
+        'username' => urlencode ( $username ),
+        'password' => urlencode ( $password ),
+        'authtoken' => urlencode ( variable_get('eechat_authtoken_' . $game, t('mysecret') ) ),
+    );
+    
+    list ( $data, $request_headers ) = _doHTTP ( '/resetpassword', $method = 'POST', $postdata = $data, $server = $game);
+    
+    if (isset ( $request_headers->http_code ) && $request_headers->http_code == 200) {
+        if($data == "Password was successfully reset.") {
+            drupal_set_message ( "Your password for " . $username . " on " . $game . " has been changed.", $type = 'status' );
+            $form_state['redirect'] = 'user';
+        }
+        else
+            form_set_error ( 'message', t ( 'Failed to change game password. Please check the details you provided.') . " " . $data );
+    } else {
+        form_set_error ( 'message', t ( 'Failed to change game password. Please inform an administrator. The error code given was : ') . " " . $request_headers->http_code );
+    }
+}
+
+function eechat_change_password_form($form, &$form_state) {
+    global $user;
+    $request_parts = explode('/', $_SERVER['REQUEST_URI']);
+    $regkey = array_pop($request_parts);
+    $result = db_query('SELECT * FROM {eechat} WHERE regkey = ?', array(
+        $regkey
+    ));
+    $row = $result->fetchObject();
+    $game = $row->game;
+    $username = $row->username;
+    
+    if($user->uid != $row->uid) {
+        form_set_error ( 'message', t ( 'You can only set your own users password.' ));
+        return;
+    }
+    
+    // Info
+    $markup = "<div id=\"server-status\">\n";
+    $markup = $markup . "<p class=\"helpbox server-description\">\n";
+    $markup = $markup . "This page allows you to change your <b>Game Password</b> on an <i>Earth Eternal</i> ";
+    $markup = $markup . "server</p>\n";
+    $markup = $markup . "<div class=\"fancy-separator\"></div>\n";
+    $markup = $markup . "</div>\n";
+    
+    // TODO
+    //$regkey = "XX";
+    
+    $form ['box_info'] = array (
+        '#type' => 'markup',
+        '#markup' => $markup
+    );
+    $form ['game' ] = array (
+        '#type' => 'item',
+        '#markup' => $game,
+        '#title' => 'Game Server',
+    );
+    $form ['regkey'] = array (
+        '#type' => 'item',
+        '#title' => 'Game Key:',
+        '#markup' => $regkey,
+    );
+    $form ['username'] = array (
+        '#type' => 'item',
+        '#title' => 'Game Account Username:',
+        '#markup' => $username,
+    );
+    $form ['password' ] = array (
+        '#type' => 'password',
+        '#title' => 'Game Account Password:',
+        '#maxlength' => 32,
+        '#size' => 15,
+        '#default_value' => '',
+        '#required' => TRUE
+    );
+    $form ['confirm_password' ] = array (
+        '#type' => 'password',
+        '#title' => 'Confirm Game Account Password:',
+        '#maxlength' => 32,
+        '#size' => 15,
+        '#default_value' => '',
+        '#required' => TRUE
+    );
+    $form ['submit' ] = array (
+        '#type' => 'submit',
+        '#button_type' => 'big-green',
+        '#value' => 'Change!',
+        '#submit' => array('eechat_change_password_form_submit')
     );
     
     return $form;

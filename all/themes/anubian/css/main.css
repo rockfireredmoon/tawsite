@@ -994,6 +994,24 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	margin: 0;
 }
 
+#eechat-link-account-form, #eechat-change-password-form, #eechat-request-key-form  {
+	width: 40em;
+	margin: 0 auto;
+	padding: 1em;
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;	
+}
+
+#eechat-link-account-form label, #eechat-change-password-form label, #eechat-request-key-form  label {
+	width:  19em;
+	margin-left: 3em;
+	display: inline-block;
+}
+
+#eechat-link-account-form input[type=submit], #eechat-change-password-form  input[type=submit], #eechat-request-key-form input[type=submit] {
+	margin-left: 13em;
+}
+
 /* Documents */
 
 .node-type-document #content, .page-filter-tips #content {
@@ -1027,14 +1045,15 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 
 
 article .node-readmore a, article .node-readmore a:visited, article .node-readmore a:link, article .node-readmore a:hover,
-article .comment-add a, article .comment-add a:visited, article .comment-add a:link, article .comment-add a:hover {
+article .comment-add a, article .comment-add a:visited, article .comment-add a:link, article .comment-add a:hover,
+.privatemsg-send-link, .privatemsg-send-link:hover, .privatemsg-send-link:visited {
 	text-align: center;
 	padding: 0;
 	box-shadow: none;
 	margin: 0;
 	line-height: 32px;
 	display: inline-block;
-  vertical-align: middle;
+    vertical-align: middle;
 	font-weight: normal;
 	font-size: 10pt;
 	width: 160px;
@@ -1049,6 +1068,16 @@ article .comment-add a, article .comment-add a:visited, article .comment-add a:l
 
 article .node-readmore a:hover, article .comment-add a:hover {
 	background-image: url(../images/buttons/light-long-green.png);
+}
+
+.privatemsg-send-link {
+	background-image: url(../images/buttons/very-long-green.png);
+	width: 320px;	
+}
+
+.privatemsg-send-link:hover {
+	background-image: url(../images/buttons/light-very-long-green.png);
+	width: 320px;	
 }
 
 /*
@@ -1471,7 +1500,8 @@ article .node-readmore a:hover, article .comment-add a:hover {
 
 
 .forum-topic-header .af-button-large, .forum-topic-header .af-button-large:link, .forum-topic-header .af-button-large:visited, .forum-topic-header .af-button-large:hover,
-.forum-node-create-links .af-button-large, .forum-node-create-links .af-button-large:link, .forum-node-create-links .af-button-large:visited, .forum-node-create-links .af-button-large:hover {
+.forum-node-create-links .af-button-large, .forum-node-create-links .af-button-large:link, .forum-node-create-links .af-button-large:visited, .forum-node-create-links .af-button-large:hover,
+input[type=submit].form-big-green {
 	text-align: center;
 	padding: 0;
 	border-top-left-radius: 0px;
@@ -1490,7 +1520,7 @@ article .node-readmore a:hover, article .comment-add a:hover {
 	background-image: url(../images/buttons/big-green.png);
 }
 
-.forum-topic-header .af-button-large:hover, .forum-node-create-links .af-button-large:hover{
+.forum-topic-header .af-button-large:hover, .forum-node-create-links .af-button-large:hover, input[type=submit].form-big-green:hover {
 	color: white;
 	background-image: url(../images/buttons/big-lightgreen.png);
 }
