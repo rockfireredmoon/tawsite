@@ -126,8 +126,26 @@ function eechat_request_key_submit($form, &$form_state) {
     //return $element;
 }
 
+function _is_valid_string($str) {
+    for ($i = 0; $i < strlen($str); $i++){
+        $code = ord($str[$i]);
+        if($code <= 32 || $code > 127)
+            return false;
+        if($str[$i] == ';')
+            return false;
+        if($str[$i] == '&')
+            return false;
+        if($str[$i] == ',')
+            return false;
+        if($str[$i] == '|')
+            return false;
+    }
+    return true;
+}
+
 function eechat_request_key_form_validate($form, &$form_state) {
     
+    $username = $form_state['values']['username'];
     $password = $form_state['values']['password'];
     $confirm_password = $form_state['values']['confirm_password'];
     
@@ -138,6 +156,21 @@ function eechat_request_key_form_validate($form, &$form_state) {
     
     if(strlen($password) < 3 || strlen($password) > 32) {
         form_set_error ( 'message', t ( 'Password must be between 3 and 32 characters in length.' ));
+        return;
+    }
+    
+    if(!_is_valid_string($password)) {
+        form_set_error ( 'message', t ( 'Password may not contain Space, ",", "&", "|", or ";".' ));
+        return;
+    }
+    
+    if(strlen($username) < 3 || strlen($username) > 48) {
+        form_set_error ( 'message', t ( 'Username must be between 3 and 48 characters in length.' ));
+        return;
+    }
+    
+    if(!_is_valid_string($username)) {
+        form_set_error ( 'message', t ( 'Username may not contain Space, ",", "&", "|", or ";".' ));
         return;
     }
 }
@@ -153,10 +186,11 @@ function eechat_request_key_form($form, &$form_state) {
     $markup = $markup . "be used to created your account.";
     $markup = $markup . "<ul>";
     $markup = $markup . "<li>Try to use the same username as you use on this site (i.e. <i>" . 
-                        $user->name . "</i>). However, if this name is already taken by another player (you will receive an error telling you so), then instead pick another name.</li>";
-                        $markup = $markup . "<li>If you already have an account on this game, you should instead use <a href='link-account'>Link Account</a> to link your <b>Game Account</b> to your <b>Website Account</b></li>";
-                        $markup = $markup . "<li>A unique <b>Key</b> will be generated for you. We store that on this site for you, but just in case, you should note this down somewhere else as it may be used to identity and retrieve your account in case of emergencies.</li>";
-                        $markup = $markup . "<li>Your <b>Grove</b> is your own personal home in Earth Eternal. You can decorate your home with any props or creatures found in the game! Please note though, this is an advanced topic. See <a href=\"/gameguides/grovebuilding\">Building Your Grove</a> in the Game Guide.</li>";
+        $user->name . "</i>). However, if this name is already taken by another player (you will receive an error telling you so), then instead pick another name.</li>";
+    $markup = $markup . "<li>Both Username and Password can contain any character except for <b>Space</b>, <b>&quot;,&quot;</b>, <b>&quot;;&quot;</b>, <b>&quot;|&quot;</b> and <b>&quot;&amp;&quot;</b></li>";
+    $markup = $markup . "<li>If you already have an account on this game, you should instead use <a href='link-account'>Link Account</a> to link your <b>Game Account</b> to your <b>Website Account</b></li>";
+    $markup = $markup . "<li>A unique <b>Key</b> will be generated for you. We store that on this site for you, but just in case, you should note this down somewhere else as it may be used to identity and retrieve your account in case of emergencies.</li>";
+    $markup = $markup . "<li>Your <b>Grove</b> is your own personal home in Earth Eternal. You can decorate your home with any props or creatures found in the game! Please note though, this is an advanced topic. See <a href=\"/gameguides/grovebuilding\">Building Your Grove</a> in the Game Guide.</li>";
     $markup = $markup . "</ul></p>\n";
     $markup = $markup . "<div class=\"fancy-separator\"></div>\n";
     $markup = $markup . "</div>\n";
@@ -284,6 +318,11 @@ function eechat_change_password_form_validate($form, &$form_state) {
         form_set_error ( 'message', t ( 'Password must be between 3 and 32 characters in length.' ));
         return;
     }
+    
+    if(!_is_valid_string($password)) {
+        form_set_error ( 'message', t ( 'Password may not contain Space, ",", "&", "|", or ";".' ));
+        return;
+    }
 }
 
 function eechat_change_password_form_submit($form, &$form_state) {
@@ -350,6 +389,7 @@ function eechat_change_password_form($form, &$form_state) {
     $markup = $markup . "<p class=\"helpbox server-description\">\n";
     $markup = $markup . "This page allows you to change your <b>Game Password</b> on an <i>Earth Eternal</i> ";
     $markup = $markup . "server</p>\n";
+    $markup = $markup . "<ul><li>Passwords can contain any character except for <b>Space</b>, <b>&quot;,&quot;</b>, <b>&quot;;&quot;</b>, <b>&quot;|&quot;</b> and <b>&quot;&amp;&quot;</b></li></ul>";
     $markup = $markup . "<div class=\"fancy-separator\"></div>\n";
     $markup = $markup . "</div>\n";
     
