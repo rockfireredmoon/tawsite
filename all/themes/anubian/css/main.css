@@ -995,7 +995,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 #eechat-link-account-form, #eechat-change-password-form, #eechat-request-key-form  {
-	width: 40em;
+	width: 46em;
 	margin: 0 auto;
 	padding: 1em;
 	background-image: url(../images/black-trans-60.png);
@@ -1009,7 +1009,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 }
 
 #eechat-link-account-form input[type=submit], #eechat-change-password-form  input[type=submit], #eechat-request-key-form input[type=submit] {
-	margin-left: 13em;
+	margin-left: 16em;
 }
 
 /* Documents */
@@ -1413,6 +1413,26 @@ article .node-readmore a:hover, article .comment-add a:hover {
 .forum-statistics-sub-body {
 	background: inherit;
 	font-size: 10pt;
+}
+
+.forum-table tbody tr.sticky {
+	background-color: #172611 !important;
+	text-shadow: 0px 0px 1px black; 
+}
+
+.forum-table-wrap table, .forum-table-topics {
+	width: 100%;
+	border: none !important;
+}
+
+.forum-table-topics thead tr, .forum-table-wrap thead tr {
+	background-color: #300 !important;
+	border: none !important;
+}
+
+.forum-table-topics tr, .forum-table-wrap tr, .forum-table-topics tr.odd, .forum-table-wrap tr.odd, .forum-table-topics tr.even, .forum-table-wrap tr.even {
+	background: inherit !important;
+	border: none !important;
 }
 
 .forum-tools {
@@ -2758,23 +2778,6 @@ article.node-advpoll .form-submit {
 .section-shroomies-search #flash-game {
 	margin: auto auto;
 	text-align: center;
-}
-
-/* These are to override the forum styling */
-/* TODO remove forum styling and make our own */
-.forum-table-wrap table, .forum-table-topics {
-	width: 100%;
-	border: none !important;
-}
-
-.forum-table-topics thead tr, .forum-table-wrap thead tr {
-	background-color: #300 !important;
-	border: none !important;
-}
-
-.forum-table-topics tr, .forum-table-wrap tr, .forum-table-topics tr.odd, .forum-table-wrap tr.odd, .forum-table-topics tr.even, .forum-table-wrap tr.even {
-	background: inherit !important;
-	border: none !important;
 }
 
 /* Wysiwyg */
