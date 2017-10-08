@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
-
 /**
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
@@ -76,8 +74,6 @@ class OAuth1Client{
 	*/
 	function requestToken( $callback = null )
 	{
-	    print_r($request_token );
-	    
 		$parameters = array();
 
 		if ( $callback ) {
