@@ -201,7 +201,7 @@ function eechat_request_key_form($form, &$form_state) {
     );
     $form ['game' ] = array (
         '#type' => 'select',
-        '#default_value' => 'SOA',
+        '#default_value' => 'VAL',
         '#options' => _get_games(),
         '#title' => 'Game Server',
         '#required' => TRUE
