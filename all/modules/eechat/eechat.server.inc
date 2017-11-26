@@ -63,7 +63,7 @@ function eechat_server_form($form, &$form_state) {
 	);
 
 	_build_server_status_markup("dev", "tawd", "Development (TAWD)", $form);
-	_build_server_status_markup("legacydev", "vald", "Legacy Development (VALD)", $form);
+	//_build_server_status_markup("legacydev", "vald", "Legacy Development (VALD)", $form);
 	_build_server_status_markup("main", "iceee", "Official (SOAD)", $form);
 
 	return $form;

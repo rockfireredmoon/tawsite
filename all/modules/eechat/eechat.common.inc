@@ -123,6 +123,7 @@ function _doHTTP($path, $method = 'GET', $postdata = false, $server = "TAW") {
 	curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
 	curl_setopt ( $curl, CURLOPT_HEADER, false );
 	curl_setopt ( $curl, CURLOPT_AUTOREFERER, TRUE );
+	curl_setopt ( $curl, CURLOPT_USERAGENT, 'ire-3dply(VERSION)' );
 	curl_setopt ( $curl, CURLOPT_CONNECTTIMEOUT, 5 );
 	
 	if ($method === 'GET')
