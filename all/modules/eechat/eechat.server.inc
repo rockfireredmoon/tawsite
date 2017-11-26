@@ -64,7 +64,7 @@ function eechat_server_form($form, &$form_state) {
 
 	_build_server_status_markup("dev", "tawd", "Development (TAWD)", $form);
 	//_build_server_status_markup("legacydev", "vald", "Legacy Development (VALD)", $form);
-	_build_server_status_markup("main", "iceee", "Official (SOAD)", $form);
+	_build_server_status_markup("main", "vald", "Official (VALD)", $form);
 
 	return $form;
 }
@@ -129,7 +129,7 @@ function _build_server_status_markup($server_name, $service_name, $server_fullna
 
 function _run_ssh($command) {
 
-	$connection = ssh2_connect('scourge.theanubianwar.com', 22);
+	$connection = ssh2_connect('live.theanubianwar.com', 22);
 	if(!$connection) {
 		throw new Exception("Cannot connect to server");
 	}
