@@ -1923,6 +1923,26 @@ input[type=submit].form-big-green {
 }
 
 /* Downloads */
+.section-developer-downloads .block-views, .page-other-downloads #content, .page-developer-downloads-summary #content {
+	background-image: url(../images/black-trans-60.png);
+	background-repeat: repeat;
+	padding: 1em;
+	margin: 0 auto;
+	max-width: 769px; 	
+}
+
+.page-other-downloads #content, .page-developer-downloads-summary #content {
+    margin-top: 1em;
+}
+
+.page-other-downloads #content li {
+    list-style: none;
+}
+
+.section-developer-downloads .block-views h2 {
+    text-align: center;
+}
+
 #block-views-public-downloads-summary-block {
 	padding-bottom: 2em;
 }

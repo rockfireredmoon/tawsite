@@ -137,7 +137,7 @@ function _doHTTP($path, $method = 'GET', $postdata = false, $server = "TAW") {
 		curl_setopt ( $curl, CURLOPT_POSTFIELDS, $fields_string );
 	}
 	
-    $api_url = _get_api_url ($server);
+    	$api_url = _get_api_url ($server);
 	
 	curl_setopt ( $curl, CURLOPT_URL, $api_url . $path );
 	
