@@ -10,6 +10,9 @@ function _get_games() {
     if(user_access('access VAL')) {
         $games['VAL'] = 'Valkals Shadow';
     }
+    if(user_access('access EETEST')) {
+        $games['EETEST'] = 'Test Server';
+    }
     return $games;
 }
 
@@ -273,7 +276,7 @@ function eechat_link_account_form($form, &$form_state) {
     );
     $form ['game' ] = array (
         '#type' => 'select',
-        '#default_value' => 'SOA',
+        '#default_value' => 'VAL',
         '#options' => _get_games(),
         '#title' => 'Game Server',
         '#required' => TRUE
