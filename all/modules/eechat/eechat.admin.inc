@@ -52,6 +52,14 @@ function eechat_settings_form($form, &$form_state) {
         '#default_value' => variable_get('eechat_authtoken_VAL', t('mysecret'))
     );
     
+    $form['eechat_authtoken_EETEST'] = array(
+        '#type' => 'textfield',
+        '#title' => t('EETEST Server Auth Token'),
+        '#size' => 60,
+        '#description' => t('The authentication token used used on the EETEST Earth Eternal server'),
+        '#default_value' => variable_get('eechat_authtoken_EETEST', t('mysecret'))
+    );
+    
     $form['eechat_key'] = array(
         '#type' => 'textfield',
         '#title' => t('Shroomie Search Encryption Key'),
