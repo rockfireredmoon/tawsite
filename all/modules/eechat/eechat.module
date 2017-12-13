@@ -15,7 +15,7 @@ function eechat_user_view($account, $view_mode, $langcode)
     global $user;
     if ($account->uid == $user->uid) {
         
-        if(user_access('access SOA') || user_access('access VAL') || user_access('access EETEST')) {
+        if(user_access('access VAL') || user_access('access EETEST')) {
         
             $header = array(
                 t('Server'),
@@ -132,10 +132,6 @@ function eechat_permission()
         'access EETEST' => array(
             'title' => t('Access EETEST Server'),
             'description' => t('May access the EE legacy testing server.')
-        ),
-        'access SOA' => array(
-            'title' => t('Access SOA Server'),
-            'description' => t('May access Scourge Of Abidan server.')
         ),
         'access VAL' => array(
             'title' => t('Access VAL Server'),

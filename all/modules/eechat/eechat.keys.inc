@@ -4,9 +4,6 @@ require_once dirname(__FILE__) . '/eechat.common.inc';
 
 function _get_games() {
     $games = array();
-    if(user_access('access SOA')) {
-        $games['SOA'] = 'The Scourge Of Abidan';
-    }
     if(user_access('access VAL')) {
         $games['VAL'] = 'Valkals Shadow';
     }
