@@ -111,6 +111,8 @@ function _get_api_url($server = "TAW") {
         return variable_get ( 'eechat_url_TAW', t ( 'http://server.theanubianwar.com/api' ) );
     else if($server == "SOA")
         return variable_get ( 'eechat_url_SOA', t ( 'http://scourge.theanubianwar.com' ) );
+    else if($server == "EETEST")
+        return variable_get ( 'eechat_url_EETEST', t ( 'http://legacy.theanubianwar.com' ) );
     else 
         return variable_get ( 'eechat_url_VAL', t ( 'http://valkal.theanubianwar.com' ) );
     

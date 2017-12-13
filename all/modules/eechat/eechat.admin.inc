@@ -20,6 +20,14 @@ function eechat_settings_form($form, &$form_state) {
         '#default_value' => variable_get('eechat_url_SOA', t('http://scourge.theanubianwar.com'))
     );
     
+    $form['eechat_url_EETEST'] = array(
+        '#type' => 'textfield',
+        '#title' => t('EETEST Server API URL'),
+        '#size' => 60,
+        '#description' => t('The HTTP API URL of the EETEST Earth Eternal server. For example http://legacy.theanubianwar.com/api'),
+        '#default_value' => variable_get('eechat_url_EETEST', t('http://legacy.theanubianwar.com'))
+    );
+    
     $form['eechat_url_VAL'] = array(
         '#type' => 'textfield',
         '#title' => t('VAL Server API URL'),
