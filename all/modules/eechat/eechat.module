@@ -57,7 +57,7 @@ function eechat_user_view($account, $view_mode, $langcode)
             );
             
             // TODO some configuration of the number of servers there are active supporting this method
-            if($row_count < 2 || user_access('multiple game accounts')) {
+            //if($row_count != 2 || user_access('multiple accounts')) {
             
                 $account->content['eechat_request'] = array(
                     '#type' => 'markup',
