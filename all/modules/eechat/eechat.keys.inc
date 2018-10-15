@@ -178,6 +178,11 @@ function eechat_request_key_form_validate($form, &$form_state) {
 function eechat_request_key_form($form, &$form_state) {
     global $user;
     
+    if ($user->uid == 0) {
+      drupal_goto('user/login');
+      return;
+    }
+
     // Info
     $markup = "<div id=\"server-status\">\n";
     $markup = $markup . "<p class=\"helpbox server-description\">\n";
