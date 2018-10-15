@@ -27,7 +27,7 @@ function check_server_access($user, $game, $check_exists = true) {
     ->fields('n', array('uid'))
     ->execute();
     if( ( $check_exists && $query->rowCount() > 0 ) || ( !$check_exists && $query->rowCount() == 0 )) {
-        if(!user_access('multiple accounts')) {
+        if(!user_access('multiple game accounts')) {
             form_set_error ( 'message', t ( 'You do not have access to the ' . $game . ' server, and are not allow to create multiple accounts.') );
             return false;
         }
