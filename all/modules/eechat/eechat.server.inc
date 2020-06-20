@@ -134,21 +134,25 @@ function _run_ssh($command) {
 	if(!$connection) {
 		throw new Exception("Cannot connect to server");
 	}
-	ssh2_auth_pubkey_file($connection, 'root', '/var/keys/iceee-id_dsa.pub', '/var/keys/iceee-id_dsa');
-	$stream = ssh2_exec($connection, $command);
+	if(ssh2_auth_pubkey_file($connection, 'root', '/var/keys/iceee-id_rsa.pub', '/var/keys/iceee-id_rsa','')) {
+		$stream = ssh2_exec($connection, $command);
 
-	$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 
-	stream_set_blocking($errorStream, true);
-	stream_set_blocking($stream, true);
+		stream_set_blocking($errorStream, true);
+		stream_set_blocking($stream, true);
 
-	$output = stream_get_contents($stream);
-	stream_get_contents($errorStream);
+		$output = stream_get_contents($stream);
+		stream_get_contents($errorStream);
 
-	fclose($errorStream);
-	fclose($stream);
+		fclose($errorStream);
+		fclose($stream);
 
-	return $output;
+		return $output;
+	}
+	else {
+		throw new Exception("Failed to authenticate with game server");
+	}
 }
 
 
