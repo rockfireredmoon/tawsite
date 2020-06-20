@@ -994,7 +994,7 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	margin: 0;
 }
 
-#eechat-link-account-form, #eechat-change-password-form, #eechat-request-key-form  {
+#eechat-admin-link-account-form, #eechat-link-account-form, #eechat-change-password-form, #eechat-request-key-form  {
 	width: 46em;
 	margin: 0 auto;
 	padding: 1em;
@@ -1002,13 +1002,13 @@ a.clans-actions, a.clans-actions:visited, a.clans-actions:link, a.clans-actions:
 	background-repeat: repeat;	
 }
 
-#eechat-link-account-form label, #eechat-change-password-form label, #eechat-request-key-form  label {
+#eechat-admin-link-account-form label, #eechat-link-account-form label, #eechat-change-password-form label, #eechat-request-key-form  label {
 	width:  19em;
 	margin-left: 3em;
 	display: inline-block;
 }
 
-#eechat-link-account-form input[type=submit], #eechat-change-password-form  input[type=submit], #eechat-request-key-form input[type=submit] {
+#eechat-admin-link-account-form input[type=submit], #eechat-link-account-form input[type=submit], #eechat-change-password-form  input[type=submit], #eechat-request-key-form input[type=submit] {
 	margin-left: 16em;
 }
 
