@@ -70,6 +70,7 @@ function eechat_user_view($account, $view_mode, $langcode)
                     '#markup' => '<a class="long-styled-button" href="/link-account">Link Account</a>&nbsp;',
                     '#weight' => 102,
                 );
+                
             //}
         }
     }
@@ -140,7 +141,11 @@ function eechat_permission()
         'multiple game accounts' => array(
             'title' => t('Multiple Game Accounts'),
             'description' => t('May create and link to multiple accounts on any allowed server.')
-        )
+        ),
+        'link other accounts' => array(
+            'title' => t('Link Other Accounts'),
+            'description' => t('May link other players accounts to website accounts.')
+        ),
     );
 }
 
@@ -201,6 +206,18 @@ function eechat_menu()
         ),
         'title' => 'Link Game Account',
         'file' => 'eechat.keys.inc'
+    );
+    
+    $items['link-other-account'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_admin_link_account_form'
+        ),
+        'access arguments' => array(
+            'link other accounts'
+        ),
+        'title' => 'Administrator Link Other Account',
+        'file' => 'eechat.adminkeys.inc'
     );
     
     $items['change-game-password'] = array(

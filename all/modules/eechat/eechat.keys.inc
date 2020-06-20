@@ -260,9 +260,8 @@ function eechat_link_account_form($form, &$form_state) {
     $markup = "<div id=\"server-status\">\n";
     $markup = $markup . "<p class=\"helpbox server-description\">\n";
     $markup = $markup . "You are chosing to link your game account on an <i>Earth Eternal</i> ";
-    $markup = $markup . "server to this web server account. There are no immediate benefits to you doing this, but in the " .
-                    "future, this will allow you to reset your game passwords and perform other account maintenance tasks." .
-                    "It will also be used to aid migration to <i>The Anubian War</i> when it is released.";
+    $markup = $markup . "server to this web server account. This allows you to perform your own  " .
+                    "password resets, and in the future will allow launching the game right from this site.";
     $markup = $markup . "<ul>";
     $markup = $markup . "<li>Enter the username and password you use to login to the <i>Earth Eterrnal</i> server.</li>";
     $markup = $markup . "<li>Click on <b>Link</b>. Your username and password will be validated by the game server.</li>";
