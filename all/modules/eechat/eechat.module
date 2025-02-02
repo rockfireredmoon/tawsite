@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__FILE__) . '/eechat.common.inc';
 require_once dirname(__FILE__) . '/eechat.chat.inc';
 
@@ -8,63 +7,147 @@ require_once dirname(__FILE__) . '/eechat.chat.inc';
  * Module file for eechat.
  */
 
+/**
+ * Implements hook_user_view().
+ */
+function eechat_user_view($account, $view_mode, $langcode)
+{
+    global $user;
+    if ($account->uid == $user->uid) {
+        
+        if(user_access('access VAL') || user_access('access EETEST')) {
+        
+            $header = array(
+                t('Server'),
+                t('Username'),
+                t('Key'),
+                t('Actions')
+            );
+            $rows = array();
+            
+            $result = db_query('SELECT * FROM {eechat} WHERE uid = ?', array(
+                $account->uid
+            ));
+            
+            $row_count = 0;
+            
+            foreach ($result as $key) {
+                $row_count++;
+                $actions = '<a class="long-styled-button" href="/change-game-password/' . $key->regkey . '">Change Password</a>';
+                $rows[] = array(
+                    $key->game,
+                    $key->username,
+                    $key->regkey,
+                    $actions
+                );
+            }
+            
+            $account->content['eechat_keys'] = array(
+                '#type' => 'item',
+                '#title' => t('Game Keys'),
+                '#theme' => 'table',
+                '#header' => $header,
+                '#rows' => $rows,
+                '#sticky' => FALSE,
+                '#empty' => t('You have no game keys linked with this account. Click either "Request Key" to create your first game account, or "Link Account" if you have an existing account you want to link with your website account."'),
+                // Adding the #name property so that our container has the 'form-item-hybridauth' class.
+                // @see theme_form_element().
+                '#name' => 'eechat_keys',
+                '#weight' => 100
+            );
+            
+            // TODO some configuration of the number of servers there are active supporting this method
+            //if($row_count != 2 || user_access('multiple accounts')) {
+            
+                $account->content['eechat_request'] = array(
+                    '#type' => 'markup',
+                    '#markup' => '<a class="long-styled-button" href="/request-key">Request Key</a>&nbsp;',
+                    '#weight' => 101,
+                );
+                
+                $account->content['eechat_link'] = array(
+                    '#type' => 'markup',
+                    '#markup' => '<a class="long-styled-button" href="/link-account">Link Account</a>&nbsp;',
+                    '#weight' => 102,
+                );
+                
+            //}
+        }
+    }
+}
 
 /**
  * Implements hook_permission().
  */
-function eechat_permission() {
-	return array(
-			'view chat' => array(
-					'title' => t('View chat'),
-					'description' => t('View current chat'),
-			),
-			'chat' => array(
-					'title' => t('Chat'),
-					'description' => t('Take part in chat'),
-			),
-			'shroomies' => array(
-					'title' => t('Play Shroomies Search'),
-					'description' => t('Allow the mini-game Shroomies Search to be player'),
-			),
-			'leaderboards' => array(
-					'title' => t('View leaderboards'),
-					'description' => t('May view leaderboards.'),
-			),
-			'credit shop' => array(
-					'title' => t('View and use creditshop'),
-					'description' => t('May view and use the credit shop.'),
-			),
-			'auction house' => array(
-					'title' => t('View and use auction house'),
-					'description' => t('May view and use the auction house.'),
-			),
-			'character details' => array(
-					'title' => t('View character details'),
-					'description' => t('May view character details.'),
-			),
-			'guilds' => array(
-					'title' => t('View guilds'),
-					'description' => t('May view guilds.'),
-			),
-			'clans' => array(
-					'title' => t('View clans'),
-					'description' => t('May view clans.'),
-			),
-			'item details' => array(
-					'title' => t('View item details'),
-					'description' => t('May view item details.'),
-			),
-			'server' => array(
-					'title' => t('View game server status'),
-					'description' => t('May view the game server status.'),
-			),
-			'start server' => array(
-					'title' => t('Start game server'),
-					'description' => t('May start the game server.'),
-			),
-	);
+function eechat_permission()
+{
+    return array(
+        'view chat' => array(
+            'title' => t('View chat'),
+            'description' => t('View current chat')
+        ),
+        'chat' => array(
+            'title' => t('Chat'),
+            'description' => t('Take part in chat')
+        ),
+        'shroomies' => array(
+            'title' => t('Play Shroomies Search'),
+            'description' => t('Allow the mini-game Shroomies Search to be player')
+        ),
+        'leaderboards' => array(
+            'title' => t('View leaderboards'),
+            'description' => t('May view leaderboards.')
+        ),
+        'credit shop' => array(
+            'title' => t('View and use creditshop'),
+            'description' => t('May view and use the credit shop.')
+        ),
+        'auction house' => array(
+            'title' => t('View and use auction house'),
+            'description' => t('May view and use the auction house.')
+        ),
+        'character details' => array(
+            'title' => t('View character details'),
+            'description' => t('May view character details.')
+        ),
+        'guilds' => array(
+            'title' => t('View guilds'),
+            'description' => t('May view guilds.')
+        ),
+        'clans' => array(
+            'title' => t('View clans'),
+            'description' => t('May view clans.')
+        ),
+        'item details' => array(
+            'title' => t('View item details'),
+            'description' => t('May view item details.')
+        ),
+        'server' => array(
+            'title' => t('View game server status'),
+            'description' => t('May view the game server status.')
+        ),
+        'start server' => array(
+            'title' => t('Start game server'),
+            'description' => t('May start the game server.')
+        ),
+        'access EETEST' => array(
+            'title' => t('Access EETEST Server'),
+            'description' => t('May access the EE legacy testing server.')
+        ),
+        'access VAL' => array(
+            'title' => t('Access VAL Server'),
+            'description' => t('May access Valkals Shadow server.')
+        ),
+        'multiple game accounts' => array(
+            'title' => t('Multiple Game Accounts'),
+            'description' => t('May create and link to multiple accounts on any allowed server.')
+        ),
+        'link other accounts' => array(
+            'title' => t('Link Other Accounts'),
+            'description' => t('May link other players accounts to website accounts.')
+        ),
+    );
 }
-
 
 /**
  * @defgroup eechat Earth Eternal: Block
@@ -72,325 +155,392 @@ function eechat_permission() {
  * @{
  * Blocks for Earth Eternal chat integration.
  */
-function eechat_menu() {
-	$items ['auctionhouse'] = array (
-			'page callback' => 'eechat_auctionhouse',
-    		'access arguments' => array('auction house'), 
-			'title' => 'Auction House',
-    		'file' => 'eechat.auctionhouse.inc'
-	);
-	
-	$items ['creditshop'] = array (
-			'page callback' => 'eechat_creditshop',
-    		'access arguments' => array('credit shop'), 
-			'title' => 'Credit Shop',
-    		'file' => 'eechat.creditshop.inc'
-	);
-	
-	$items ['leaderboard'] = array (
-			'page callback' => 'eechat_leaderboard',
-    		'access arguments' => array('leaderboards'), 
-			'title' => 'Leaderboard',
-    		'file' => 'eechat.stats.inc' 
-	);
-	
-	$items ['character'] = array (
-			'page callback' => 'eechat_character',
-    		'access arguments' => array('character details'), 
-			'title' => 'Character Profile',
-    		'file' => 'eechat.stats.inc' 
-	);
-	
-	$items ['clan'] = array (
-			'page callback' => 'eechat_clan',
-    		'access arguments' => array('clans'),
-			'title' => 'Clan Profile',
-    		'file' => 'eechat.clans.inc'
-	);
-	
-	$items ['clans'] = array (
-			'page callback' => 'eechat_clans',
-    		'access arguments' => array('clans'),
-			'title' => 'Clans',
-    		'file' => 'eechat.clans.inc'
-	);
-	
-	$items ['server'] = array (
-			'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
-			'page arguments' => array (
-					'eechat_server_form' 
-			), 
-    		'access arguments' => array('server'),
-			'title' => 'Server',
-    		'file' => 'eechat.server.inc'
-	);
-	
-	$items ['guild'] = array (
-			'page callback' => 'eechat_guild',
-    		'access arguments' => array('guilds'),
-			'title' => 'Guild Profile',
-    		'file' => 'eechat.guilds.inc' 
-	);
-	
-	$items ['guilds'] = array (
-			'page callback' => 'eechat_guilds',
-    		'access arguments' => array('guilds'),
-			'title' => 'Guilds',
-    		'file' => 'eechat.guilds.inc' 
-	);
-	
-	$items ['chat'] = array (
-			'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
-			'page arguments' => array (
-					'eechat_chat_form' 
-			), 
-    		'access arguments' => array('chat'),
-			'title' => 'Chat' ,
-    		'file' => 'eechat.chat.inc'
-	);
-	
-	$items ['buy'] = array (
-			'page callback' => 'drupal_get_form',
-			'page arguments' => array (
-					'eechat_buy_form' 
-			), 
-    		'access arguments' => array('credit shop'),
-			'title' => 'Buy Credit Shop Item',
-    		'file' => 'eechat.creditshop.inc',
-	);
-	
-	$items ['tooltip/item'] = array (
-			'page callback' => 'eechat_tooltip_item',
-    		'access arguments' => array('item details'),
-			'title' => 'Item Details',
-    		'file' => 'eechat.items.inc'
-	);
-	
-	$items ['shroomies-search'] = array (
-			'page callback' => 'eechat_shroomies_search',
-    		'access arguments' => array('shroomies'),
-			'title' => 'Shroomies Search',
-    		'file' => 'eechat.minigames.inc'
-	);
-	
-	$items ['minigame_scores'] = array (
-			'page callback' => 'eechat_minigame_scores',
-    		'access arguments' => array('shroomies'),
-			'title' => 'Minigame Scores',
-			'type' => MENU_CALLBACK,
-    		'file' => 'eechat.minigames.inc'
-	);
-	
-	return $items;
+function eechat_menu()
+{
+    $items['auctionhouse'] = array(
+        'page callback' => 'eechat_auctionhouse',
+        'access arguments' => array(
+            'auction house'
+        ),
+        'title' => 'Auction House',
+        'file' => 'eechat.auctionhouse.inc'
+    );
+    
+    $items['creditshop'] = array(
+        'page callback' => 'eechat_creditshop',
+        'access arguments' => array(
+            'credit shop'
+        ),
+        'title' => 'Credit Shop',
+        'file' => 'eechat.creditshop.inc'
+    );
+    
+    $items['leaderboard'] = array(
+        'page callback' => 'eechat_leaderboard',
+        'access arguments' => array(
+            'leaderboards'
+        ),
+        'title' => 'Leaderboard',
+        'file' => 'eechat.stats.inc'
+    );
+    
+    $items['request-key'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_request_key_form'
+        ),
+        'access arguments' => array(
+            'access content'
+        ),
+        'title' => 'Request Game Key',
+        'file' => 'eechat.keys.inc'
+    );
+    
+    $items['link-account'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_link_account_form'
+        ),
+        'access arguments' => array(
+            'access content'
+        ),
+        'title' => 'Link Game Account',
+        'file' => 'eechat.keys.inc'
+    );
+    
+    $items['link-other-account'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_admin_link_account_form'
+        ),
+        'access arguments' => array(
+            'link other accounts'
+        ),
+        'title' => 'Administrator Link Other Account',
+        'file' => 'eechat.adminkeys.inc'
+    );
+    
+    $items['change-game-password'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_change_password_form'
+        ),
+        'access arguments' => array(
+            'access content'
+        ),
+        'title' => 'Change Game Password',
+        'file' => 'eechat.keys.inc'
+    );
+    
+    $items['character'] = array(
+        'page callback' => 'eechat_character',
+        'access arguments' => array(
+            'character details'
+        ),
+        'title' => 'Character Profile',
+        'file' => 'eechat.stats.inc'
+    );
+    
+    $items['clan'] = array(
+        'page callback' => 'eechat_clan',
+        'access arguments' => array(
+            'clans'
+        ),
+        'title' => 'Clan Profile',
+        'file' => 'eechat.clans.inc'
+    );
+    
+    $items['clans'] = array(
+        'page callback' => 'eechat_clans',
+        'access arguments' => array(
+            'clans'
+        ),
+        'title' => 'Clans',
+        'file' => 'eechat.clans.inc'
+    );
+    
+    $items['server'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_server_form'
+        ),
+        'access arguments' => array(
+            'server'
+        ),
+        'title' => 'Server',
+        'file' => 'eechat.server.inc'
+    );
+    
+    $items['guild'] = array(
+        'page callback' => 'eechat_guild',
+        'access arguments' => array(
+            'guilds'
+        ),
+        'title' => 'Guild Profile',
+        'file' => 'eechat.guilds.inc'
+    );
+    
+    $items['guilds'] = array(
+        'page callback' => 'eechat_guilds',
+        'access arguments' => array(
+            'guilds'
+        ),
+        'title' => 'Guilds',
+        'file' => 'eechat.guilds.inc'
+    );
+    
+    $items['chat'] = array(
+        'page callback' => 'drupal_get_form', // this is the function that will be called when the page is accessed. for a form, use drupal_get_form
+        'page arguments' => array(
+            'eechat_chat_form'
+        ),
+        'access arguments' => array(
+            'chat'
+        ),
+        'title' => 'Chat',
+        'file' => 'eechat.chat.inc'
+    );
+    
+    $items['buy'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array(
+            'eechat_buy_form'
+        ),
+        'access arguments' => array(
+            'credit shop'
+        ),
+        'title' => 'Buy Credit Shop Item',
+        'file' => 'eechat.creditshop.inc'
+    );
+    
+    $items['tooltip/item'] = array(
+        'page callback' => 'eechat_tooltip_item',
+        'access arguments' => array(
+            'item details'
+        ),
+        'title' => 'Item Details',
+        'file' => 'eechat.items.inc'
+    );
+    
+    $items['shroomies-search'] = array(
+        'page callback' => 'eechat_shroomies_search',
+        'access arguments' => array(
+            'shroomies'
+        ),
+        'title' => 'Shroomies Search',
+        'file' => 'eechat.minigames.inc'
+    );
+    
+    $items['minigame_scores'] = array(
+        'page callback' => 'eechat_minigame_scores',
+        'access arguments' => array(
+            'shroomies'
+        ),
+        'title' => 'Minigame Scores',
+        'type' => MENU_CALLBACK,
+        'file' => 'eechat.minigames.inc'
+    );
+    
+    
+    $items['admin/config/system/eechat'] = array(
+        'title' => 'EEChat',
+        'description' => 'Configure the EEChat module',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('eechat_settings_form'),
+        'access arguments' => array('administer site configuration'),
+        'file' => 'eechat.admin.inc',
+    );
+    
+    return $items;
 }
 
-
-function eechat_block_info() {
-	$blocks ['eechat'] = array (
-			'info' => t ( 'Earth Eternal Chat' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE 
-	);
-	
-	$blocks ['eefullchat'] = array (
-			'info' => t ( 'Earth Eternal Full Chat' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE 
-	);
-	
-	$blocks ['eewho'] = array (
-			'info' => t ( 'Earth Eternal Who' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE 
-	);
-	
-	$blocks ['eeaccountinfo'] = array (
-			'info' => t ( 'Earth Eternal Account Info' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE 
-	);
-	
-	$blocks ['eecurrencyinfo'] = array (
-			'info' => t ( 'Block showing players currency (gold and credits)' ),
-			'cache' => DRUPAL_CACHE_PER_ROLE 
-	);
-	
-	return $blocks;
-}
-function eechat_block_configure($delta = '') {
-	$form = array ();
-	if ($delta == 'eechat' || $delta == 'eefullchat' || $delta == 'eewho' || $delta == 'eeaccountinfo' || $delta == 'eecurrencyinfo') {
-		$form ['eechat_url'] = array (
-				'#type' => 'textfield',
-				'#title' => t ( 'Server API URL' ),
-				'#size' => 60,
-				'#description' => t ( 'The HTTP API URL of the Planet Forever server. For example http://server.theanubianwar.com/api' ),
-				'#default_value' => variable_get ( 'eechat_url', t ( 'http://server.theanubianwar.com/api' ) ) 
-		);
-		
-		$form ['eechat_key'] = array (
-				'#type' => 'textfield',
-				'#title' => t ( 'Shroomie Search Encryption Key' ),
-				'#size' => 60,
-				'#description' => t ( 'The encryption key used for encrypting scores.' ),
-				'#default_value' => variable_get ( 'eechat_key', t ( '' ) ) 
-		);
-	}
-	return $form;
-}
-function eechat_block_save($delta = '', $edit = array()) {
-	if ($delta == 'eechat' || $delta == 'eefullchat' || $delta == 'eewho' || $delta == 'eeaccountinfo' || $delta == 'eecurrencyinfo') {
-		variable_set ( 'eechat_url', $edit ['eechat_url'] );
-		variable_set ( 'eechat_key', $edit ['eechat_key'] );
-	}
-}
-function eechat_block_view($delta = '') {
-	// The $delta parameter tells us which block is being requested.
-	switch ($delta) {
-		case 'eefullchat' :
-		case 'eechat' :
-			$block ['subject'] = t ( 'Earth Eternal Chat' );
-			$block ['content'] = eechat_contents ( $delta );
-			drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eechat.js' );
-			break;
-		case 'eewho' :
-			$block ['subject'] = t ( 'Earth Eternal Who' );
-			$block ['content'] = eechat_contents ( $delta );
-			drupal_add_js ( drupal_get_path ( 'module', 'eechat' ) . '/js/eewho.js' );
-			break;
-		case 'eeaccountinfo' :
-			$block ['subject'] = t ( 'Earth Eternal Account' );
-			$block ['content'] = _render_character_info();
-			break;
-			/* drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js'); */
-		case 'eecurrencyinfo' :
-			$block ['subject'] = t ( 'Your Current Balance' );
-			$block ['content'] = _render_purse();
-			break;
-	}
-	return $block;
+function eechat_block_info()
+{
+    $blocks['eechat'] = array(
+        'info' => t('Earth Eternal Chat'),
+        'cache' => DRUPAL_CACHE_PER_ROLE
+    );
+    
+    $blocks['eefullchat'] = array(
+        'info' => t('Earth Eternal Full Chat'),
+        'cache' => DRUPAL_CACHE_PER_ROLE
+    );
+    
+    $blocks['eewho'] = array(
+        'info' => t('Earth Eternal Who'),
+        'cache' => DRUPAL_CACHE_PER_ROLE
+    );
+    
+    $blocks['eeaccountinfo'] = array(
+        'info' => t('Earth Eternal Account Info'),
+        'cache' => DRUPAL_CACHE_PER_ROLE
+    );
+    
+    $blocks['eecurrencyinfo'] = array(
+        'info' => t('Block showing players currency (gold and credits)'),
+        'cache' => DRUPAL_CACHE_PER_ROLE
+    );
+    
+    return $blocks;
 }
 
-function eechat_contents($which_block) {
-	switch ($which_block) {
-		
-		case 'eewho' :
-			list ( $data, $request_headers ) = _doHTTP ( "/who" );
-			if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
-				$result = array (
-						'#markup' => t ( 'Earth Eternal is OFFLINE' ) 
-				);
-			} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-				$who = json_decode ( $data );
-				$markup = "<div id=\"block-eechat-eewho-who\">\n<ul>\n";
-				foreach ( $who as $name => $info ) {
-					$markup = $markup . "<li>" . htmlentities ( $name ) . "</li>\n";
-				}
-				$markup = $markup . "</ul>\n</div>\n";
-				$result = array (
-						'#markup' => $markup 
-				);
-			} else {
-				$result = array (
-						'#markup' => t ( 'Earth Eternal online player list unavailable. Status %status', array (
-								'%status' => $request_headers->http_code 
-						) ) 
-				);
-			}
-			return $result;
-		
-		case 'eechat' :
-		case 'eefullchat' :
-			return _render_chat_block($which_block);
-	}
+function eechat_block_view($delta = '')
+{
+    // The $delta parameter tells us which block is being requested.
+    switch ($delta) {
+        case 'eefullchat':
+        case 'eechat':
+            $block['subject'] = t('Earth Eternal Chat');
+            $block['content'] = eechat_contents($delta);
+            drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eechat.js');
+            break;
+        case 'eewho':
+            $block['subject'] = t('Earth Eternal Who');
+            $block['content'] = eechat_contents($delta);
+            drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js');
+            break;
+        case 'eeaccountinfo':
+            $block['subject'] = t('Earth Eternal Account');
+            $block['content'] = _render_character_info();
+            break;
+        /* drupal_add_js(drupal_get_path('module', 'eechat') . '/js/eewho.js'); */
+        case 'eecurrencyinfo':
+            $block['subject'] = t('Your Current Balance');
+            $block['content'] = _render_purse();
+            break;
+    }
+    return $block;
 }
 
-function eechat_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
-	$current_user = user_uid_optional_load ();
-	if ($current_user->uid != 1) {
-		$form ['field_shroomies_score'] ['#access'] = FALSE;
-	}
+function eechat_contents($which_block)
+{
+    switch ($which_block) {
+        
+        case 'eewho':
+            list ($data, $request_headers) = _doHTTP("/who");
+            if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+                $result = array(
+                    '#markup' => t('Earth Eternal is OFFLINE')
+                );
+            } else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+                $who = json_decode($data);
+                $markup = "<div id=\"block-eechat-eewho-who\">\n<ul>\n";
+                foreach ($who as $name => $info) {
+                    $markup = $markup . "<li>" . htmlentities($name) . "</li>\n";
+                }
+                $markup = $markup . "</ul>\n</div>\n";
+                $result = array(
+                    '#markup' => $markup
+                );
+            } else {
+                $result = array(
+                    '#markup' => t('Earth Eternal online player list unavailable. Status %status', array(
+                        '%status' => $request_headers->http_code
+                    ))
+                );
+            }
+            return $result;
+        
+        case 'eechat':
+        case 'eefullchat':
+            return _render_chat_block($which_block);
+    }
 }
 
-function _render_character_info() {
-	global $user;
-	$is_player = true;
-	$account = $user;
-	$req_uri = request_uri ();
-	$parts = explode ( "/", $req_uri );
-	for($i = 0; $i < count ( $parts ); $i ++) {
-		$el = $parts [$i];
-		if ($el == "user") {
-			if ($i + 1 < count ( $parts )) {
-				$el = $parts [$i + 1];
-				if (( string ) ( int ) $el == $el) {
-					$account = user_load ( $el );
-					$is_player = false;
-				}
-			}
-		}
-	}
-		
-	$urlp = "/user/" . urlencode ( $account->name );
-	list ( $data, $request_headers ) = _doHTTP ( $urlp );
-	$markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
-	if (isset ( $request_headers->http_code ) && $request_headers->http_code == 0) {
-		$markup = $markup . t ( 'Earth Eternal is OFFLINE' );
-	} else if (isset ( $request_headers->http_code ) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
-		$eeuser = json_decode ( $data );
-	
-		if ($eeuser->characters != null) {
-			$markup = $markup . "<div class=\"account-details\">\n";
-			$markup = $markup . "<h2>Account</h2>\n";
-				
-			$markup = $markup . "<div class=\"last-login\">\n";
-			$markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
-			$markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
-			$markup = $markup . "</div>\n";
-				
-			$markup = $markup . _get_stats_html ( $eeuser->playerStats );
-				
-			$markup = $markup . "</div>\n";
-			$markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
-			$markup = $markup . "<div class=\"character-details\">\n";
-			$markup = $markup . "<h2>Characters</h2>\n";
-			$markup = $markup . "<ul>\n";
-			foreach ( $eeuser->characters as $character ) {
-				$markup = $markup . "<li>\n";
-				$markup = $markup . "<span class=\"character-name\"><a href=\"/character/" . urlencode ( $character->name ) . "\">" . $character->name . "</a></span>\n";
-				$markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
-				$markup = $markup . "<span class=\"character-level\">" . _get_class_name ( $character->profession ) . "</span>\n";
-				$markup = $markup . "</li>";
-			}
-			$markup = $markup . "</ul>\n";
-			$markup = $markup . "</div>\n";
-		} else {
-			$markup = $markup . "<div class=\"no-characters\">\n";
-			if ($is_player) {
-				$markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
-			} else {
-				$markup = $markup . "Player has no characters.";
-			}
-			$markup = $markup . "</div>\n";
-		}
-	} else {
-		if ($request_headers->http_code == 404) {
-			$markup = $markup . "<div class=\"no-account\">";
-			if ($is_player) {
-				$markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";
-			} else {
-				$markup = $markup . "Player has no characters.";
-			}
-			$markup = $markup . "</div>\n";
-		} else {
-			$markup = t ( 'Earth Eternal user not available. ' . $account->name . '. Status %status', array (
-					'%status' => $request_headers->http_code
-			) );
-		}
-	}
-	$markup = $markup . "</div>\n";
-	$result = array (
-			'#markup' => $markup
-	);
-	return $result;
+function eechat_form_user_profile_form_alter(&$form, &$form_state, $form_id)
+{
+    $current_user = user_uid_optional_load();
+    if ($current_user->uid != 1) {
+        $form['field_shroomies_score']['#access'] = FALSE;
+    }
+}
+
+function _render_character_info()
+{
+    global $user;
+    $is_player = true;
+    $account = $user;
+    $req_uri = request_uri();
+    $parts = explode("/", $req_uri);
+    for ($i = 0; $i < count($parts); $i ++) {
+        $el = $parts[$i];
+        if ($el == "user") {
+            if ($i + 1 < count($parts)) {
+                $el = $parts[$i + 1];
+                if ((string) (int) $el == $el) {
+                    $account = user_load($el);
+                    $is_player = false;
+                }
+            }
+        }
+    }
+    
+    $urlp = "/user/" . urlencode($account->name);
+    list ($data, $request_headers) = _doHTTP($urlp);
+    $markup = "<div id=\"block-eechat-eeaccountinfo-accountinfo\">\n";
+    if (isset($request_headers->http_code) && $request_headers->http_code == 0) {
+        $markup = $markup . t('Earth Eternal is OFFLINE');
+    } else if (isset($request_headers->http_code) && $request_headers->http_code < 300 && $request_headers->http_code >= 200) {
+        $eeuser = json_decode($data);
+        
+        if ($eeuser->characters != null) {
+            $markup = $markup . "<div class=\"account-details\">\n";
+            $markup = $markup . "<h2>Account</h2>\n";
+            
+            $markup = $markup . "<div class=\"last-login\">\n";
+            $markup = $markup . "<span class=\"last-login-label player-stat-label\">Last Login</span>\n";
+            $markup = $markup . "<span class=\"last-login-value player-stat-value\">" . $eeuser->logon . "</span>\n";
+            $markup = $markup . "</div>\n";
+            
+            $markup = $markup . _get_stats_html($eeuser->playerStats);
+            
+            $markup = $markup . "</div>\n";
+            $markup = $markup . "<hr class=\"fancy-small-divider\"/>\n";
+            $markup = $markup . "<div class=\"character-details\">\n";
+            $markup = $markup . "<h2>Characters</h2>\n";
+            $markup = $markup . "<ul>\n";
+            foreach ($eeuser->characters as $character) {
+                $markup = $markup . "<li>\n";
+                $markup = $markup . "<span class=\"character-name\"><a href=\"/character/" . urlencode($character->name) . "\">" . $character->name . "</a></span>\n";
+                $markup = $markup . "<span class=\"character-level\">Level " . $character->level . "</span>\n";
+                $markup = $markup . "<span class=\"character-level\">" . _get_class_name($character->profession) . "</span>\n";
+                $markup = $markup . "</li>";
+            }
+            $markup = $markup . "</ul>\n";
+            $markup = $markup . "</div>\n";
+        } else {
+            $markup = $markup . "<div class=\"no-characters\">\n";
+            if ($is_player) {
+                $markup = $markup . "You have no characters! <a href=\"/launch\">Play Now</a> to create one.";
+            } else {
+                $markup = $markup . "Player has no characters.";
+            }
+            $markup = $markup . "</div>\n";
+        }
+    } else {
+        if ($request_headers->http_code == 404) {
+            $markup = $markup . "<div class=\"no-account\">";
+            if ($is_player) {
+                $markup = $markup . "You have no game account! <a href=\"/launch\">Play Now</a> to create one.";
+            } else {
+                $markup = $markup . "Player has no characters.";
+            }
+            $markup = $markup . "</div>\n";
+        } else {
+            $markup = t('Earth Eternal user not available. ' . $account->name . '. Status %status', array(
+                '%status' => $request_headers->http_code
+            ));
+        }
+    }
+    $markup = $markup . "</div>\n";
+    $result = array(
+        '#markup' => $markup
+    );
+    return $result;
 }
 
 /**
-* @} End of "defgroup eechat".
-*/
+ * @} End of "defgroup eechat".
+ */
+
+?>

@@ -1,0 +1,8 @@
+getdown.txt = 9f01e5ad34b63f524e62549cc3181e1d
+lib/icebility.jar = 3da73956070ac4ed4fd3c23c249b1bb3
+lib/controlsfx.jar = f770b4f6e99db3cd220adb58e456f8c1
+lib/openjfx-dialogs.jar = 2fe2f1ad5eefce06154185ef29516d8d
+splash.png = 0e378ae93e44cabe1f9fa877618c1fda
+icebility.png = 6de9f01cfa71b1846946ab0082bbb33d
+progress.png = e6cbeb0a333e096ad7d99415dcaa1844
+digest.txt = 1b5bbafac9b42d683cb71d08beb8428a

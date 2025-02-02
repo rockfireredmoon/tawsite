@@ -1,0 +1,28 @@
+# The URL from which the client is downloaded
+appbase = http://www.theanubiawar.com/sites/default/files/developer-tools/icebility/getdown
+allow_offline = false
+
+# UI Configuration
+ui.background_image = splash.png
+ui.icon = icebility.png
+ui.progress_image = progress.png
+ui.name = Icebility
+ui.progress = 80, 244, 196, 11
+ui.progress_text = FFFFFF
+ui.status = 20, 170, 316, 64
+ui.status_text = FFFFFF
+ui.text_shadow = 111111
+
+# Application jar files
+code = lib/icebility.jar
+code = lib/controlsfx.jar
+code = lib/openjfx-dialogs.jar
+
+# Resources
+resource = splash.png
+resource = icebility.png
+resource = progress.png
+
+# The main entry point for the application
+class = org.icebility.Main
+apparg = http://www.theanubiawar.com/sites/default/files/developer-tools/icebility
